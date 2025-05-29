@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { QuestionData } from '@/types/quizTypes';
 import QuestionComponent from '@/components/QuestionComponent';
@@ -17,12 +17,16 @@ export default function QuizPage({ params }: QuizPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEnd, setIsEnd] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState('ko');
 
-  const fetchNextQuestion = async () => {
+  const fetchNextQuestion = useCallback(async () => {
     setLoading(true);
     setError(null);
+    setIsEnd(false);
     try {
-      const res = await fetch(`/api/questions/${params.topicId}`);
+      // 현재 언어 설정을 currentLanguage 상태에서 가져온다고 가정
+      const langToFetch = currentLanguage; // 예: 'en' 또는 'ko'
+      const res = await fetch(`/api/questions/${params.topicId}?lang=${langToFetch}`);
       if (!res.ok) {
         throw new Error('문제를 불러오는 데 실패했습니다.');
       }
@@ -34,11 +38,11 @@ export default function QuizPage({ params }: QuizPageProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.topicId, currentLanguage]); // currentLanguage도 dependency array에 추가
 
   useEffect(() => {
     fetchNextQuestion();
-  }, [params.topicId]);
+  }, [params.topicId, fetchNextQuestion]);
 
   const handleNextQuestion = () => {
     fetchNextQuestion();

@@ -24,3 +24,6 @@ yarn-error.log*
 
 # OS
 Thumbs.db 
+/src/generated/prisma
+
+.env

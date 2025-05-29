@@ -1,0 +1,39 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // 사용하시는 DB에 맞게 (mysql, sqlite 등)
+  url      = env("DATABASE_URL")
+}
+
+model Topic {
+  id        String     @id @default(cuid()) // cuid() 또는 uuid() 사용 가능
+  name_ko   String
+  name_en   String
+  questions Question[] // Topic과 Question 간의 관계 정의
+}
+
+model Question {
+  id            String         @id @default(cuid())
+  topicId       String
+  text_ko       String         @db.Text // 긴 텍스트를 위해 @db.Text 사용 가능
+  text_en       String         @db.Text
+  hint_ko       String         @db.Text
+  hint_en       String         @db.Text
+  topic         Topic          @relation(fields: [topicId], references: [id])
+  answerOptions AnswerOption[] // Question과 AnswerOption 간의 관계 정의
+}
+
+model AnswerOption {
+  id            String   @id @default(cuid())
+  questionId    String
+  text_ko       String
+  text_en       String
+  rationale_ko  String   @db.Text
+  rationale_en  String   @db.Text
+  isCorrect     Boolean
+  question      Question @relation(fields: [questionId], references: [id])
+}
