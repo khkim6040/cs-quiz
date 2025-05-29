@@ -1,6 +1,0 @@
-{
-  "/page": "app/page.js",
-  "/quiz/[topicId]/page": "app/quiz/[topicId]/page.js",
-  "/api/topics/route": "app/api/topics/route.js",
-  "/api/questions/[topicId]/route": "app/api/questions/[topicId]/route.js"
-}
