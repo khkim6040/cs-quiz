@@ -70,12 +70,12 @@ jobs:
             # (Docker가 볼륨을 생성할 때 기본적으로 root로 생성하므로, 컨테이너 내부에서 chown이 필요 없을 수도 있고,
             #  또는 Dockerfile의 RUN mkdir -p /app/data && chown nextjs:nodejs /app/data 부분과 연계하여 확인)
 
-            sudo docker run -d --name cs-quiz-container \
-            -p 3000:3000 \
-            -e DATABASE_URL="file:/app/data/prod.db" \
-            -v ${EC2_DB_PATH}:/app/data \
-            --restart always \
-            gwanhokim/cs-quiz:latest
+            docker run -d --name cs-quiz-container \
+              -p 3000:3000 \
+              -e DATABASE_URL="file:/app/data/prod.db" \
+              -v /opt/cs-quiz/data:/app/data \
+              --restart always \
+              gwanhokim/cs-quiz:latest
 
             # 새 컨테이너가 실행된 후, DB 초기화 및 시딩 실행
             echo "Waiting for container to start..."
