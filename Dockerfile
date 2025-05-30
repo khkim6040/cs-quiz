@@ -3,7 +3,7 @@
 # 1. Build Stage
 FROM node:18-alpine AS builder
 # OpenSSL 1.1 설치 (Prisma 호환성)
-RUN apk add --no-cache openssl1.1-compat libc6-compat # libc6-compat도 추가해볼 수 있음
+RUN apk add --no-cache openssl1.1-compat libc6-compat 
 
 WORKDIR /app
 
