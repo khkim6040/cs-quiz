@@ -5,26 +5,31 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // 사용하시는 DB에 맞게 (mysql, sqlite 등)
+  provider = "sqlite"
+  // 로컬 개발 시: 프로젝트 루트의 prisma 폴더 내 dev.db 파일을 사용
+  // 배포 시: Docker 컨테이너 내의 특정 경로 (예: /app/prisma/prod.db) 또는 볼륨 마운트 경로
+  // 환경 변수를 사용하여 경로를 동적으로 설정하는 것이 좋습니다.
   url      = env("DATABASE_URL")
 }
 
+// 모델 정의는 이전 PostgreSQL 예시와 동일하게 유지합니다.
+// Topic, Question, AnswerOption 모델들...
 model Topic {
-  id        String     @id @default(cuid()) // cuid() 또는 uuid() 사용 가능
+  id        String     @id @default(cuid())
   name_ko   String
   name_en   String
-  questions Question[] // Topic과 Question 간의 관계 정의
+  questions Question[]
 }
 
 model Question {
   id            String         @id @default(cuid())
   topicId       String
-  text_ko       String         @db.Text // 긴 텍스트를 위해 @db.Text 사용 가능
-  text_en       String         @db.Text
-  hint_ko       String         @db.Text
-  hint_en       String         @db.Text
+  text_ko       String
+  text_en       String
+  hint_ko       String
+  hint_en       String
   topic         Topic          @relation(fields: [topicId], references: [id])
-  answerOptions AnswerOption[] // Question과 AnswerOption 간의 관계 정의
+  answerOptions AnswerOption[]
 }
 
 model AnswerOption {
@@ -32,8 +37,8 @@ model AnswerOption {
   questionId    String
   text_ko       String
   text_en       String
-  rationale_ko  String   @db.Text
-  rationale_en  String   @db.Text
+  rationale_ko  String
+  rationale_en  String
   isCorrect     Boolean
   question      Question @relation(fields: [questionId], references: [id])
 }

@@ -1,0 +1,87 @@
+name: Deploy CS Quiz App to EC2
+
+on:
+  push:
+    branches:
+      - main # main 브랜치에 푸시될 때 실행 (필요시 다른 브랜치로 변경)
+
+jobs:
+  build-and-push-docker-image:
+    name: Build Docker image and push to Docker Hub
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        # Docker 빌드 성능을 향상시키고 다양한 빌드 옵션을 제공합니다.
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }} # GitHub Secrets에 저장된 Docker Hub 사용자 이름
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} # GitHub Secrets에 저장된 Docker Hub Access Token
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: gwanhokim/cs-quiz # Docker Hub 사용자명/이미지명으로 변경
+          # 태그 생성 규칙 (예: 커밋 해시, 브랜치명, latest)
+          tags: |
+            type=sha,prefix=sha-
+            type=ref,event=branch
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: . # Dockerfile이 있는 위치 (프로젝트 루트)
+          file: ./Dockerfile # Dockerfile 경로
+          push: true # 빌드 후 Docker Hub에 푸시
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha # GitHub Actions 캐시 사용 (빌드 속도 향상)
+          cache-to: type=gha,mode=max
+
+  deploy-to-ec2:
+    name: Deploy to EC2 instance
+    needs: build-and-push-docker-image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            sudo docker pull gwanhokim/cs-quiz:latest
+
+            sudo docker stop cs-quiz-container || true
+            sudo docker rm cs-quiz-container || true
+
+            # EC2 호스트에 SQLite DB 파일 및 Prisma 마이그레이션/시딩을 위한 디렉토리 준비
+            # 이 경로는 Docker 볼륨으로 마운트될 경로입니다.
+            EC2_DB_PATH="/opt/cs-quiz/data" # EC2 내 원하는 경로로 수정 가능
+            sudo mkdir -p ${EC2_DB_PATH}
+            sudo chown ec2-user:ec2-user ${EC2_DB_PATH} # 필요시 권한 조정
+
+            # 새 컨테이너 실행 시 DATABASE_URL 환경 변수 설정 및 볼륨 마운트
+            sudo docker run -d --name cs-quiz-container \
+              -p 3000:3000 \
+              -e DATABASE_URL="file:/app/data/prod.db" \
+              -v ${EC2_DB_PATH}:/app/data \
+              --restart always \
+              gwanhokim/cs-quiz:latest
+
+            # 애플리케이션 첫 배포 시 또는 DB 초기화 필요 시,
+            # 컨테이너 내부에서 마이그레이션 및 시딩 실행 (필요한 경우에만 수동 또는 자동화된 방식으로)
+            # 예시:
+            # sudo docker exec cs-quiz-container npx prisma migrate deploy # 프로덕션 환경에서는 deploy 사용
+            # sudo docker exec cs-quiz-container npx prisma db seed # 시딩 스크립트 실행
+
+            sudo docker image prune -af
