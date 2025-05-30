@@ -1,7 +1,7 @@
 # Dockerfile
 
 # 1. Build Stage
-FROM node:18-slim AS builder
+FROM node:18-bullseye-slim AS builder
 RUN apt-get update && \
     apt-get install -y openssl libssl1.1 libc6 && \
     rm -rf /var/lib/apt/lists/*
@@ -25,7 +25,10 @@ COPY . .
 RUN npm run build
 
 # 2. Production Stage
-FROM node:18-alpine AS runner
+FROM node:18-bullseye-slim AS builder
+RUN apt-get update && \
+    apt-get install -y openssl libssl1.1 libc6 && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
