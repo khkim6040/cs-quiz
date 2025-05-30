@@ -1,9 +1,10 @@
 # Dockerfile
 
 # 1. Build Stage
-FROM node:18-alpine AS builder
-# OpenSSL 1.1 설치 (Prisma 호환성)
-RUN apk add --no-cache openssl1.1-compat libc6-compat 
+FROM node:18-slim AS builder
+RUN apt-get update && \
+    apt-get install -y openssl libssl1.1 libc6 && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -25,8 +26,6 @@ RUN npm run build
 
 # 2. Production Stage
 FROM node:18-alpine AS runner
-# OpenSSL 1.1 설치 (Prisma 런타임 호환성)
-RUN apk add --no-cache openssl1.1-compat libc6-compat
 
 WORKDIR /app
 
