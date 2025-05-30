@@ -2,6 +2,9 @@
 
 generator client {
   provider = "prisma-client-js"
+  // Alpine Linux (musl libc)에서 실행될 것이므로 해당 바이너리 타겟 명시
+  // OpenSSL 버전에 따라 1.1.x 또는 3.0.x를 선택
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
