@@ -25,7 +25,7 @@ COPY . .
 RUN npm run build
 
 # 2. Production Stage
-FROM node:18-bullseye-slim AS builder
+FROM node:18-bullseye-slim AS runner
 RUN apt-get update && \
     apt-get install -y openssl libssl1.1 libc6 && \
     rm -rf /var/lib/apt/lists/*
