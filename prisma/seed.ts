@@ -1,10 +1,10 @@
 // prisma/seed.ts
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 // src/lib/quizData.ts 에 정의된 것과 유사한 초기 데이터
-const topicsSeedData = [
+const topicsSeedData: Prisma.TopicCreateInput[] = [
   {
     id: "computerSecurity",
     name_ko: "컴퓨터 보안",
@@ -15,7 +15,7 @@ const topicsSeedData = [
   { id: "dataStructure", name_ko: "자료구조", name_en: "Data Structure" },
 ];
 
-const questionsSeedData = [
+const questionsSeedData: Prisma.QuestionCreateInput[] = [
   {
     id: "cs001",
     topic: { connect: { id: "computerSecurity" } }, // 관계 연결

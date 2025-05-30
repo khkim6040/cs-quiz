@@ -4,13 +4,11 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
+# Prisma 스키마 복사 (generate에 필요)
+COPY prisma ./prisma
 RUN npm install
+RUN npx prisma generate # Prisma Client 생성 추가!
 COPY . .
-# SQLite DB 파일은 빌드 시점에 복사하지 않습니다. 런타임에 생성/마운트됩니다.
-# Prisma generate는 런타임에 SQLite DB 파일이 존재해야 할 수도 있으므로,
-# 또는 빌드 시점에 임시 DB 파일로 generate 할 수도 있습니다.
-# 여기서는 프로덕션 스테이지에서 generate 하는 것을 가정합니다.
-# Next.js 앱 빌드 (output: 'standalone' 사용 권장)
 RUN npm run build 
 
 # 2. Production Stage
