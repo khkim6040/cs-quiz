@@ -64,24 +64,26 @@ jobs:
             sudo docker stop cs-quiz-container || true
             sudo docker rm cs-quiz-container || true
 
-            # EC2 호스트에 SQLite DB 파일 및 Prisma 마이그레이션/시딩을 위한 디렉토리 준비
-            # 이 경로는 Docker 볼륨으로 마운트될 경로입니다.
-            EC2_DB_PATH="/opt/cs-quiz/data" # EC2 내 원하는 경로로 수정 가능
+            EC2_DB_PATH="/opt/cs-quiz/data" # EC2 호스트의 DB 저장 경로
             sudo mkdir -p ${EC2_DB_PATH}
-            sudo chown ec2-user:ec2-user ${EC2_DB_PATH} # 필요시 권한 조정
+            # 이 경로의 소유권을 Docker 컨테이너 내부의 nextjs 사용자가 접근 가능하도록 조정이 필요할 수 있습니다.
+            # (Docker가 볼륨을 생성할 때 기본적으로 root로 생성하므로, 컨테이너 내부에서 chown이 필요 없을 수도 있고,
+            #  또는 Dockerfile의 RUN mkdir -p /app/data && chown nextjs:nodejs /app/data 부분과 연계하여 확인)
 
-            # 새 컨테이너 실행 시 DATABASE_URL 환경 변수 설정 및 볼륨 마운트
             sudo docker run -d --name cs-quiz-container \
-              -p 3000:3000 \
-              -e DATABASE_URL="file:/app/data/prod.db" \
-              -v ${EC2_DB_PATH}:/app/data \
-              --restart always \
-              gwanhokim/cs-quiz:latest
+            -p 3000:3000 \
+            -e DATABASE_URL="file:/app/data/prod.db" \
+            -v ${EC2_DB_PATH}:/app/data \
+            --restart always \
+            gwanhokim/cs-quiz:latest
 
-            # 애플리케이션 첫 배포 시 또는 DB 초기화 필요 시,
-            # 컨테이너 내부에서 마이그레이션 및 시딩 실행 (필요한 경우에만 수동 또는 자동화된 방식으로)
-            # 예시:
-            # sudo docker exec cs-quiz-container npx prisma migrate deploy # 프로덕션 환경에서는 deploy 사용
-            # sudo docker exec cs-quiz-container npx prisma db seed # 시딩 스크립트 실행
+            # 새 컨테이너가 실행된 후, DB 초기화 및 시딩 실행
+            echo "Waiting for container to start..."
+            sleep 10 # 컨테이너가 완전히 시작될 때까지 잠시 대기 (더 나은 방법은 health check)
+
+            echo "Applying migrations..."
+            sudo docker exec cs-quiz-container npx prisma migrate deploy
+            echo "Seeding database..."
+            sudo docker exec cs-quiz-container npx prisma db seed
 
             sudo docker image prune -af
