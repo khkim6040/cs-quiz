@@ -48,6 +48,14 @@ export default function HomePage() {
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl">
+        <Link
+          href={`/daily`}
+          className="block p-6 bg-gradient-to-br from-yellow-500 to-orange-500 text-white rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out sm:col-span-2 lg:col-span-3"
+        >
+          <h2 className="text-3xl font-bold mb-2">📅 오늘의 퀴즈</h2>
+          <p className="text-yellow-100 text-sm">매일 새로운 문제 세트! 순위를 겨뤄보세요</p>
+        </Link>
+
         {topics.map((topic) => (
           <Link
             href={`/quiz/${topic.id}`}

@@ -6,9 +6,10 @@ import { QuestionData, AnswerOption as AnswerOptionType } from '@/types/quizType
 interface QuestionComponentProps {
   questionData: QuestionData;
   onNextQuestion: () => void;
+  onAnswer?: (isCorrect: boolean) => void;
 }
 
-const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onNextQuestion }) => {
+const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onNextQuestion, onAnswer }) => {
   const [showHint, setShowHint] = useState(false);
   const [userAnswer, setUserAnswer] = useState<AnswerOptionType | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -23,6 +24,9 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
     if (!isAnswered) {
       setUserAnswer(selectedOption);
       setIsAnswered(true);
+      if (onAnswer) {
+        onAnswer(selectedOption.isCorrect);
+      }
     }
   };
 
