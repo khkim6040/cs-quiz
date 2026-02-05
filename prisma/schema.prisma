@@ -45,3 +45,39 @@ model AnswerOption {
   isCorrect     Boolean
   question      Question @relation(fields: [questionId], references: [id])
 }
+
+// 사용자 모델
+model User {
+  id        String      @id @default(cuid())
+  username  String      @unique
+  createdAt DateTime    @default(now())
+  scores    UserScore[]
+}
+
+// 일일 문제 세트
+model DailyQuestionSet {
+  id          String      @id @default(cuid())
+  date        DateTime    @unique
+  questionIds String      // JSON array of question IDs
+  createdAt   DateTime    @default(now())
+  scores      UserScore[]
+}
+
+// 사용자 점수 기록
+model UserScore {
+  id             String           @id @default(cuid())
+  userId         String
+  dailySetId     String
+  topicId        String?          // null for random/daily quiz
+  score          Int
+  correctAnswers Int
+  totalQuestions Int
+  timeSpent      Int              // 초 단위
+  completedAt    DateTime         @default(now())
+
+  user           User             @relation(fields: [userId], references: [id])
+  dailySet       DailyQuestionSet @relation(fields: [dailySetId], references: [id])
+
+  @@unique([userId, dailySetId, topicId])
+  @@index([dailySetId, score])
+}
