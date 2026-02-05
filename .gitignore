@@ -27,3 +27,7 @@ Thumbs.db
 /src/generated/prisma
 
 .env
+
+# database
+*.db
+*.db-journal
