@@ -7,10 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "regenerate": "ts-node --compiler-options {\"module\":\"CommonJS\"} scripts/ai-regenerate/regenerate.ts"
+    "regenerate": "ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/regenerate.ts",
+    "import-questions": "ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/import.ts",
+    "import-questions:dry": "ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/import.ts --dry-run"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "ts-node -P scripts/tsconfig.scripts.json prisma/seed.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
