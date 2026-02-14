@@ -22,11 +22,11 @@ export async function POST(request: Request) {
     const timeBonus = Math.max(0, 1000 - timeSpent);
     const score = Math.round(accuracy * 1000 + timeBonus * 0.1);
 
-    // topicId가 null인 경우를 위한 처리
-    const topicIdValue = topicId || undefined;
+    // topicId가 null인 경우 명시적으로 null 사용
+    const topicIdValue = topicId ? topicId : null;
 
-    // 점수 저장 또는 업데이트
-    const userScore = await prisma.userScore.upsert({
+    // 기존 점수 찾기
+    const existingScore = await prisma.userScore.findUnique({
       where: {
         userId_dailySetId_topicId: {
           userId,
@@ -34,23 +34,37 @@ export async function POST(request: Request) {
           topicId: topicIdValue,
         },
       },
-      update: {
-        score,
-        correctAnswers,
-        totalQuestions,
-        timeSpent,
-        completedAt: new Date(),
-      },
-      create: {
-        userId,
-        dailySetId,
-        topicId: topicIdValue,
-        score,
-        correctAnswers,
-        totalQuestions,
-        timeSpent,
-      },
     });
+
+    let userScore;
+    if (existingScore) {
+      // 업데이트
+      userScore = await prisma.userScore.update({
+        where: {
+          id: existingScore.id,
+        },
+        data: {
+          score,
+          correctAnswers,
+          totalQuestions,
+          timeSpent,
+          completedAt: new Date(),
+        },
+      });
+    } else {
+      // 생성
+      userScore = await prisma.userScore.create({
+        data: {
+          userId,
+          dailySetId,
+          topicId: topicIdValue,
+          score,
+          correctAnswers,
+          totalQuestions,
+          timeSpent,
+        },
+      });
+    }
 
     // 사용자의 순위 조회
     const rank = await prisma.userScore.count({

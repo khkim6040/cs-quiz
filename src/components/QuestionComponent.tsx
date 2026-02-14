@@ -4,12 +4,67 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { QuestionData, AnswerOption as AnswerOptionType } from '@/types/quizTypes';
+import type { Components } from 'react-markdown';
 
 interface QuestionComponentProps {
   questionData: QuestionData;
   onNextQuestion: () => void;
   onAnswer?: (isCorrect: boolean) => void;
 }
+
+// 마크다운 컴포넌트 커스터마이징
+const markdownComponents: Components = {
+  code({ node, inline, className, children, ...props }: any) {
+    if (inline) {
+      return (
+        <code className="px-1.5 py-0.5 bg-gray-900/10 text-[0.9em] rounded font-mono" {...props}>
+          {children}
+        </code>
+      );
+    }
+    return (
+      <pre className="bg-slate-800 text-slate-100 rounded-lg p-4 overflow-x-auto my-3">
+        <code className={className} {...props}>
+          {children}
+        </code>
+      </pre>
+    );
+  },
+  p({ children }) {
+    return <p className="mb-3 last:mb-0">{children}</p>;
+  },
+  ul({ children }) {
+    return <ul className="list-disc list-inside mb-3 space-y-1">{children}</ul>;
+  },
+  ol({ children }) {
+    return <ol className="list-decimal list-inside mb-3 space-y-1">{children}</ol>;
+  },
+  li({ children }) {
+    return <li className="ml-2">{children}</li>;
+  },
+  strong({ children }) {
+    return <strong className="font-bold">{children}</strong>;
+  },
+  em({ children }) {
+    return <em className="italic">{children}</em>;
+  },
+  h1({ children }) {
+    return <h1 className="text-2xl font-bold mb-3 mt-4">{children}</h1>;
+  },
+  h2({ children }) {
+    return <h2 className="text-xl font-bold mb-2 mt-3">{children}</h2>;
+  },
+  h3({ children }) {
+    return <h3 className="text-lg font-bold mb-2 mt-3">{children}</h3>;
+  },
+  blockquote({ children }) {
+    return (
+      <blockquote className="border-l-4 border-gray-300 pl-4 italic my-3">
+        {children}
+      </blockquote>
+    );
+  },
+};
 
 const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onNextQuestion, onAnswer }) => {
   const [showHint, setShowHint] = useState(false);
@@ -121,11 +176,14 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
             {/* 해설 (아코디언 컨텐츠) */}
             {isAnswered && expandedOptions.has(opt.text) && (
               <div className="px-5 pb-4 pt-2 border-t border-gray-200">
-                <div className={`text-sm leading-relaxed prose prose-sm max-w-none ${opt.isCorrect ? 'text-green-800 prose-headings:text-green-800 prose-strong:text-green-900 prose-code:text-green-800' :
-                    opt.text === userAnswer?.text ? 'text-red-800 prose-headings:text-red-800 prose-strong:text-red-900 prose-code:text-red-800' :
-                      'text-gray-700 prose-headings:text-gray-800 prose-strong:text-gray-900 prose-code:text-gray-800'
+                <div className={`text-sm leading-relaxed ${opt.isCorrect ? 'text-green-800' :
+                  opt.text === userAnswer?.text ? 'text-red-800' :
+                    'text-gray-700'
                   }`}>
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={markdownComponents}
+                  >
                     {opt.rationale}
                   </ReactMarkdown>
                 </div>
@@ -146,8 +204,11 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
       )}
       {showHint && (
         <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md text-yellow-700">
-          <div className="prose prose-sm max-w-none prose-headings:text-yellow-800 prose-strong:text-yellow-800 prose-code:text-yellow-800">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          <div className="text-sm">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={markdownComponents}
+            >
               {questionData.hint}
             </ReactMarkdown>
           </div>

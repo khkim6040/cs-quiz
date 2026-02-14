@@ -12,7 +12,57 @@ module.exports = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: 'none',
+            color: 'inherit',
+            a: {
+              color: '#3b82f6',
+              '&:hover': {
+                color: '#2563eb',
+              },
+            },
+            code: {
+              color: 'inherit',
+              backgroundColor: 'rgba(0, 0, 0, 0.05)',
+              borderRadius: '0.25rem',
+              paddingLeft: '0.375rem',
+              paddingRight: '0.375rem',
+              paddingTop: '0.125rem',
+              paddingBottom: '0.125rem',
+              fontWeight: '500',
+              '&::before': {
+                content: '""',
+              },
+              '&::after': {
+                content: '""',
+              },
+            },
+            'code::before': {
+              content: '""',
+            },
+            'code::after': {
+              content: '""',
+            },
+            pre: {
+              backgroundColor: '#1e293b',
+              color: '#e2e8f0',
+              borderRadius: '0.5rem',
+              padding: '1rem',
+              overflowX: 'auto',
+            },
+            'pre code': {
+              backgroundColor: 'transparent',
+              color: 'inherit',
+              padding: '0',
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 };
