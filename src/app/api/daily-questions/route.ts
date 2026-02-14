@@ -11,13 +11,16 @@ export async function GET(request: Request) {
     today.setUTCHours(0, 0, 0, 0);
 
     // 오늘의 문제 세트 조회
-    let dailySet = await prisma.dailyQuestionSet.findUnique({
+    const dailySet = await prisma.dailyQuestionSet.findUnique({
       where: { date: today },
     });
 
-    // 오늘의 세트가 없으면 생성
+    // 오늘의 세트가 없으면 에러 반환
     if (!dailySet) {
-      dailySet = await generateDailySet(today);
+      return NextResponse.json(
+        { error: "Daily question set not found. Please run the daily generation batch script." },
+        { status: 404 }
+      );
     }
 
     const questionIds = dailySet.questionIds;
@@ -63,54 +66,4 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
-}
-
-// Fisher-Yates 셔플 알고리즘 (날짜 기반 시드)
-function seededShuffle<T>(array: T[], seed: number): T[] {
-  const arr = [...array];
-  let random = seed;
-  
-  // 간단한 선형 합동 생성기 (LCG)
-  const lcg = () => {
-    random = (random * 1103515245 + 12345) % 2147483648;
-    return random / 2147483648;
-  };
-
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(lcg() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  
-  return arr;
-}
-
-async function generateDailySet(date: Date) {
-  // 날짜를 시드로 사용 (YYYYMMDD 형식)
-  const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
-  
-  const topics = await prisma.topic.findMany();
-  const questionIds: string[] = [];
-
-  for (const topic of topics) {
-    const questions = await prisma.question.findMany({
-      where: { topicId: topic.id },
-      select: { id: true },
-    });
-
-    // 토픽별로 고유한 시드 사용
-    const topicSeed = seed + topic.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const shuffled = seededShuffle(questions, topicSeed);
-    const selected = shuffled.slice(0, Math.min(2, questions.length));
-    questionIds.push(...selected.map(q => q.id));
-  }
-
-  // 전체 문제를 다시 섞음
-  const finalShuffled = seededShuffle(questionIds, seed);
-
-  return await prisma.dailyQuestionSet.create({
-    data: {
-      date,
-      questionIds: finalShuffled,
-    },
-  });
 }
