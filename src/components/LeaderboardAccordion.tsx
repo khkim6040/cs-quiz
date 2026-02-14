@@ -160,45 +160,138 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
         </div>
       </button>
 
-      {/* 펼쳐진 상태 - 다음 단계에서 구현 */}
+      {/* 펼쳐진 상태 */}
       {isExpanded && (
         <div className="mt-2 bg-white rounded-xl shadow-lg border-2 border-orange-100 overflow-hidden">
           <div className="p-6">
+            {/* 로딩 상태 */}
             {loading && (
-              <div className="text-center py-8">
-                <p className="text-gray-600 animate-pulse">로딩 중...</p>
+              <div className="text-center py-12">
+                <div className="inline-block w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mb-3"></div>
+                <p className="text-gray-600 animate-pulse">순위를 불러오는 중...</p>
               </div>
             )}
+
+            {/* 에러 상태 */}
             {error && (
-              <div className="text-center py-8">
-                <p className="text-red-600">{error}</p>
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <p className="text-red-600 font-medium">{error}</p>
+                <button
+                  onClick={fetchLeaderboard}
+                  className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
+                >
+                  다시 시도
+                </button>
               </div>
             )}
+
+            {/* 빈 상태 */}
             {data && data.topUsers.length === 0 && (
-              <div className="text-center py-8">
-                <p className="text-gray-600">아직 참가자가 없습니다</p>
-                <p className="text-sm text-gray-500 mt-2">첫 번째 도전자가 되어보세요!</p>
+              <div className="text-center py-12">
+                <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg>
+                </div>
+                <p className="text-xl font-bold text-gray-800 mb-2">첫 번째 도전자가 되어보세요!</p>
+                <p className="text-sm text-gray-500">아직 아무도 오늘의 퀴즈를 완료하지 않았습니다</p>
               </div>
             )}
+
+            {/* 상위 10명 리스트 */}
             {data && data.topUsers.length > 0 && (
               <>
-                <div className="space-y-3">
-                  {data.topUsers.map((entry) => (
-                    <div
-                      key={entry.rank}
-                      className="flex items-center justify-between p-3 rounded-lg bg-gray-50"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="font-bold text-gray-600">#{entry.rank}</span>
-                        <span className="font-medium text-gray-800">{entry.username}</span>
+                <div className="space-y-2">
+                  {data.topUsers.map((entry) => {
+                    const isCurrentUser = user && data.currentUserRank && entry.rank === data.currentUserRank.rank;
+                    const isTopThree = entry.rank <= 3;
+
+                    return (
+                      <div
+                        key={entry.rank}
+                        className={`
+                          flex items-center justify-between p-4 rounded-xl transition-all duration-200
+                          ${isCurrentUser
+                            ? 'bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-400 shadow-md'
+                            : entry.rank === 1
+                              ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-300'
+                              : entry.rank === 2
+                                ? 'bg-gradient-to-r from-gray-50 to-slate-50 border-2 border-gray-300'
+                                : entry.rank === 3
+                                  ? 'bg-gradient-to-r from-orange-50 to-amber-50 border-2 border-orange-200'
+                                  : 'bg-gray-50 border border-gray-200 hover:bg-gray-100'
+                          }
+                        `}
+                      >
+                        <div className="flex items-center gap-3 flex-1">
+                          {/* 순위 + 메달 */}
+                          <div className="flex items-center gap-2 min-w-[60px]">
+                            {entry.rank === 1 && (
+                              <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-md">
+                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                </svg>
+                              </div>
+                            )}
+                            {entry.rank === 2 && (
+                              <div className="w-10 h-10 bg-gradient-to-br from-gray-300 to-gray-400 rounded-xl flex items-center justify-center shadow-md">
+                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                </svg>
+                              </div>
+                            )}
+                            {entry.rank === 3 && (
+                              <div className="w-10 h-10 bg-gradient-to-br from-orange-300 to-amber-400 rounded-xl flex items-center justify-center shadow-md">
+                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                </svg>
+                              </div>
+                            )}
+                            {entry.rank > 3 && (
+                              <span className={`font-bold text-lg ${isCurrentUser ? 'text-orange-700' : 'text-gray-600'}`}>
+                                #{entry.rank}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* 사용자명 */}
+                          <div className="flex items-center gap-2 flex-1">
+                            <span className={`font-semibold ${isCurrentUser ? 'text-orange-900' : isTopThree ? 'text-gray-800' : 'text-gray-700'}`}>
+                              {entry.username}
+                            </span>
+                            {isCurrentUser && (
+                              <span className="px-2 py-0.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs rounded-full font-bold shadow-sm">
+                                나
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* 점수 및 정답률 */}
+                        <div className="flex items-center gap-4">
+                          <div className="text-right">
+                            <div className={`font-bold text-lg ${isCurrentUser ? 'text-orange-600' : isTopThree ? 'text-gray-800' : 'text-gray-700'}`}>
+                              {entry.score}점
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {entry.correctAnswers}/{entry.totalQuestions}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <span className="font-bold text-gray-800">{entry.score}점</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
+
+                {/* 전체 순위 보기 버튼 */}
                 <button
                   onClick={handleViewAll}
-                  className="mt-6 w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-bold shadow-md hover:shadow-lg"
+                  className="mt-6 w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                 >
                   전체 순위 보기 →
                 </button>
