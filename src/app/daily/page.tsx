@@ -58,13 +58,6 @@ export default function DailyQuizPage() {
     fetchDailyQuestions();
   }, []);
 
-  // 로그인 후 자동으로 점수 제출
-  useEffect(() => {
-    if (user && pendingScoreSubmit && isCompleted) {
-      submitScore();
-    }
-  }, [user, pendingScoreSubmit, isCompleted, submitScore]);
-
   const handleAnswer = useCallback((isCorrect: boolean) => {
     if (isCorrect) {
       setCorrectAnswers(prev => prev + 1);
@@ -105,6 +98,13 @@ export default function DailyQuizPage() {
       setScoreSubmitError('네트워크 오류가 발생했습니다');
     }
   }, [startTime, dailySetId, correctAnswers, questions.length]);
+
+  // 로그인 후 자동으로 점수 제출
+  useEffect(() => {
+    if (user && pendingScoreSubmit && isCompleted) {
+      submitScore();
+    }
+  }, [user, pendingScoreSubmit, isCompleted, submitScore]);
 
   const handleNextQuestion = useCallback(async () => {
     if (currentIndex < questions.length - 1) {
