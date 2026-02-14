@@ -22,13 +22,16 @@ export async function POST(request: Request) {
     const timeBonus = Math.max(0, 1000 - timeSpent);
     const score = Math.round(accuracy * 1000 + timeBonus * 0.1);
 
+    // topicId가 null인 경우를 위한 처리
+    const topicIdValue = topicId || undefined;
+
     // 점수 저장 또는 업데이트
     const userScore = await prisma.userScore.upsert({
       where: {
         userId_dailySetId_topicId: {
           userId,
           dailySetId,
-          topicId: topicId || null,
+          topicId: topicIdValue,
         },
       },
       update: {
@@ -41,7 +44,7 @@ export async function POST(request: Request) {
       create: {
         userId,
         dailySetId,
-        topicId: topicId || null,
+        topicId: topicIdValue,
         score,
         correctAnswers,
         totalQuestions,
@@ -53,7 +56,7 @@ export async function POST(request: Request) {
     const rank = await prisma.userScore.count({
       where: {
         dailySetId,
-        topicId: topicId || null,
+        topicId: topicIdValue,
         score: {
           gt: score,
         },
