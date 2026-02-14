@@ -27,6 +27,19 @@ export async function POST(request: Request) {
       timeSpent,
     });
 
+    // User가 존재하는지 확인하고, 없으면 에러 반환
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      console.error("[Submit Score API] User not found:", userId);
+      return NextResponse.json(
+        { error: "User not found. Please login again." },
+        { status: 401 }
+      );
+    }
+
     // 점수 계산
     const accuracy = correctAnswers / totalQuestions;
     const timeBonus = Math.max(0, 1000 - timeSpent);

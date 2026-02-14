@@ -87,9 +87,18 @@ export default function DailyQuizPage() {
         setRank(result.rank);
         setPendingScoreSubmit(false);
       } else if (res.status === 401) {
-        // 로그인 필요
-        setScoreSubmitError('로그인이 필요합니다');
+        // 로그인 필요 또는 User not found
+        const errorData = await res.json();
+        const errorMsg = errorData.error || '로그인이 필요합니다';
+        setScoreSubmitError(errorMsg);
         setPendingScoreSubmit(true);
+        
+        // User not found인 경우 로그아웃 처리
+        if (errorMsg.includes('User not found')) {
+          // 로그아웃하여 사용자가 다시 로그인하도록 유도
+          await fetch('/api/auth/logout', { method: 'POST' });
+          setShowLoginModal(true);
+        }
       } else {
         setScoreSubmitError('점수 제출에 실패했습니다');
       }
