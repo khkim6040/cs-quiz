@@ -209,9 +209,9 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
       {!isAnswered && !showHint && (
         <button
           onClick={() => setShowHint(true)}
-          className="mt-5 text-sm text-blue-600 hover:text-blue-800 font-medium"
+          className="mt-5 px-4 py-2 text-sm bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors font-medium"
         >
-          힌트
+          💡 힌트 보기
         </button>
       )}
       {showHint && (
@@ -232,7 +232,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
         <div className="mt-6 flex justify-center">
           <button
             onClick={onNextQuestion}
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all font-semibold shadow-md hover:shadow-lg"
           >
             다음 문제
           </button>

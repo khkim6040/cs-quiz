@@ -185,7 +185,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                 <p className="text-red-600 font-medium">{error}</p>
                 <button
                   onClick={fetchLeaderboard}
-                  className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
+                  className="mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all font-semibold shadow-md hover:shadow-lg"
                 >
                   다시 시도
                 </button>
