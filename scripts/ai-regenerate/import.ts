@@ -88,6 +88,7 @@ const VALID_TOPIC_IDS = [
   "algorithm",
   "dataStructure",
   "computerNetworking",
+  "operatingSystem",
 ];
 
 function validateQuestion(
