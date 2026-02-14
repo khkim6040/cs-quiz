@@ -70,7 +70,7 @@ function LeaderboardContent() {
           <p className="text-xl text-red-600 mb-4">오류: {error}</p>
           <button
             onClick={() => router.push('/')}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-semibold"
           >
             홈으로 돌아가기
           </button>
@@ -87,12 +87,17 @@ function LeaderboardContent() {
     <main className="container mx-auto px-4 py-8 min-h-screen">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-500">
-            🏆 리더보드
+          <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
+            <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-2xl flex items-center justify-center shadow-lg">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+              </svg>
+            </div>
+            리더보드
           </h1>
           <button
             onClick={() => router.push('/')}
-            className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors font-medium"
           >
             홈으로
           </button>
@@ -104,16 +109,16 @@ function LeaderboardContent() {
             <p className="text-gray-500 mt-2">첫 번째 참가자가 되어보세요!</p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-orange-100">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
+                <thead className="bg-gradient-to-r from-orange-500 to-amber-500 text-white">
                   <tr>
-                    <th className="px-6 py-4 text-left">순위</th>
-                    <th className="px-6 py-4 text-left">사용자</th>
-                    <th className="px-6 py-4 text-center">점수</th>
-                    <th className="px-6 py-4 text-center">정답률</th>
-                    <th className="px-6 py-4 text-center">소요 시간</th>
+                    <th className="px-6 py-4 text-left font-bold">순위</th>
+                    <th className="px-6 py-4 text-left font-bold">사용자</th>
+                    <th className="px-6 py-4 text-center font-bold">점수</th>
+                    <th className="px-6 py-4 text-center font-bold">정답률</th>
+                    <th className="px-6 py-4 text-center font-bold">소요 시간</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -125,51 +130,69 @@ function LeaderboardContent() {
                         className={`
                           transition-colors
                           ${isCurrent 
-                            ? 'bg-blue-50 border-l-4 border-blue-500 hover:bg-blue-100' 
+                            ? 'bg-orange-50 border-l-4 border-orange-500 hover:bg-orange-100' 
                             : entry.rank === 1 
-                            ? 'bg-yellow-50 hover:bg-yellow-100' 
+                            ? 'bg-amber-50 hover:bg-amber-100' 
                             : entry.rank === 2 
                             ? 'bg-gray-50 hover:bg-gray-100' 
                             : entry.rank === 3 
-                            ? 'bg-orange-50 hover:bg-orange-100' 
+                            ? 'bg-orange-50/50 hover:bg-orange-100/50' 
                             : 'hover:bg-gray-50'
                           }
                         `}
                       >
                         <td className="px-6 py-4">
-                          <div className="flex items-center">
-                            {entry.rank === 1 && <span className="text-2xl mr-2">🥇</span>}
-                            {entry.rank === 2 && <span className="text-2xl mr-2">🥈</span>}
-                            {entry.rank === 3 && <span className="text-2xl mr-2">🥉</span>}
-                            <span className={`font-semibold text-lg ${isCurrent ? 'text-blue-700' : ''}`}>
+                          <div className="flex items-center gap-2">
+                            {entry.rank === 1 && (
+                              <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-lg flex items-center justify-center shadow-md">
+                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                                </svg>
+                              </div>
+                            )}
+                            {entry.rank === 2 && (
+                              <div className="w-8 h-8 bg-gradient-to-br from-gray-300 to-gray-400 rounded-lg flex items-center justify-center shadow-md">
+                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                                </svg>
+                              </div>
+                            )}
+                            {entry.rank === 3 && (
+                              <div className="w-8 h-8 bg-gradient-to-br from-orange-300 to-amber-400 rounded-lg flex items-center justify-center shadow-md">
+                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                                </svg>
+                              </div>
+                            )}
+                            <span className={`font-bold text-lg ${isCurrent ? 'text-orange-700' : entry.rank <= 3 ? 'text-gray-800' : 'text-gray-600'}`}>
                               #{entry.rank}
                             </span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
-                            <span className={`font-medium ${isCurrent ? 'text-blue-900 font-bold' : 'text-gray-900'}`}>
+                            <span className={`font-medium ${isCurrent ? 'text-orange-900 font-bold' : 'text-gray-900'}`}>
                               {entry.username}
                             </span>
                             {isCurrent && (
-                              <span className="px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full font-semibold">
+                              <span className="px-2 py-0.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs rounded-full font-bold shadow-sm">
                                 나
                               </span>
                             )}
                           </div>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <span className={`font-bold text-lg ${isCurrent ? 'text-blue-600' : 'text-purple-600'}`}>
+                          <span className={`font-bold text-lg ${isCurrent ? 'text-orange-600' : 'text-gray-800'}`}>
                             {entry.score}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <span className={isCurrent ? 'text-blue-900 font-semibold' : 'text-gray-700'}>
+                          <span className={isCurrent ? 'text-orange-900 font-semibold' : 'text-gray-700'}>
                             {entry.correctAnswers} / {entry.totalQuestions}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <span className={isCurrent ? 'text-blue-900 font-semibold' : 'text-gray-600'}>
+                          <span className={isCurrent ? 'text-orange-900 font-semibold' : 'text-gray-600'}>
                             {Math.floor(entry.timeSpent / 60)}분 {entry.timeSpent % 60}초
                           </span>
                         </td>
@@ -184,11 +207,11 @@ function LeaderboardContent() {
 
         {/* 내 순위 요약 (100위 밖일 때) */}
         {user && currentUserEntry && currentUserEntry.rank > 100 && (
-          <div className="mt-6 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg">
-            <p className="text-sm text-blue-700 mb-2 font-semibold">내 순위</p>
+          <div className="mt-6 p-5 bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-300 rounded-xl">
+            <p className="text-sm text-orange-700 mb-2 font-bold">내 순위</p>
             <div className="flex justify-between items-center">
-              <span className="text-blue-900 font-bold">#{currentUserEntry.rank}</span>
-              <span className="text-blue-800">{currentUserEntry.score}점</span>
+              <span className="text-orange-900 font-bold text-lg">#{currentUserEntry.rank}</span>
+              <span className="text-orange-800 font-semibold">{currentUserEntry.score}점</span>
             </div>
           </div>
         )}
@@ -196,7 +219,7 @@ function LeaderboardContent() {
         <div className="mt-8 text-center">
           <button
             onClick={() => router.push('/daily')}
-            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all font-semibold shadow-lg"
+            className="px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
             오늘의 퀴즈 도전하기
           </button>
