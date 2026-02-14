@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Topic } from '@/types/quizTypes';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function HomePage() {
+  const { user, isLoading: authLoading } = useAuth();
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,9 +43,18 @@ export default function HomePage() {
   return (
     <main className="container mx-auto px-4 py-8 min-h-screen flex flex-col items-center justify-center">
       <header className="mb-12 text-center">
-        <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
-          CS 지식 퀴즈 💻
-        </h1>
+        {!authLoading && user ? (
+          <div className="mb-4">
+            <p className="text-xl text-gray-600 mb-2">환영합니다,</p>
+            <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+              {user.username}님! 👋
+            </h1>
+          </div>
+        ) : (
+          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+            CS 지식 퀴즈 💻
+          </h1>
+        )}
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl">
@@ -70,9 +81,6 @@ export default function HomePage() {
           <h2 className="text-2xl font-bold">🎲 랜덤 퀴즈</h2>
         </Link>
       </div>
-      <footer className="mt-16 text-center text-gray-500 text-sm">
-        <p>&copy; {new Date().getFullYear()} CS Quiz</p>
-      </footer>
     </main>
   );
 } 
