@@ -162,11 +162,13 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
 
       {/* 펼쳐진 상태 */}
       {isExpanded && (
-        <div className="mt-2 bg-white rounded-xl shadow-lg border-2 border-orange-100 overflow-hidden">
+        <div 
+          className="mt-2 bg-white rounded-xl shadow-lg border-2 border-orange-100 overflow-hidden animate-in slide-in-from-top-2 fade-in duration-300"
+        >
           <div className="p-6">
             {/* 로딩 상태 */}
             {loading && (
-              <div className="text-center py-12">
+              <div className="text-center py-12 animate-in fade-in duration-500">
                 <div className="inline-block w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mb-3"></div>
                 <p className="text-gray-600 animate-pulse">순위를 불러오는 중...</p>
               </div>
@@ -207,15 +209,19 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
             {data && data.topUsers.length > 0 && (
               <>
                 <div className="space-y-2">
-                  {data.topUsers.map((entry) => {
+                  {data.topUsers.map((entry, index) => {
                     const isCurrentUser = user && data.currentUserRank && entry.rank === data.currentUserRank.rank;
                     const isTopThree = entry.rank <= 3;
 
                     return (
                       <div
                         key={entry.rank}
+                        style={{ 
+                          animationDelay: `${index * 50}ms`,
+                        }}
                         className={`
                           flex items-center justify-between p-4 rounded-xl transition-all duration-200
+                          animate-in slide-in-from-left-4 fade-in
                           ${isCurrentUser
                             ? 'bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-400 shadow-md'
                             : entry.rank === 1
@@ -291,7 +297,8 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                 {/* 전체 순위 보기 버튼 */}
                 <button
                   onClick={handleViewAll}
-                  className="mt-6 w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                  className="mt-6 w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                  style={{ animationDelay: '400ms' }}
                 >
                   전체 순위 보기 →
                 </button>
