@@ -28,6 +28,9 @@ Thumbs.db
 
 .env
 
+# Claude
+Context_Notes.md
+
 # database
 *.db
 *.db-journal
