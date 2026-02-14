@@ -8,7 +8,7 @@ export async function GET(request: Request) {
     const lang = searchParams.get("lang") || "ko";
 
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setUTCHours(0, 0, 0, 0);
 
     // 오늘의 문제 세트 조회
     let dailySet = await prisma.dailyQuestionSet.findUnique({
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
       dailySet = await generateDailySet(today);
     }
 
-    const questionIds = JSON.parse(dailySet.questionIds) as string[];
+    const questionIds = dailySet.questionIds;
 
     // 문제들 조회
     const questions = await prisma.question.findMany({
@@ -85,7 +85,7 @@ async function generateDailySet(date: Date) {
   return await prisma.dailyQuestionSet.create({
     data: {
       date,
-      questionIds: JSON.stringify(finalShuffled),
+      questionIds: finalShuffled,
     },
   });
 }

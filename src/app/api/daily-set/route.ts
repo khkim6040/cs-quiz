@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 export async function GET() {
   try {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setUTCHours(0, 0, 0, 0);
 
     // 오늘의 문제 세트 조회
     let dailySet = await prisma.dailyQuestionSet.findUnique({
@@ -52,7 +52,7 @@ async function generateDailySet(date: Date) {
   const dailySet = await prisma.dailyQuestionSet.create({
     data: {
       date,
-      questionIds: JSON.stringify(finalShuffled),
+      questionIds: finalShuffled,
     },
   });
 
