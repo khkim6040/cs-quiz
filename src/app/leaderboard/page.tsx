@@ -3,16 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-
-interface LeaderboardEntry {
-  rank: number;
-  username: string;
-  score: number;
-  correctAnswers: number;
-  totalQuestions: number;
-  timeSpent: number;
-  completedAt: string;
-}
+import { LeaderboardEntry, LeaderboardResponse } from '@/types/quizTypes';
 
 function LeaderboardContent() {
   const router = useRouter();
@@ -43,8 +34,8 @@ function LeaderboardContent() {
         if (!res.ok) {
           throw new Error('리더보드를 불러오는 데 실패했습니다.');
         }
-        const data = await res.json();
-        setLeaderboard(data);
+        const data: LeaderboardResponse = await res.json();
+        setLeaderboard(data.topUsers);
       } catch (err: any) {
         console.error(err);
         setError(err.message);
@@ -193,7 +184,7 @@ function LeaderboardContent() {
                         </td>
                         <td className="px-6 py-4 text-center">
                           <span className={isCurrent ? 'text-orange-900 font-semibold' : 'text-gray-600'}>
-                            {Math.floor(entry.timeSpent / 60)}분 {entry.timeSpent % 60}초
+                            {entry.timeSpent ? `${Math.floor(entry.timeSpent / 60)}분 ${entry.timeSpent % 60}초` : '-'}
                           </span>
                         </td>
                       </tr>
