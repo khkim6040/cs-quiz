@@ -1,0 +1,1090 @@
+[
+    {
+      "question_ko": "관계 대수(Relational Algebra)의 자연 조인(Natural Join, ⋈)과 세타 조인(Theta Join, ⋈θ)의 주요 차이점은 무엇인가?",
+      "question_en": "What is the main difference between Natural Join (⋈) and Theta Join (⋈θ) in Relational Algebra?",
+      "hint_ko": "하나는 조건을 명시해야 하고, 다른 하나는 이름이 같은 속성을 자동으로 찾습니다.",
+      "hint_en": "One requires an explicit condition, while the other automatically matches attributes with the same name.",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Relational Algebra Operations",
+      "questionType": "comparative",
+      "answerOptions": [
+        {
+          "text_ko": "자연 조인은 이름이 같은 속성에 대해 등가 조건(=)을 자동으로 적용하고 중복 속성을 제거하지만, 세타 조인은 임의의 비교 조건을 허용한다.",
+          "text_en": "Natural Join automatically applies equality conditions (=) on attributes with the same name and removes duplicate attributes, whereas Theta Join allows arbitrary comparison conditions.",
+          "rationale_ko": "자연 조인은 동일한 이름을 가진 모든 속성에 대해 등가 결합을 수행하고 결과에서 중복된 컬럼을 하나만 남깁니다. 세타 조인은 사용자가 정의한 조건(>, <, != 등)을 사용합니다.",
+          "rationale_en": "Natural Join performs an equality join on all attributes with the same name and eliminates duplicate columns in the result. Theta Join uses user-defined conditions (>, <, !=, etc.).",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "자연 조인은 항상 카티전 곱(Cartesian Product)과 동일한 결과를 내지만, 세타 조인은 튜플 수를 줄인다.",
+          "text_en": "Natural Join always produces the same result as Cartesian Product, whereas Theta Join reduces the number of tuples.",
+          "rationale_ko": "공통 속성이 없을 때만 자연 조인이 카티전 곱과 같아집니다. 공통 속성이 있으면 조인 조건에 의해 튜플이 필터링됩니다.",
+          "rationale_en": "Natural Join acts like a Cartesian Product only when there are no common attributes. If common attributes exist, tuples are filtered by the join condition.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "세타 조인은 NULL 값을 매칭시키지만, 자연 조인은 NULL을 제외한다.",
+          "text_en": "Theta Join matches NULL values, whereas Natural Join excludes NULLs.",
+          "rationale_ko": "일반적인 조인 연산(자연, 세타 모두)에서 NULL 값은 비교 연산 시 false/unknown으로 평가되어 매칭되지 않습니다.",
+          "rationale_en": "In standard join operations (both Natural and Theta), NULL values evaluate to false/unknown in comparisons and do not match.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "자연 조인은 외부 조인(Outer Join)의 일종이고, 세타 조인은 내부 조인(Inner Join)의 일종이다.",
+          "text_en": "Natural Join is a type of Outer Join, and Theta Join is a type of Inner Join.",
+          "rationale_ko": "자연 조인과 세타 조인은 조인 조건의 명시 방식에 따른 분류이며, 둘 다 기본적으로 내부 조인 방식으로 동작할 수 있습니다.",
+          "rationale_en": "Natural and Theta Joins are classifications based on how conditions are specified; both can fundamentally operate as inner joins.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "LEFT JOIN 쿼리의 WHERE 절에 오른쪽 테이블(B)의 속성에 대한 조건(예: `B.id IS NOT NULL`)을 추가하면, 쿼리는 사실상 INNER JOIN과 동일하게 동작한다.",
+      "question_en": "If you add a condition on the right table (B)'s attribute (e.g., `B.id IS NOT NULL`) to the WHERE clause of a LEFT JOIN query, the query effectively behaves like an INNER JOIN.",
+      "hint_ko": "LEFT JOIN은 매칭되지 않는 행을 NULL로 채워서 반환하는데, WHERE 절이 NULL을 어떻게 처리하는지 생각해보세요.",
+      "hint_en": "LEFT JOIN returns unmatched rows filled with NULLs. Consider how the WHERE clause treats those NULLs.",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "SQL Joins (INNER, LEFT, RIGHT, FULL, CROSS)",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "True",
+          "text_en": "True",
+          "rationale_ko": "LEFT JOIN은 매칭되지 않는 행에 대해 오른쪽 테이블 컬럼을 NULL로 채웁니다. WHERE 절에서 이 컬럼에 대해 NULL이 아닌 값을 요구하면, 매칭되지 않은 행들이 모두 필터링되어 INNER JOIN 결과와 같아집니다.",
+          "rationale_en": "LEFT JOIN fills right-table columns with NULL for unmatched rows. If the WHERE clause requires non-NULL values for these columns, all unmatched rows are filtered out, yielding the same result as an INNER JOIN.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "False",
+          "text_en": "False",
+          "rationale_ko": "조건이 WHERE 절에 있으면 조인 후 결과에 필터를 적용하므로 NULL로 채워진 행이 제거됩니다. 이를 방지하려면 조건을 ON 절에 넣어야 합니다.",
+          "rationale_en": "If the condition is in the WHERE clause, it filters the post-join result, removing NULL-filled rows. To prevent this, the condition must be placed in the ON clause.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "서브쿼리 결과에 NULL이 포함되어 있을 때, `NOT IN` 연산자가 예상과 다르게(아무 행도 반환하지 않음) 동작하는 이유는?",
+      "question_en": "Why does the `NOT IN` operator behave unexpectedly (returning no rows) when the subquery result contains NULL?",
+      "hint_ko": "SQL의 3값 논리(True, False, Unknown)에서 'Unknown'과의 AND 연산 결과를 생각해보세요.",
+      "hint_en": "Consider the result of an AND operation with 'Unknown' in SQL's 3-valued logic (True, False, Unknown).",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "SQL Subqueries & Correlated Subqueries",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "`NOT IN`은 `!= ALL`과 동치인데, NULL과의 비교 연산은 `UNKNOWN`이 되고, 하나라도 `UNKNOWN`이면 전체 AND 연산 결과가 `UNKNOWN`이 되어 False 취급되기 때문이다.",
+          "text_en": "`NOT IN` is equivalent to `!= ALL`. Comparisons with NULL yield `UNKNOWN`, and if even one comparison is `UNKNOWN`, the entire AND operation becomes `UNKNOWN`, which is treated as False.",
+          "rationale_ko": "`x NOT IN (1, NULL)`은 `x!=1 AND x!=NULL`로 변환됩니다. `x!=NULL`은 Unknown이고, `True AND Unknown`은 Unknown입니다. WHERE 절은 True인 행만 선택하므로 결과가 공집합이 됩니다.",
+          "rationale_en": "`x NOT IN (1, NULL)` translates to `x!=1 AND x!=NULL`. `x!=NULL` is Unknown, and `True AND Unknown` is Unknown. Since the WHERE clause selects only True rows, the result is an empty set.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "`NOT IN` 연산자는 서브쿼리에 NULL이 있으면 문법 에러를 발생시킨다.",
+          "text_en": "The `NOT IN` operator raises a syntax error if the subquery contains NULL.",
+          "rationale_ko": "에러가 발생하지 않고 논리적으로 False(또는 Unknown) 처리되어 결과가 나오지 않을 뿐입니다.",
+          "rationale_en": "It does not raise an error; it simply evaluates logically to False (or Unknown) and returns no results.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "`NOT IN`은 `NOT EXISTS`와 내부적으로 동일하게 동작하므로 NULL을 무시한다.",
+          "text_en": "`NOT IN` works internally the same as `NOT EXISTS`, so it ignores NULLs.",
+          "rationale_ko": "`NOT EXISTS`는 NULL 값의 존재 여부만 체크하므로 문제없지만, `NOT IN`은 값의 비교를 수행하므로 동작이 다릅니다.",
+          "rationale_en": "`NOT EXISTS` works fine as it checks for existence, but `NOT IN` performs value comparison, leading to different behavior.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "NULL은 무한대를 의미하므로 어떤 값과도 같지 않아서 모든 행이 반환된다.",
+          "text_en": "NULL implies infinity, so it is not equal to any value, causing all rows to be returned.",
+          "rationale_ko": "SQL에서 NULL은 '알 수 없음'을 의미하며, 비교 연산의 결과도 '알 수 없음'이 됩니다.",
+          "rationale_en": "In SQL, NULL means 'unknown', and the result of a comparison is also 'unknown'.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "`GROUP BY` 절을 사용하여 데이터를 그룹화한 후, 집계 함수(예: `SUM`, `COUNT`)의 결과에 조건을 걸어 필터링하려면 어떤 절을 사용해야 하는가?",
+      "question_en": "Which clause should be used to filter data based on the results of aggregate functions (e.g., `SUM`, `COUNT`) after grouping data using `GROUP BY`?",
+      "hint_ko": "`WHERE` 절은 그룹화하기 전에 행을 필터링합니다.",
+      "hint_en": "The `WHERE` clause filters rows before grouping.",
+      "topic": "database",
+      "difficulty": "easy",
+      "concept": "Aggregation, GROUP BY, HAVING",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "HAVING",
+          "text_en": "HAVING",
+          "rationale_ko": "`WHERE` 절은 개별 행을 필터링하는 반면, `HAVING` 절은 `GROUP BY`로 생성된 그룹에 대해 집계 함수 결과를 조건으로 필터링합니다.",
+          "rationale_en": "While the `WHERE` clause filters individual rows, the `HAVING` clause filters groups created by `GROUP BY` based on aggregate function results.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "WHERE",
+          "text_en": "WHERE",
+          "rationale_ko": "`WHERE` 절은 집계가 수행되기 전에 적용되므로 집계 함수(예: `SUM(price) > 100`)를 사용할 수 없습니다.",
+          "rationale_en": "The `WHERE` clause is applied before aggregation, so aggregate functions (e.g., `SUM(price) > 100`) cannot be used.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "ORDER BY",
+          "text_en": "ORDER BY",
+          "rationale_ko": "`ORDER BY`는 결과를 정렬하는 데 사용됩니다.",
+          "rationale_en": "`ORDER BY` is used for sorting results.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "PARTITION BY",
+          "text_en": "PARTITION BY",
+          "rationale_ko": "`PARTITION BY`는 윈도우 함수에서 그룹을 정의할 때 사용됩니다.",
+          "rationale_en": "`PARTITION BY` is used to define groups within window functions.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "윈도우 함수 `RANK()`와 `DENSE_RANK()`의 주요 차이점은 무엇인가?",
+      "question_en": "What is the main difference between the window functions `RANK()` and `DENSE_RANK()`?",
+      "hint_ko": "동점자가 여러 명일 때 다음 등수가 어떻게 되는지 생각해보세요 (예: 1등이 2명이면 다음은 2등인가 3등인가?).",
+      "hint_en": "Consider what happens to the next rank when there are ties (e.g., if two people are 1st, is the next one 2nd or 3rd?).",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Window Functions (OVER, PARTITION BY, ROW_NUMBER)",
+      "questionType": "comparative",
+      "answerOptions": [
+        {
+          "text_ko": "`RANK()`는 동점 발생 시 순위를 건너뛰지만(1, 1, 3), `DENSE_RANK()`는 순위를 건너뛰지 않는다(1, 1, 2).",
+          "text_en": "`RANK()` skips ranks when ties occur (1, 1, 3), whereas `DENSE_RANK()` does not skip ranks (1, 1, 2).",
+          "rationale_ko": "`RANK()`는 공동 순위 수만큼 다음 순위를 밀어내지만, `DENSE_RANK()`는 순위를 촘촘하게(dense) 부여하여 빈 순위가 없게 합니다.",
+          "rationale_en": "`RANK()` pushes the next rank by the number of ties, while `DENSE_RANK()` assigns ranks densely without gaps.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "`RANK()`는 동점자에게 임의의 다른 순위를 부여하지만, `DENSE_RANK()`는 같은 순위를 부여한다.",
+          "text_en": "`RANK()` assigns arbitrary different ranks to ties, whereas `DENSE_RANK()` assigns the same rank.",
+          "rationale_ko": "임의의 다른 순위를 부여하는 함수는 `ROW_NUMBER()`입니다. `RANK`와 `DENSE_RANK`는 동점자에게 같은 순위를 줍니다.",
+          "rationale_en": "The function that assigns arbitrary different ranks is `ROW_NUMBER()`. Both `RANK` and `DENSE_RANK` assign the same rank to ties.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "`RANK()`는 파티션 전체에 대해 작동하고, `DENSE_RANK()`는 현재 행까지만 계산한다.",
+          "text_en": "`RANK()` works on the entire partition, while `DENSE_RANK()` calculates only up to the current row.",
+          "rationale_ko": "두 함수 모두 `ORDER BY` 절에 따라 정렬된 전체 파티션 내에서 순위를 계산합니다.",
+          "rationale_en": "Both functions calculate rank within the entire partition sorted by the `ORDER BY` clause.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "`DENSE_RANK()`는 `RANK()`보다 성능이 훨씬 느리다.",
+          "text_en": "`DENSE_RANK()` is significantly slower than `RANK()`.",
+          "rationale_ko": "두 함수의 계산 복잡도는 유사하며 성능 차이는 미미합니다.",
+          "rationale_en": "The computational complexity of both functions is similar, and the performance difference is negligible.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "릴레이션 R의 함수적 종속성(FD) 집합이 주어졌을 때, '후보키(Candidate Key)'를 찾기 위한 가장 효율적인 첫 단계는 무엇인가?",
+      "question_en": "Given a set of Functional Dependencies (FDs) for relation R, what is the most efficient first step to find a 'Candidate Key'?",
+      "hint_ko": "어떤 FD의 우변(결정되는 속성)에도 나타나지 않는 속성은 반드시 키에 포함되어야 합니다.",
+      "hint_en": "Attributes that do not appear on the right-hand side (dependent side) of any FD must be part of the key.",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Functional Dependencies & Closure",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "어떤 FD의 우변에도 나타나지 않는 속성들의 집합을 찾는다.",
+          "text_en": "Identify the set of attributes that do not appear on the right-hand side of any FD.",
+          "rationale_ko": "FD의 우변에 없는 속성은 다른 속성으로부터 유도될 수 없으므로, 반드시 후보키의 일부여야 합니다. 이 속성들의 클로저(Closure)를 구해보면 후보키인지 바로 알 수 있습니다.",
+          "rationale_en": "Attributes not on the right side of any FD cannot be derived from others, so they must be part of the candidate key. Calculating the closure of these attributes is a quick way to check.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "모든 가능한 속성 조합의 클로저를 계산해 본다.",
+          "text_en": "Calculate the closure for all possible combinations of attributes.",
+          "rationale_ko": "이는 지수 시간(Exponential Time)이 걸리는 비효율적인 방법입니다.",
+          "rationale_en": "This is an inefficient method taking exponential time.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "가장 많은 속성을 결정하는 속성을 키로 선택한다.",
+          "text_en": "Select the attribute that determines the most other attributes as the key.",
+          "rationale_ko": "가장 많이 결정한다고 해서 모든 속성을 유일하게 식별한다는 보장은 없습니다.",
+          "rationale_en": "Determining the most attributes doesn't guarantee unique identification of all attributes.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "기본키(Primary Key)가 될 것 같은 속성을 직관적으로 선택한다.",
+          "text_en": "Intuitively select an attribute that seems like a Primary Key.",
+          "rationale_ko": "직관은 정확한 알고리즘이 아니며, 복합 키 등을 놓칠 수 있습니다.",
+          "rationale_en": "Intuition is not a rigorous algorithm and may miss composite keys.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "데이터베이스 정규화에서 BCNF(Boyce-Codd Normal Form) 분해는 항상 종속성을 보존(Dependency Preserving)한다.",
+      "question_en": "In database normalization, BCNF (Boyce-Codd Normal Form) decomposition always preserves dependencies.",
+      "hint_ko": "BCNF가 3NF보다 더 엄격한 기준을 적용할 때, 어떤 FD가 분해된 테이블 간에 쪼개질 수 있는지 생각해보세요.",
+      "hint_en": "Consider that BCNF is stricter than 3NF, and think about whether some FDs might be split across decomposed tables.",
+      "topic": "database",
+      "difficulty": "hard",
+      "concept": "Normal Forms (1NF, 2NF, 3NF, BCNF)",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "False",
+          "text_en": "False",
+          "rationale_ko": "BCNF는 무손실 조인(Lossless Join)은 보장하지만, 종속성 보존은 보장하지 않습니다. BCNF를 만족시키려다 보면 특정 함수적 종속성을 검사하기 위해 조인이 필요해지는 경우가 발생할 수 있습니다. 반면 3NF는 항상 종속성을 보존할 수 있습니다.",
+          "rationale_en": "BCNF guarantees Lossless Join but not Dependency Preservation. Satisfying BCNF might split FDs such that enforcing them requires joins. 3NF, however, can always preserve dependencies.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "True",
+          "text_en": "True",
+          "rationale_ko": "BCNF 분해의 주요 단점 중 하나는 종속성 보존이 항상 가능하지 않다는 것입니다. 이는 3NF와의 결정적인 차이입니다.",
+          "rationale_en": "A major drawback of BCNF decomposition is that dependency preservation is not always possible. This is a critical difference from 3NF.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "ER 다이어그램의 다대다(M:N) 관계를 관계형 데이터베이스 스키마로 변환할 때 올바른 방법은?",
+      "question_en": "What is the correct way to map a Many-to-Many (M:N) relationship in an ER diagram to a Relational Database schema?",
+      "hint_ko": "두 테이블 중 한 쪽에만 외래키를 넣어서는 여러 개의 값을 표현할 수 없습니다.",
+      "hint_en": "Putting a foreign key in only one of the tables cannot represent multiple values.",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "ER Model & ER-to-Relational Mapping",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "두 엔티티의 기본키를 포함하는 별도의 교차 테이블(Junction Table)을 생성한다.",
+          "text_en": "Create a separate Junction Table containing the Primary Keys of both entities.",
+          "rationale_ko": "M:N 관계는 한 쪽 테이블의 컬럼만으로는 표현할 수 없으므로, 두 테이블의 PK를 FK로 가져와서 복합키로 사용하는 별도의 테이블(연결 테이블)이 반드시 필요합니다.",
+          "rationale_en": "M:N relationships cannot be represented by columns in just one table, so a separate table (link table) using PKs from both tables as FKs (forming a composite key) is mandatory.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "한 쪽 테이블에 다른 쪽 테이블의 기본키를 외래키로 추가한다.",
+          "text_en": "Add the Primary Key of one table as a Foreign Key to the other table.",
+          "rationale_ko": "이는 1:N 관계를 매핑하는 방법입니다.",
+          "rationale_en": "This is the method for mapping 1:N relationships.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "두 테이블을 하나로 병합한다.",
+          "text_en": "Merge the two tables into one.",
+          "rationale_ko": "데이터 중복이 극심하게 발생하며 정규화 원칙에 위배됩니다. 1:1 관계에서나 고려할 수 있는 방법입니다.",
+          "rationale_en": "This causes extreme data redundancy and violates normalization principles. It's only considered for 1:1 relationships.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "배열 타입의 컬럼을 사용하여 여러 개의 키를 저장한다.",
+          "text_en": "Use an array-type column to store multiple keys.",
+          "rationale_ko": "1NF(원자성)를 위반하는 설계이며, 조인 연산이 매우 비효율적이 됩니다.",
+          "rationale_en": "This violates 1NF (Atomicity) and makes join operations very inefficient.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "다음 중 반정규화(Denormalization)를 고려하기에 가장 적합한 상황은?",
+      "question_en": "Which of the following scenarios is most suitable for considering Denormalization?",
+      "hint_ko": "데이터가 자주 바뀌지 않고, 조회 속도가 매우 중요할 때를 생각해보세요.",
+      "hint_en": "Consider when data doesn't change often and read speed is critical.",
+      "topic": "database",
+      "difficulty": "easy",
+      "concept": "Denormalization & Design Trade-offs",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "읽기 작업이 쓰기 작업보다 압도적으로 많고, 잦은 조인으로 인한 성능 저하를 해결해야 할 때",
+          "text_en": "When read operations overwhelmingly outnumber write operations, and performance degradation due to frequent joins needs to be addressed.",
+          "rationale_ko": "반정규화는 데이터 중복을 허용하여 조인 비용을 줄이고 읽기 속도를 높이는 기법입니다. 쓰기가 많으면 중복 데이터의 일관성을 유지하는 비용(갱신 이상)이 커지므로 적합하지 않습니다.",
+          "rationale_en": "Denormalization improves read speed by allowing redundancy to reduce join costs. It's unsuitable for write-heavy systems due to the high cost of maintaining consistency (update anomalies).",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "데이터 무결성과 일관성이 최우선이며 저장 공간을 절약해야 할 때",
+          "text_en": "When data integrity and consistency are paramount, and storage space needs to be saved.",
+          "rationale_ko": "이는 정규화를 해야 하는 이유입니다. 반정규화는 저장 공간을 더 쓰고 무결성 관리를 어렵게 만듭니다.",
+          "rationale_en": "This is a reason for Normalization. Denormalization uses more space and complicates integrity management.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "트랜잭션이 매우 빈번하게 발생하여 쓰기 성능을 최적화해야 할 때",
+          "text_en": "When transactions occur very frequently and write performance needs to be optimized.",
+          "rationale_ko": "반정규화된 테이블은 한 번의 논리적 업데이트를 위해 여러 행을 물리적으로 수정해야 할 수 있어 쓰기 성능이 떨어질 수 있습니다.",
+          "rationale_en": "Denormalized tables might require physically updating multiple rows for a single logical update, potentially degrading write performance.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "데이터베이스 설계 초기 단계에서 구조를 단순화하고 싶을 때",
+          "text_en": "When identifying ways to simplify the structure during the initial database design phase.",
+          "rationale_ko": "설계 초기에는 정규화된 모델로 시작하고, 성능 문제가 식별될 때 선별적으로 반정규화하는 것이 원칙입니다.",
+          "rationale_en": "The principle is to start with a normalized model and selectively denormalize only when performance issues are identified.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "B+ 트리 인덱스의 리프 노드(Leaf Node)들이 서로 연결 리스트(Linked List) 형태로 연결되어 있는 주된 이유는?",
+      "question_en": "What is the primary reason why leaf nodes in a B+ Tree index are connected as a Linked List?",
+      "hint_ko": "특정 값 하나를 찾는 것이 아니라, '50 이상 100 이하' 같은 조건을 처리할 때를 생각해보세요.",
+      "hint_en": "Think about processing conditions like 'between 50 and 100', not just finding a single value.",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "B+ Tree Index",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "범위 검색(Range Query)을 효율적으로 수행하기 위해서",
+          "text_en": "To efficiently perform Range Queries.",
+          "rationale_ko": "범위 검색 시 트리를 타고 내려와 시작점을 찾은 후, 다시 트리를 탈 필요 없이 연결 리스트를 따라 순차적으로 스캔(Sequential Scan)하면 되므로 매우 효율적입니다.",
+          "rationale_en": "For range queries, once the starting point is found by traversing the tree, subsequent values can be sequentially scanned via the linked list without traversing the tree again.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "트리의 높이를 줄이기 위해서",
+          "text_en": "To reduce the height of the tree.",
+          "rationale_ko": "리프 노드 연결은 트리의 높이(Height)와는 무관합니다. 높이는 팬아웃(Fan-out)에 의해 결정됩니다.",
+          "rationale_en": "Leaf node linking is unrelated to tree height. Height is determined by Fan-out.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "데이터 삽입 시 분할(Split)을 방지하기 위해서",
+          "text_en": "To prevent splitting during data insertion.",
+          "rationale_ko": "리프 노드가 꽉 차면 여전히 분할이 발생합니다. 연결 리스트는 분할 방지용이 아닙니다.",
+          "rationale_en": "Splitting still occurs when leaf nodes are full. The linked list does not prevent splitting.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "삭제된 공간을 재활용하기 위해서",
+          "text_en": "To recycle deleted space.",
+          "rationale_ko": "이는 프리 리스트(Free List) 관리와 관련된 내용이며, B+ 트리의 리프 연결 목적과는 다릅니다.",
+          "rationale_en": "This relates to Free List management, not the purpose of B+ tree leaf linking.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "해시 인덱스(Hash Index)는 등가 비교(=) 뿐만 아니라 범위 검색(Range Query, 예: >, <)에서도 B+ 트리보다 성능이 우수하다.",
+      "question_en": "Hash Indexes outperform B+ Trees not only in equality comparisons (=) but also in Range Queries (e.g., >, <).",
+      "hint_ko": "해시 함수는 입력값이 비슷해도 완전히 다른 해시값을 생성합니다. 순서가 유지되나요?",
+      "hint_en": "Hash functions produce completely different hash values even for similar inputs. Is order preserved?",
+      "topic": "database",
+      "difficulty": "easy",
+      "concept": "Hash Index & Extendible Hashing",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "False",
+          "text_en": "False",
+          "rationale_ko": "해시 인덱스는 해시 함수를 통해 데이터 위치를 찾으므로 등가 검색은 O(1)로 매우 빠르지만, 데이터의 순서가 유지되지 않아 범위 검색에는 사용할 수 없습니다(Full Scan 필요).",
+          "rationale_en": "Hash indexes provide O(1) speed for equality searches via hash functions, but they do not preserve order, making them unusable for range queries (requiring a Full Scan).",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "True",
+          "text_en": "True",
+          "rationale_ko": "해시 인덱스의 가장 큰 단점은 범위 검색이 불가능하다는 것입니다. 범위 검색에는 B+ 트리가 적합합니다.",
+          "rationale_en": "The biggest drawback of hash indexes is their inability to handle range queries. B+ Trees are suitable for that.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "쿼리 실행 계획에서 옵티마이저가 인덱스 스캔(Index Scan) 대신 전체 테이블 스캔(Full Table Scan)을 선택하는 경우는 언제인가?",
+      "question_en": "When does the optimizer choose a Full Table Scan over an Index Scan in a query execution plan?",
+      "hint_ko": "책의 색인을 통해 단어를 찾을 때, 만약 그 단어가 거의 모든 페이지에 나온다면 색인을 보는 것이 효율적일까요?",
+      "hint_en": "If you look up a word in a book index, but that word appears on almost every page, is checking the index efficient?",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Query Execution Plans & Cost Estimation",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "쿼리의 선택도(Selectivity)가 높아서(예: 전체 행의 20% 이상 반환) 인덱스를 통한 랜덤 I/O 비용이 순차 I/O 비용보다 클 때",
+          "text_en": "When query selectivity is high (e.g., returning >20% of rows), making the cost of random I/O via index higher than sequential I/O.",
+          "rationale_ko": "인덱스 스캔은 랜덤 액세스를 유발합니다. 반환해야 할 행이 많으면 차라리 테이블 전체를 순차적으로 읽는 것(Sequential Access)이 디스크 헤드 이동이 적어 더 빠릅니다.",
+          "rationale_en": "Index scans cause random access. If many rows need to be returned, sequentially reading the full table is faster due to less disk head movement.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "테이블의 크기가 매우 클 때",
+          "text_en": "When the table size is very large.",
+          "rationale_ko": "테이블이 클수록 인덱스를 사용하는 것이 일반적으로 더 유리합니다(필요한 행만 가져오므로).",
+          "rationale_en": "The larger the table, the more beneficial using an index usually is (fetching only needed rows).",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "쿼리에 ORDER BY 절이 포함되어 있을 때",
+          "text_en": "When the query includes an ORDER BY clause.",
+          "rationale_ko": "인덱스는 이미 정렬되어 있으므로 ORDER BY가 있으면 인덱스 스캔이 더 선호됩니다.",
+          "rationale_en": "Since indexes are sorted, Index Scan is preferred when ORDER BY is present.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "기본키(Primary Key)로 검색할 때",
+          "text_en": "When searching by Primary Key.",
+          "rationale_ko": "기본키 검색은 인덱스 스캔(또는 Unique Scan)이 가장 효율적인 대표적인 경우입니다.",
+          "rationale_en": "Primary Key search is a prime example where Index Scan (or Unique Scan) is most efficient.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "ACID 속성 중 일관성(Consistency)에 대한 설명으로 올바르지 않은 것은?",
+      "question_en": "Which statement about the Consistency property in ACID is INCORRECT?",
+      "hint_ko": "일관성은 DB 내부의 규칙뿐만 아니라, 현실 세계의 비즈니스 규칙(예: 송금 시 총액 보존)도 포함합니다.",
+      "hint_en": "Consistency includes not just internal DB rules but also real-world business rules (e.g., conservation of total funds during transfer).",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "ACID Properties",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "일관성은 오직 데이터베이스의 기본키, 외래키 같은 물리적 무결성 제약 조건만을 의미한다.",
+          "text_en": "Consistency refers ONLY to physical integrity constraints like primary and foreign keys within the database.",
+          "rationale_ko": "일관성은 무결성 제약뿐만 아니라, '계좌 이체 전후의 잔액 합계는 같아야 한다'와 같은 애플리케이션 수준의 논리적 규칙이 트랜잭션 수행 전후에 유지됨을 의미합니다.",
+          "rationale_en": "Consistency implies maintaining logical application-level rules (e.g., 'total balance must remain same after transfer') before and after transactions, not just integrity constraints.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "트랜잭션이 성공적으로 완료되면 데이터베이스는 하나의 일관된 상태에서 다른 일관된 상태로 변경되어야 한다.",
+          "text_en": "Upon successful completion of a transaction, the database must change from one consistent state to another.",
+          "rationale_ko": "이것이 일관성의 올바른 정의입니다.",
+          "rationale_en": "This is the correct definition of Consistency.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "트랜잭션 실행 중 일시적으로 일관성이 깨질 수 있지만, 커밋 시점에는 일관성이 보장되어야 한다.",
+          "text_en": "Consistency can be temporarily violated during transaction execution, but must be guaranteed at commit time.",
+          "rationale_ko": "맞습니다. 예를 들어, A계좌에서 돈을 뺐지만 B계좌에 넣기 직전에는 총액이 일시적으로 맞지 않을 수 있습니다.",
+          "rationale_en": "Correct. For example, after withdrawing from A but before depositing to B, the total sum might temporarily mismatch.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "일관성 유지는 DBMS의 기능뿐만 아니라 애플리케이션 개발자의 책임이기도 하다.",
+          "text_en": "Maintaining consistency is the responsibility of both the DBMS and the application developer.",
+          "rationale_ko": "비즈니스 로직의 일관성은 개발자가 트랜잭션을 올바르게 작성해야 보장됩니다.",
+          "rationale_en": "Business logic consistency depends on the developer writing the transaction correctly.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "트랜잭션 스케줄이 '충돌 직렬 가능(Conflict Serializable)'하기 위한 필요충분조건은?",
+      "question_en": "What is the necessary and sufficient condition for a transaction schedule to be 'Conflict Serializable'?",
+      "hint_ko": "선행 그래프(Precedence Graph)를 그렸을 때 어떤 모양이 나오면 안 되나요?",
+      "hint_en": "What shape must NOT appear when drawing the Precedence Graph?",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Serializability & Conflict Serializability",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "스케줄의 선행 그래프(Precedence Graph)에 사이클(Cycle)이 없어야 한다.",
+          "text_en": "The schedule's Precedence Graph must not have any cycles.",
+          "rationale_ko": "선행 그래프에 사이클이 없으면 위상 정렬을 통해 동등한 직렬 스케줄을 만들 수 있으므로 충돌 직렬 가능합니다.",
+          "rationale_en": "If the precedence graph is acyclic, an equivalent serial schedule can be derived via topological sort, making it conflict serializable.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "모든 트랜잭션이 순차적으로 실행되어야 한다.",
+          "text_en": "All transactions must be executed sequentially.",
+          "rationale_ko": "이는 직렬(Serial) 스케줄의 조건이지, 직렬 '가능(Serializable)'의 조건은 아닙니다. 직렬 가능은 동시 실행을 허용합니다.",
+          "rationale_en": "This is the condition for a Serial schedule, not Serializable. Serializable allows concurrent execution.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "두 트랜잭션이 동일한 데이터에 접근하지 않아야 한다.",
+          "text_en": "Two transactions must not access the same data.",
+          "rationale_ko": "데이터를 공유하더라도 충돌 순서만 일관되면 직렬 가능할 수 있습니다.",
+          "rationale_en": "Even if data is shared, it can be serializable if the conflict order is consistent.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "연쇄 복귀(Cascading Rollback)가 발생하지 않아야 한다.",
+          "text_en": "Cascading Rollback must not occur.",
+          "rationale_ko": "이는 회복 가능성(Recoverability)과 관련된 조건이며, 직렬 가능성과는 별개의 개념입니다.",
+          "rationale_en": "This relates to Recoverability, which is a separate concept from Serializability.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "2단계 잠금 규약(2PL, Two-Phase Locking)을 준수하면 데드락(Deadlock)이 절대 발생하지 않는다.",
+      "question_en": "Adhering to the Two-Phase Locking (2PL) protocol guarantees that Deadlocks will never occur.",
+      "hint_ko": "2PL은 직렬 가능성을 보장하지만, 서로 상대방의 잠금을 기다리는 상황을 막을 수 있을까요?",
+      "hint_en": "2PL guarantees serializability, but can it prevent a situation where two transactions wait for each other's locks?",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Lock-Based Concurrency Control (2PL)",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "False",
+          "text_en": "False",
+          "rationale_ko": "2PL은 직렬 가능성을 보장하는 프로토콜이지 데드락을 방지하는 프로토콜은 아닙니다. T1이 A를 잡고 B를 기다리고, T2가 B를 잡고 A를 기다리는 상황은 2PL에서도 충분히 발생할 수 있습니다.",
+          "rationale_en": "2PL guarantees serializability, not deadlock freedom. Situations where T1 holds A waiting for B, and T2 holds B waiting for A can still occur under 2PL.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "True",
+          "text_en": "True",
+          "rationale_ko": "2PL에서 확장 단계와 수축 단계를 나누는 것은 데이터 일관성을 위한 것이며, 상호 배제 대기 상황(데드락)은 여전히 발생 가능합니다.",
+          "rationale_en": "Separating growing and shrinking phases in 2PL ensures consistency, but mutual exclusion waiting scenarios (deadlocks) are still possible.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "다음 중 'Phantom Read' 현상을 방지할 수 있는 가장 낮은 트랜잭션 격리 수준은?",
+      "question_en": "What is the lowest transaction isolation level that prevents the 'Phantom Read' phenomenon?",
+      "hint_ko": "Phantom Read는 범위 검색 시 다른 트랜잭션이 데이터를 삽입/삭제하여 결과 집합의 수가 달라지는 현상입니다.",
+      "hint_en": "Phantom Read is when the number of rows in a result set changes due to another transaction inserting/deleting data during a range query.",
+      "topic": "database",
+      "difficulty": "hard",
+      "concept": "Transaction Isolation Levels",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "Serializable",
+          "text_en": "Serializable",
+          "rationale_ko": "Phantom Read는 범위 락(Range Lock)이나 테이블 락이 필요하므로, 일반적으로 Serializable 수준에서만 완벽히 방지됩니다. (MySQL InnoDB 등 일부는 Repeatable Read에서도 Next-Key Lock으로 방지하기도 함)",
+          "rationale_en": "Phantom Reads require range or table locks, so typically only Serializable level prevents them completely. (Though engines like InnoDB prevent it in Repeatable Read via Next-Key Locks).",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "Repeatable Read",
+          "text_en": "Repeatable Read",
+          "rationale_ko": "표준 SQL 정의상 Repeatable Read는 Phantom Read를 허용합니다. (이미 읽은 행의 값 변경은 막지만, 새 행의 추가는 못 막음)",
+          "rationale_en": "By standard SQL definition, Repeatable Read allows Phantom Reads. (It prevents changes to read rows but not insertion of new rows).",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "Read Committed",
+          "text_en": "Read Committed",
+          "rationale_ko": "Non-Repeatable Read와 Phantom Read 모두 발생합니다.",
+          "rationale_en": "Both Non-Repeatable Read and Phantom Read occur.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "Read Uncommitted",
+          "text_en": "Read Uncommitted",
+          "rationale_ko": "Dirty Read까지 발생하는 가장 낮은 수준입니다.",
+          "rationale_en": "The lowest level where even Dirty Reads occur.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "타임스탬프 기반 동시성 제어의 'Thomas Write Rule'은 무엇을 최적화하는가?",
+      "question_en": "What does the 'Thomas Write Rule' optimize in Timestamp-Based Concurrency Control?",
+      "hint_ko": "이미 더 최신 트랜잭션이 값을 덮어썼다면, 과거의 트랜잭션이 굳이 덮어쓸 필요가 있을까요?",
+      "hint_en": "If a newer transaction has already overwritten a value, does an older transaction really need to overwrite it?",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Timestamp-Based Concurrency Control",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "구식 쓰기(Obsolete Write)를 무시함으로써 불필요한 트랜잭션 롤백(Abort)을 줄인다.",
+          "text_en": "It reduces unnecessary transaction rollbacks (Aborts) by ignoring obsolete writes.",
+          "rationale_ko": "트랜잭션 T가 쓰려는 데이터 X에 이미 T보다 미래의 타임스탬프를 가진 쓰기가 발생했다면, T의 쓰기는 어차피 덮어씌워질 운명이므로 무시(Skip)해도 결과의 정확성에는 문제가 없습니다.",
+          "rationale_en": "If a transaction T tries to write to X, but X already has a write with a future timestamp, T's write is destined to be overwritten anyway, so ignoring (skipping) it doesn't affect correctness.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "읽기 작업에 대한 잠금을 제거하여 성능을 높인다.",
+          "text_en": "It improves performance by removing locks on read operations.",
+          "rationale_ko": "타임스탬프 기법은 원래 잠금을 사용하지 않습니다. Thomas Write Rule은 쓰기 충돌 처리 규칙입니다.",
+          "rationale_en": "Timestamp methods inherently don't use locks. Thomas Write Rule is specifically about write conflict handling.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "데드락을 탐지하고 해결하는 알고리즘이다.",
+          "text_en": "It is an algorithm for detecting and resolving deadlocks.",
+          "rationale_ko": "타임스탬프 순서 기법은 데드락이 발생하지 않습니다(wait가 없으므로).",
+          "rationale_en": "Timestamp ordering does not suffer from deadlocks (as there is no waiting).",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "트랜잭션의 커밋 순서를 강제로 재조정한다.",
+          "text_en": "It forcibly reorders transaction commits.",
+          "rationale_ko": "커밋 순서가 아니라 개별 쓰기 연산의 수행 여부를 결정합니다.",
+          "rationale_en": "It determines the execution of individual write operations, not the commit order.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "ARIES 회복 알고리즘의 Redo 단계에서는 장애 발생 이전에 이미 커밋(Commit)된 트랜잭션에 대해서만 재수행 연산을 한다.",
+      "question_en": "In the Redo phase of the ARIES recovery algorithm, redo operations are performed only for transactions that were already committed before the failure.",
+      "hint_ko": "ARIES는 '반복하는 역사(Repeating History)'라는 철학을 가집니다. 커밋 여부를 Redo 단계에서 알 수 있을까요?",
+      "hint_en": "ARIES follows the 'Repeating History' philosophy. Is commit status known during the Redo phase?",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "ARIES Recovery Algorithm",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "False",
+          "text_en": "False",
+          "rationale_ko": "ARIES의 Redo 단계는 커밋 여부와 상관없이 로그에 기록된 모든 변경 사항을 재실행하여 시스템을 장애 직전의 상태로 복구합니다(Repeating History). 미완료 트랜잭션의 취소는 그 다음 단계인 Undo 단계에서 수행됩니다.",
+          "rationale_en": "The Redo phase re-executes all logged changes regardless of commit status to restore the system to the pre-failure state (Repeating History). Uncommitted transactions are rolled back in the subsequent Undo phase.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "True",
+          "text_en": "True",
+          "rationale_ko": "커밋된 것만 Redo하는 것은 과거의 단순한 회복 기법이며, ARIES는 모든 작업을 Redo한 후 Undo하는 방식을 사용합니다.",
+          "rationale_en": "Redoing only committed transactions is an older, simpler recovery technique. ARIES uses Redo-all then Undo strategy.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "Fuzzy Checkpoint의 가장 큰 장점은 무엇인가?",
+      "question_en": "What is the biggest advantage of Fuzzy Checkpoint?",
+      "hint_ko": "체크포인트 수행 중에 DB를 멈춰야 한다면 서비스에 어떤 영향이 있을까요?",
+      "hint_en": "What impact would it have on the service if the DB had to be stopped during a checkpoint?",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Checkpointing",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "모든 트랜잭션을 중단하거나 더티 페이지를 강제로 모두 기록할 필요 없이 체크포인트를 수행할 수 있어 시스템 정지 시간을 최소화한다.",
+          "text_en": "It minimizes system downtime by allowing checkpoints without halting all transactions or forcing a flush of all dirty pages.",
+          "rationale_ko": "Sharp Checkpoint는 시스템을 일시 정지시키지만, Fuzzy Checkpoint는 현재 상태(Dirty Page Table 등)만 기록하고 백그라운드에서 천천히 디스크에 쓰므로 런타임 성능 영향이 적습니다.",
+          "rationale_en": "Sharp Checkpoint pauses the system, but Fuzzy Checkpoint records current state (Dirty Page Table, etc.) and flushes to disk in the background, minimizing runtime impact.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "복구 시간을 0으로 만든다.",
+          "text_en": "It reduces recovery time to zero.",
+          "rationale_ko": "복구 시간은 줄어들지만 0이 되지는 않습니다. Redo/Undo 과정은 여전히 필요합니다.",
+          "rationale_en": "It reduces recovery time but not to zero. Redo/Undo processes are still required.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "로그 파일의 크기를 획기적으로 줄여준다.",
+          "text_en": "It drastically reduces the size of the log file.",
+          "rationale_ko": "체크포인트 방식과 로그 파일 생성량은 직접적인 관계가 없습니다.",
+          "rationale_en": "Checkpointing method and log generation volume are not directly related.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "디스크 I/O를 전혀 발생시키지 않는다.",
+          "text_en": "It incurs absolutely no disk I/O.",
+          "rationale_ko": "체크포인트 레코드와 일부 페이지는 디스크에 기록되어야 하므로 I/O가 발생합니다.",
+          "rationale_en": "Checkpoint records and some pages must be written to disk, so I/O does occur.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "외래키(Foreign Key) 제약 조건에서 `ON DELETE CASCADE` 옵션의 동작은?",
+      "question_en": "What is the behavior of the `ON DELETE CASCADE` option in Foreign Key constraints?",
+      "hint_ko": "부모가 사라지면 자식도 함께 사라집니다.",
+      "hint_en": "If the parent disappears, the children disappear with it.",
+      "topic": "database",
+      "difficulty": "easy",
+      "concept": "Referential Integrity & Foreign Key Actions",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "부모 테이블의 행이 삭제되면, 이를 참조하는 자식 테이블의 행들도 자동으로 삭제된다.",
+          "text_en": "When a row in the parent table is deleted, the rows in the child table referencing it are automatically deleted.",
+          "rationale_ko": "CASCADE는 '폭포수'처럼 삭제 작업이 참조된 자식 테이블로 전파됨을 의미합니다. 고아 레코드(Orphan Record)를 남기지 않기 위해 사용됩니다.",
+          "rationale_en": "CASCADE means the delete operation propagates to referenced child tables like a 'waterfall', preventing orphan records.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "부모 테이블의 행 삭제를 차단하고 에러를 발생시킨다.",
+          "text_en": "It blocks the deletion of the parent row and raises an error.",
+          "rationale_ko": "이는 `ON DELETE RESTRICT` 또는 `NO ACTION`의 동작입니다.",
+          "rationale_en": "This is the behavior of `ON DELETE RESTRICT` or `NO ACTION`.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "자식 테이블의 외래키 값을 NULL로 변경한다.",
+          "text_en": "It changes the Foreign Key values in the child table to NULL.",
+          "rationale_ko": "이는 `ON DELETE SET NULL`의 동작입니다.",
+          "rationale_en": "This is the behavior of `ON DELETE SET NULL`.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "부모 테이블의 행은 삭제되지만 자식 테이블은 그대로 유지된다.",
+          "text_en": "The parent row is deleted, but the child table remains unchanged.",
+          "rationale_ko": "이는 참조 무결성을 위반하는 상태입니다. DBMS는 이를 허용하지 않습니다.",
+          "rationale_en": "This violates referential integrity. DBMS does not allow this.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "일반 뷰(View)와 구체화 뷰(Materialized View)의 결정적인 차이는?",
+      "question_en": "What is the critical difference between a regular View and a Materialized View?",
+      "hint_ko": "하나는 쿼리 문장만 저장하고, 다른 하나는 쿼리의 결과 데이터까지 저장합니다.",
+      "hint_en": "One stores only the query statement, while the other stores the query result data as well.",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Views & Materialized Views",
+      "questionType": "comparative",
+      "answerOptions": [
+        {
+          "text_ko": "일반 뷰는 쿼리 정의만 저장하여 실행 시마다 계산하지만, 구체화 뷰는 결과 데이터를 물리적으로 저장하여 조회 속도가 빠르다.",
+          "text_en": "Regular Views store only the query definition and calculate on execution, whereas Materialized Views physically store the result data for faster retrieval.",
+          "rationale_ko": "일반 뷰는 '가상 테이블'로 매번 쿼리가 재실행되지만, 구체화 뷰는 결과를 디스크에 캐싱하므로 복잡한 집계 쿼리 성능을 크게 향상시킵니다. 단, 데이터 갱신 시 동기화 비용이 듭니다.",
+          "rationale_en": "Regular Views are 'virtual tables' re-executed every time. Materialized Views cache results on disk, drastically improving complex aggregate query performance, at the cost of synchronization during updates.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "일반 뷰는 읽기 전용이지만, 구체화 뷰는 항상 갱신이 가능하다.",
+          "text_en": "Regular Views are read-only, but Materialized Views are always updatable.",
+          "rationale_ko": "일반 뷰도 단순한 경우 갱신 가능하며, 구체화 뷰도 집계가 포함되면 직접 갱신이 불가능할 수 있습니다.",
+          "rationale_en": "Regular views can be updatable if simple, and materialized views may not be directly updatable if they contain aggregates.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "일반 뷰는 인덱스를 생성할 수 없지만, 구체화 뷰는 인덱스를 생성할 수 없다.",
+          "text_en": "Regular Views cannot have indexes, and Materialized Views cannot have indexes either.",
+          "rationale_ko": "구체화 뷰는 물리적 실체가 있으므로 인덱스를 생성할 수 있습니다. 이것이 성능 향상의 핵심 요인 중 하나입니다.",
+          "rationale_en": "Since Materialized Views have physical substance, indexes can be created on them. This is a key factor in performance improvement.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "구체화 뷰는 원본 테이블이 삭제되면 데이터가 사라지지만, 일반 뷰는 데이터가 남아있다.",
+          "text_en": "Materialized Views lose data if the source table is deleted, whereas Regular Views retain data.",
+          "rationale_ko": "반대입니다. 일반 뷰는 원본 없이는 작동 불능이지만, 구체화 뷰는 별도 저장된 데이터가 남을 수 있습니다(설정에 따라 다름).",
+          "rationale_en": "Opposite. Regular views fail without the source, while Materialized Views may retain stored data (depending on settings).",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "트리거(Trigger)를 사용하여 모든 비즈니스 로직을 데이터베이스 내부에서 처리하는 것이 항상 바람직하다.",
+      "question_en": "It is always desirable to handle all business logic within the database using Triggers.",
+      "hint_ko": "트리거가 눈에 보이지 않게 자동으로 실행될 때의 디버깅 복잡성과 성능 영향을 고려하세요.",
+      "hint_en": "Consider the debugging complexity and performance impact when triggers execute automatically and invisibly.",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Triggers & Stored Procedures",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "False",
+          "text_en": "False",
+          "rationale_ko": "트리거는 암묵적으로 실행되어 호출 흐름을 파악하기 어렵게 만들고(디버깅 난해), 연쇄 실행 시 성능 저하를 일으킬 수 있으며, 애플리케이션 로직이 DB에 파편화되어 유지보수가 어려워집니다.",
+          "rationale_en": "Triggers execute implicitly, making flow control hard to trace (hard debugging), can cause performance issues via cascading execution, and fragment application logic, complicating maintenance.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "True",
+          "text_en": "True",
+          "rationale_ko": "데이터 무결성 강제에는 유용하지만, 복잡한 비즈니스 로직을 트리거에 숨기는 것은 현대적인 아키텍처에서 안티 패턴으로 간주됩니다.",
+          "rationale_en": "While useful for enforcing integrity, hiding complex business logic in triggers is considered an anti-pattern in modern architecture.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "쿼리 최적화 기법 중 'Selection Pushdown'의 주요 이점은 무엇인가?",
+      "question_en": "What is the main benefit of 'Selection Pushdown' in query optimization?",
+      "hint_ko": "데이터를 조인하고 나서 필터링하는 것과, 필터링하고 나서 조인하는 것 중 어느 것이 더 적은 데이터를 다룰까요?",
+      "hint_en": "Which handles less data: filtering after joining, or joining after filtering?",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Relational Algebra Equivalences & Transformations",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "조인이나 다른 값비싼 연산을 수행하기 전에 행의 수를 미리 줄여서 중간 결과의 크기를 최소화한다.",
+          "text_en": "It minimizes the size of intermediate results by reducing the number of rows before performing joins or other expensive operations.",
+          "rationale_ko": "선택 연산(WHERE 조건)을 쿼리 트리의 하단(데이터 소스 근처)으로 내리면, 상위 연산(조인 등)이 처리해야 할 데이터 양이 줄어들어 성능이 크게 향상됩니다.",
+          "rationale_en": "Pushing selection operations (WHERE conditions) down the query tree (closer to data sources) reduces the data volume for upper operations (like joins), significantly improving performance.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "인덱스 스캔 대신 항상 풀 테이블 스캔을 유도한다.",
+          "text_en": "It always induces a Full Table Scan instead of an Index Scan.",
+          "rationale_ko": "오히려 조건을 일찍 적용함으로써 인덱스 스캔을 활용할 기회를 높입니다.",
+          "rationale_en": "Conversely, applying conditions early increases the chance of utilizing index scans.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "조인 순서를 변경하여 카티전 곱을 방지한다.",
+          "text_en": "It changes the join order to prevent Cartesian products.",
+          "rationale_ko": "이는 'Join Reordering' 최적화에 해당합니다.",
+          "rationale_en": "This corresponds to 'Join Reordering' optimization.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "불필요한 컬럼을 미리 제거하여 메모리를 절약한다.",
+          "text_en": "It saves memory by removing unnecessary columns in advance.",
+          "rationale_ko": "이는 'Projection Pushdown'에 대한 설명입니다.",
+          "rationale_en": "This describes 'Projection Pushdown'.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "비용 기반 옵티마이저(Cost-Based Optimizer)가 실행 계획을 선택할 때 주로 사용하는 정보는?",
+      "question_en": "What information does a Cost-Based Optimizer mainly use when selecting an execution plan?",
+      "hint_ko": "테이블에 행이 몇 개인지, 데이터가 얼마나 중복되는지 등의 정보를 뭐라고 할까요?",
+      "hint_en": "What do you call information like how many rows are in a table or how much data is duplicated?",
+      "topic": "database",
+      "difficulty": "easy",
+      "concept": "Cost-Based vs Rule-Based Optimization",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "데이터베이스 통계 정보 (테이블 크기, 컬럼 값의 분포, 히스토그램 등)",
+          "text_en": "Database statistics (table size, distribution of column values, histograms, etc.)",
+          "rationale_ko": "CBO는 통계 정보를 바탕으로 각 연산의 I/O 및 CPU 비용을 수학적으로 추정하여 가장 저렴한 계획을 선택합니다.",
+          "rationale_en": "CBO mathematically estimates I/O and CPU costs of each operation based on statistics to select the cheapest plan.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "미리 정해진 규칙 세트 (예: 인덱스가 있으면 무조건 사용)",
+          "text_en": "A set of predefined rules (e.g., always use an index if present)",
+          "rationale_ko": "이는 규칙 기반 옵티마이저(RBO)의 방식입니다. CBO는 인덱스가 있어도 비효율적이면 사용하지 않습니다.",
+          "rationale_en": "This is Rule-Based Optimizer (RBO). CBO might ignoring an index if it's inefficient.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "개발자가 작성한 SQL의 주석(Comment)",
+          "text_en": "Comments in the SQL written by the developer.",
+          "rationale_ko": "힌트(Hint)는 사용할 수 있지만 일반 주석은 무시됩니다.",
+          "rationale_en": "Hints can be used, but general comments are ignored.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "가장 최근에 실행된 쿼리의 결과 캐시",
+          "text_en": "The result cache of the most recently executed query.",
+          "rationale_ko": "캐시는 실행 단계를 건너뛰는 것이지 실행 계획을 짜는 기준 정보는 아닙니다.",
+          "rationale_en": "Cache skips execution steps, it's not the basis for planning execution.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "CAP 정리에 따르면, 분산 시스템은 항상 일관성(Consistency), 가용성(Availability), 분할 허용성(Partition Tolerance) 중 2가지만 선택하고 나머지 하나는 완전히 포기해야 한다.",
+      "question_en": "According to the CAP theorem, a distributed system must always choose only 2 out of Consistency, Availability, and Partition Tolerance, completely abandoning the third.",
+      "hint_ko": "네트워크 분할(Partition)이 발생하지 않는 평상시에는 어떻게 될까요?",
+      "hint_en": "What happens during normal times when no network Partition occurs?",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "CAP Theorem",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "False",
+          "text_en": "False",
+          "rationale_ko": "CAP 정리는 네트워크 분할(P)이 발생했을 때만 C와 A 중 하나를 선택해야 한다고 말합니다. 분할이 없는 정상 상황에서는 C와 A를 모두 만족시킬 수 있습니다. (PACELC 이론)",
+          "rationale_en": "CAP theorem states that you must choose between C and A only when a network Partition (P) occurs. Under normal conditions without partitions, both C and A can be satisfied. (PACELC theorem).",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "True",
+          "text_en": "True",
+          "rationale_ko": "흔한 오해입니다. 3가지 속성은 상호 배타적인 관계가 아니라, P 상황에서의 트레이드오프 관계입니다.",
+          "rationale_en": "A common misconception. The three properties are not mutually exclusive, but rather a trade-off relationship specifically under P conditions.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "2단계 커밋(2PC, Two-Phase Commit) 프로토콜의 가장 치명적인 단점은?",
+      "question_en": "What is the most critical drawback of the Two-Phase Commit (2PC) protocol?",
+      "hint_ko": "만약 조정자(Coordinator)가 '준비(Prepare)'만 시키고 죽어버리면 참여자(Participant)들은 어떻게 될까요?",
+      "hint_en": "What happens to the Participants if the Coordinator dies after sending 'Prepare'?",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Two-Phase Commit (2PC)",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "조정자(Coordinator) 장애 시 참여자(Participant)들이 무한 대기(Blocking) 상태에 빠질 수 있다.",
+          "text_en": "Participants can fall into an infinite Blocking state if the Coordinator fails.",
+          "rationale_ko": "참여자가 Prepare에 대해 Yes를 보낸 후 조정자가 장애로 다운되면, 참여자는 커밋인지 롤백인지 알 수 없어 자원 잠금을 해제하지 못하고 계속 기다려야 합니다.",
+          "rationale_en": "If the Coordinator fails after a Participant sends Yes to Prepare, the Participant cannot know whether to commit or rollback and must wait indefinitely holding resource locks.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "데이터의 일관성을 보장하지 못한다.",
+          "text_en": "It fails to guarantee data consistency.",
+          "rationale_ko": "2PC는 성능을 희생해서라도 강한 일관성(Atomicity)을 보장하기 위해 설계되었습니다.",
+          "rationale_en": "2PC is designed to guarantee strong consistency (Atomicity) even at the cost of performance.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "오직 두 개의 노드 간에만 사용할 수 있다.",
+          "text_en": "It can be used only between two nodes.",
+          "rationale_ko": "2PC는 N개의 참여자 노드에 대해 동작합니다.",
+          "rationale_en": "2PC works for N participant nodes.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "메시지 교환 횟수가 너무 적어 신뢰성이 낮다.",
+          "text_en": "Reliability is low due to too few message exchanges.",
+          "rationale_ko": "오히려 메시지 교환이 많아(라운드 트립) 성능이 느린 것이 문제입니다.",
+          "rationale_en": "The problem is actually slow performance due to many message exchanges (round trips).",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "샤딩(Sharding)을 적용하면 모든 종류의 SQL 쿼리 성능이 향상된다.",
+      "question_en": "Applying Sharding improves the performance of all types of SQL queries.",
+      "hint_ko": "여러 샤드에 흩어진 데이터를 조인(Join)하거나 정렬해야 한다면 어떨까요?",
+      "hint_en": "What if you need to join or sort data scattered across multiple shards?",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "Replication & Partitioning (Sharding)",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "False",
+          "text_en": "False",
+          "rationale_ko": "특정 샤드 키를 사용하는 단건 조회는 빨라지지만, 여러 샤드에 걸친 조인(Cross-Shard Join)이나 글로벌 정렬/집계 쿼리는 네트워크 오버헤드와 병합 비용 때문에 성능이 오히려 심각하게 저하될 수 있습니다.",
+          "rationale_en": "Single-key lookups using the shard key become faster, but Cross-Shard Joins or global sort/aggregation queries can suffer severe performance degradation due to network overhead and merge costs.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "True",
+          "text_en": "True",
+          "rationale_ko": "샤딩은 만병통치약이 아닙니다. 데이터 분산으로 인한 복잡성과 비효율적인 쿼리 패턴(Scatter-Gather)이 존재합니다.",
+          "rationale_en": "Sharding is not a silver bullet. It introduces complexity due to data distribution and inefficient query patterns (Scatter-Gather).",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "NoSQL 데이터베이스가 'Schema-less'라고 불리는 것의 진정한 의미는?",
+      "question_en": "What is the true meaning of NoSQL databases being called 'Schema-less'?",
+      "hint_ko": "데이터베이스가 검사를 안 한다고 해서 데이터에 구조가 없을까요? 읽을 때는 어떻게 해야 할까요?",
+      "hint_en": "Just because the database doesn't check, does the data lack structure? What happens when you read it?",
+      "topic": "database",
+      "difficulty": "easy",
+      "concept": "NoSQL Data Models",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "데이터베이스가 스키마를 강제하지 않지만, 애플리케이션 레벨에서는 데이터를 해석하기 위한 암묵적인 스키마(Schema-on-Read)가 필요하다.",
+          "text_en": "The database does not enforce a schema, but the application level requires an implicit schema (Schema-on-Read) to interpret the data.",
+          "rationale_ko": "DB에 넣을 때는 자유롭지만, 꺼내 쓸 때는 코드가 데이터 구조를 알고 있어야 합니다. 즉, 스키마 관리 책임이 DB에서 애플리케이션으로 이동한 것입니다.",
+          "rationale_en": "Writing to DB is free, but reading requires the code to know the structure. Essentially, schema management responsibility shifts from DB to the application.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "데이터 구조에 대해 전혀 신경 쓸 필요가 없다.",
+          "text_en": "There is no need to worry about data structure at all.",
+          "rationale_ko": "데이터 구조가 엉망이면 애플리케이션에서 예외가 발생합니다.",
+          "rationale_en": "Messy data structures will cause exceptions in the application.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "모든 데이터가 바이너리 형태로 저장되어 검색이 불가능하다.",
+          "text_en": "All data is stored in binary format, making it unsearchable.",
+          "rationale_ko": "JSON, XML 등 구조화된 형태로 저장되며 검색도 지원합니다.",
+          "rationale_en": "It is stored in structured formats like JSON/XML and supports searching.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "스키마를 변경할 수 없다는 의미다.",
+          "text_en": "It means the schema cannot be changed.",
+          "rationale_ko": "반대로 스키마 변경이 매우 유연하다는 뜻입니다.",
+          "rationale_en": "Conversely, it means schema changes are very flexible.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "스타 스키마(Star Schema)에서 '팩트 테이블(Fact Table)'과 '차원 테이블(Dimension Table)'의 역할 차이는?",
+      "question_en": "What is the difference in roles between 'Fact Table' and 'Dimension Table' in a Star Schema?",
+      "hint_ko": "하나는 '숫자(매출액)'를 담고, 다른 하나는 '설명(누가, 언제, 무엇을)'을 담습니다.",
+      "hint_en": "One contains 'numbers (revenue)', and the other contains 'descriptions (who, when, what)'.",
+      "topic": "database",
+      "difficulty": "medium",
+      "concept": "OLAP, Star Schema & Data Warehousing",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "팩트 테이블은 분석할 수치 데이터(측정값)와 외래키를 포함하고, 차원 테이블은 그 수치를 설명하는 속성(날짜, 제품명 등)을 포함한다.",
+          "text_en": "Fact tables contain numerical data (measures) for analysis and foreign keys, while dimension tables contain attributes describing those numbers (date, product name, etc.).",
+          "rationale_ko": "중앙의 팩트 테이블은 대용량의 트랜잭션 기록(사건)을 저장하고, 주변의 차원 테이블은 사건의 컨텍스트를 제공하여 '2024년(차원)의 제품A(차원) 매출(팩트)' 같은 분석을 가능하게 합니다.",
+          "rationale_en": "The central Fact Table stores massive transaction records (events), while surrounding Dimension Tables provide context, enabling analysis like 'Revenue (Fact) of Product A (Dimension) in 2024 (Dimension)'.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "팩트 테이블은 정규화되어 있고, 차원 테이블은 반정규화되어 있다.",
+          "text_en": "Fact tables are normalized, while dimension tables are denormalized.",
+          "rationale_ko": "스타 스키마에서는 주로 차원 테이블이 반정규화되고, 스노우플레이크 스키마에서는 차원 테이블이 정규화됩니다. 팩트 테이블은 주로 키와 수치만 가집니다.",
+          "rationale_en": "In Star Schema, dimension tables are typically denormalized. In Snowflake Schema, they are normalized. Fact tables mostly contain keys and numbers.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "팩트 테이블은 작고, 차원 테이블은 매우 크다.",
+          "text_en": "Fact tables are small, and dimension tables are very large.",
+          "rationale_ko": "반대입니다. 팩트 테이블이 수억 건 이상의 데이터를 가지며 훨씬 큽니다.",
+          "rationale_en": "Opposite. Fact tables are much larger, holding hundreds of millions of records.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "팩트 테이블은 읽기 전용이고, 차원 테이블은 쓰기 전용이다.",
+          "text_en": "Fact tables are read-only, and dimension tables are write-only.",
+          "rationale_ko": "DW 환경에서는 둘 다 주기적인 배치 작업으로 갱신(적재)됩니다.",
+          "rationale_en": "In DW environments, both are updated (loaded) via periodic batch jobs.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "SQL 인젝션(SQL Injection) 공격을 방어하기 위한 가장 효과적이고 권장되는 방법은?",
+      "question_en": "What is the most effective and recommended method to defend against SQL Injection attacks?",
+      "hint_ko": "데이터를 코드(SQL문)와 분리해서 보내는 방법이 있습니다.",
+      "hint_en": "There is a way to send data separately from the code (SQL statement).",
+      "topic": "database",
+      "difficulty": "easy",
+      "concept": "SQL Injection & Database Security",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "Prepared Statement (매개변수화 쿼리) 사용",
+          "text_en": "Using Prepared Statements (Parameterized Queries)",
+          "rationale_ko": "Prepared Statement는 DB가 SQL 문 구조를 미리 컴파일한 후 사용자 입력을 단순 '데이터'로만 바인딩하므로, 입력값에 SQL 명령어가 섞여 있어도 실행되지 않습니다.",
+          "rationale_en": "Prepared Statements pre-compile the SQL structure, binding user input purely as 'data'. Thus, even if the input contains SQL commands, they are not executed.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "사용자 입력에서 특수문자 제거 (Blacklisting)",
+          "text_en": "Removing special characters from user input (Blacklisting)",
+          "rationale_ko": "모든 우회 패턴을 필터링하는 것은 불가능에 가깝습니다.",
+          "rationale_en": "Filtering all bypass patterns is nearly impossible.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "데이터베이스 에러 메시지 감추기",
+          "text_en": "Hiding database error messages",
+          "rationale_ko": "정보 유출을 막을 뿐 공격 자체를 막지는 못합니다 (Blind SQL Injection 가능).",
+          "rationale_en": "This prevents info leakage but not the attack itself (Blind SQL Injection remains possible).",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "웹 방화벽(WAF) 설치",
+          "text_en": "Installing a Web Application Firewall (WAF)",
+          "rationale_ko": "도움은 되지만 근본적인 해결책은 아니며 우회될 수 있습니다. 코드 레벨의 수정이 필수입니다.",
+          "rationale_en": "Helpful but not a fundamental solution; can be bypassed. Code-level fix is essential.",
+          "isCorrect": false
+        }
+      ]
+    }
+  ]

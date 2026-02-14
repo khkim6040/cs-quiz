@@ -1,0 +1,802 @@
+[
+    {
+      "question_ko": "함수 f(n) = 3n² + 10n + 5 에 대해 빅오(O), 빅오메가(Ω), 빅세타(Θ) 표기법을 적용했을 때 올바른 설명은?",
+      "question_en": "Which statement is correct regarding Big-O, Big-Omega (Ω), and Big-Theta (Θ) notations for the function f(n) = 3n² + 10n + 5?",
+      "hint_ko": "차수가 가장 높은 항이 함수의 증가율을 결정합니다. 상한, 하한, 그리고 정확한 차수를 모두 고려하세요.",
+      "hint_en": "The highest degree term determines the growth rate. Consider the upper bound, lower bound, and the tight bound.",
+      "topic": "algorithm",
+      "difficulty": "easy",
+      "concept": "Big-O, Big-Ω, Big-Θ Notation",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "f(n) = Θ(n²)",
+          "text_en": "f(n) = Θ(n²)",
+          "rationale_ko": "최고차항이 n²이므로, 적절한 상수 c₁, c₂, n₀에 대해 c₁n² ≤ f(n) ≤ c₂n²를 만족합니다. 따라서 f(n)은 n²의 차수와 정확히 일치(Tight Bound)합니다.",
+          "rationale_en": "Since the highest degree term is n², there exist constants c₁, c₂, and n₀ such that c₁n² ≤ f(n) ≤ c₂n². Thus, f(n) is tightly bounded by n².",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "f(n) = O(n)",
+          "text_en": "f(n) = O(n)",
+          "rationale_ko": "n²은 n보다 빠르게 증가하므로, 선형 함수 n은 2차 함수 f(n)의 상한(Upper Bound)이 될 수 없습니다.",
+          "rationale_en": "Since n² grows faster than n, the linear function n cannot be an upper bound for the quadratic function f(n).",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "f(n) = Ω(n³)",
+          "text_en": "f(n) = Ω(n³)",
+          "rationale_ko": "n²은 n³보다 느리게 증가하므로, 3차 함수 n³은 2차 함수 f(n)의 하한(Lower Bound)이 될 수 없습니다.",
+          "rationale_en": "Since n² grows slower than n³, the cubic function n³ cannot be a lower bound for the quadratic function f(n).",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "f(n)은 O(n²)이지만 Ω(n²)는 아니다",
+          "text_en": "f(n) is O(n²) but not Ω(n²)",
+          "rationale_ko": "f(n)은 Θ(n²)이므로, O(n²)인 동시에 Ω(n²)입니다. 상한과 하한이 동일한 차수입니다.",
+          "rationale_en": "Since f(n) is Θ(n²), it is both O(n²) and Ω(n²). The upper and lower bounds are of the same order.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "점화식 T(n) = 4T(n/2) + n 을 마스터 정리(Master Theorem)로 풀었을 때의 시간 복잡도는?",
+      "question_en": "What is the time complexity of the recurrence T(n) = 4T(n/2) + n solved using the Master Theorem?",
+      "hint_ko": "a=4, b=2, f(n)=n입니다. n^(log_b a)와 f(n)을 비교해 보세요.",
+      "hint_en": "Here a=4, b=2, and f(n)=n. Compare n^(log_b a) with f(n).",
+      "topic": "algorithm",
+      "difficulty": "medium",
+      "concept": "Master Theorem & Recurrence Relations",
+      "questionType": "code_trace",
+      "answerOptions": [
+        {
+          "text_ko": "Θ(n²)",
+          "text_en": "Θ(n²)",
+          "rationale_ko": "log₂4 = 2이므로 비교 대상은 n²입니다. f(n) = n = O(n^(2-ε))이므로 마스터 정리의 Case 1이 적용되어 T(n) = Θ(n²)이 됩니다.",
+          "rationale_en": "Since log₂4 = 2, we compare with n². f(n) = n = O(n^(2-ε)), so Case 1 of the Master Theorem applies, resulting in T(n) = Θ(n²).",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "Θ(n log n)",
+          "text_en": "Θ(n log n)",
+          "rationale_ko": "이는 T(n) = 2T(n/2) + n (Merge Sort 등)일 때의 해답입니다.",
+          "rationale_en": "This is the solution for T(n) = 2T(n/2) + n (e.g., Merge Sort).",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "Θ(n)",
+          "text_en": "Θ(n)",
+          "rationale_ko": "재귀 호출의 비용이 분할 비용보다 훨씬 크므로 선형 시간보다 많이 걸립니다.",
+          "rationale_en": "The cost of recursive calls dominates the partition cost, so it takes more than linear time.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "Θ(n² log n)",
+          "text_en": "Θ(n² log n)",
+          "rationale_ko": "Case 2가 적용되려면 f(n)이 n²와 같아야 하는데, 여기서는 f(n)=n으로 더 작습니다.",
+          "rationale_en": "For Case 2 to apply, f(n) would need to be equal to n², but here f(n)=n is smaller.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "동적 배열(Dynamic Array)에서 배열이 꽉 찼을 때 크기를 2배로 늘리는 전략을 사용할 경우, 삽입 연산(push_back)의 분할 상환(Amortized) 시간 복잡도는?",
+      "question_en": "In a dynamic array using the strategy of doubling the size when full, what is the amortized time complexity of the insertion operation (push_back)?",
+      "hint_ko": "가끔 발생하는 O(n) 비용의 복사 연산을 n번의 삽입 연산에 나누어 생각해 보세요.",
+      "hint_en": "Think about distributing the occasional O(n) copying cost over n insertion operations.",
+      "topic": "algorithm",
+      "difficulty": "easy",
+      "concept": "Amortized Analysis",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "O(1)",
+          "text_en": "O(1)",
+          "rationale_ko": "대부분의 삽입은 O(1)이며, 크기 확장 시 발생하는 O(n) 비용은 드물게 발생합니다. 총 비용을 연산 횟수로 나누면 평균적으로 상수 시간 O(1)이 됩니다.",
+          "rationale_en": "Most insertions are O(1), and the O(n) resizing cost occurs rarely. Dividing the total cost by the number of operations yields a constant amortized time O(1).",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "O(n)",
+          "text_en": "O(n)",
+          "rationale_ko": "최악의 경우(배열 확장 시)는 O(n)이지만, 분할 상환 분석은 평균적인 비용을 묻습니다.",
+          "rationale_en": "The worst case (during resizing) is O(n), but amortized analysis asks for the average cost over a sequence of operations.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "O(log n)",
+          "text_en": "O(log n)",
+          "rationale_ko": "배열 크기가 지수적으로 증가하더라도, 삽입 연산의 평균 비용이 로그 시간이 되지는 않습니다.",
+          "rationale_en": "Even though the array size grows exponentially, the average cost of insertion does not become logarithmic.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "O(n²)",
+          "text_en": "O(n²)",
+          "rationale_ko": "이는 만약 배열 크기를 2배가 아니라 고정 크기(예: +1)만큼 늘렸을 때의 총 비용과 관련이 있습니다.",
+          "rationale_en": "This would be relevant if the array size were increased by a fixed amount (e.g., +1) instead of doubling.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "퀵 정렬(Quick Sort)의 최악의 경우(Worst Case) 시간 복잡도가 O(n²)이 되는 시나리오는?",
+      "question_en": "What is the scenario where the worst-case time complexity of Quick Sort becomes O(n²)?",
+      "hint_ko": "분할(Partition)이 매우 불균형하게 일어나는 경우를 생각해 보세요.",
+      "hint_en": "Consider the case where the partition is extremely unbalanced.",
+      "topic": "algorithm",
+      "difficulty": "medium",
+      "concept": "QuickSort Analysis",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "이미 정렬된 배열에서 가장 왼쪽 원소를 피벗으로 선택할 때",
+          "text_en": "When the leftmost element is chosen as the pivot in an already sorted array",
+          "rationale_ko": "이미 정렬된 상태에서 최소값(또는 최대값)을 피벗으로 잡으면, 한쪽은 0개, 다른 쪽은 n-1개로 분할되어 재귀 깊이가 n이 되고 총 비교 횟수가 n(n-1)/2가 됩니다.",
+          "rationale_en": "Selecting the minimum (or maximum) as pivot in a sorted array results in a 0 and n-1 split, causing recursion depth n and n(n-1)/2 comparisons.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "배열의 원소가 무작위로 섞여 있을 때",
+          "text_en": "When the array elements are randomly shuffled",
+          "rationale_ko": "무작위 배열에서는 피벗이 중앙값에 가까울 확률이 높아 평균적으로 O(n log n)을 가집니다.",
+          "rationale_en": "In a random array, the pivot is likely close to the median, resulting in O(n log n) on average.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "항상 중앙값(Median)을 피벗으로 선택할 때",
+          "text_en": "When the median is always chosen as the pivot",
+          "rationale_ko": "중앙값을 피벗으로 쓰면 항상 절반으로 균등 분할되므로 최적의 경우인 O(n log n)이 됩니다.",
+          "rationale_en": "Choosing the median ensures balanced splits, resulting in the best-case O(n log n).",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "배열의 모든 원소가 같은 값일 때 (3-way partition 사용 시)",
+          "text_en": "When all elements in the array are the same (using 3-way partition)",
+          "rationale_ko": "3-way partition(Dutch National Flag)을 사용하면 모든 중복 원소를 한 번에 처리하므로 O(n)으로 끝납니다. (일반 파티션에서는 O(n²)일 수 있음)",
+          "rationale_en": "With 3-way partition, duplicate elements are handled in one go, taking O(n). (Note: Standard partition might take O(n²)).",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "병합 정렬(Merge Sort)이 퀵 정렬(Quick Sort)보다 선호되는 경우는 언제인가?",
+      "question_en": "When is Merge Sort preferred over Quick Sort?",
+      "hint_ko": "데이터의 저장 위치(메모리 vs 디스크)와 정렬의 성질(안정성)을 고려하세요.",
+      "hint_en": "Consider where data is stored (memory vs disk) and the property of sorting (stability).",
+      "topic": "algorithm",
+      "difficulty": "medium",
+      "concept": "MergeSort & Divide-and-Conquer Paradigm",
+      "questionType": "comparative",
+      "answerOptions": [
+        {
+          "text_ko": "연결 리스트(Linked List)를 정렬하거나 안정 정렬(Stable Sort)이 필요할 때",
+          "text_en": "When sorting Linked Lists or when Stable Sort is required",
+          "rationale_ko": "병합 정렬은 임의 접근(Random Access)이 필요 없어 연결 리스트 정렬에 효율적이며, 기본적으로 입력 순서를 유지하는 안정 정렬입니다.",
+          "rationale_en": "Merge Sort doesn't require random access, making it efficient for linked lists, and it is inherently a stable sort.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "추가 메모리를 전혀 사용하지 않아야 할 때",
+          "text_en": "When absolutely no extra memory should be used",
+          "rationale_ko": "병합 정렬은 배열 병합을 위해 O(n)의 추가 공간이 필요합니다. 메모리 절약이 최우선이면 힙 정렬이 낫습니다.",
+          "rationale_en": "Merge Sort requires O(n) extra space for merging. Heap Sort is better if memory saving is the priority.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "평균적으로 가장 빠른 속도가 필요할 때",
+          "text_en": "When the fastest average speed is required",
+          "rationale_ko": "일반적으로 메모리(RAM) 내 배열 정렬에서는 퀵 정렬이 캐시 효율성과 내부 루프 단순성 때문에 병합 정렬보다 빠릅니다.",
+          "rationale_en": "Generally, for in-memory arrays, Quick Sort is faster due to cache efficiency and simpler inner loops.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "입력 데이터가 거의 정렬되어 있을 때",
+          "text_en": "When the input data is nearly sorted",
+          "rationale_ko": "거의 정렬된 데이터에는 삽입 정렬(Insertion Sort)이 O(n)으로 가장 빠릅니다.",
+          "rationale_en": "For nearly sorted data, Insertion Sort is fastest with O(n).",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "n개의 원소로 구성된 배열을 힙(Heap)으로 만드는 `BUILD-HEAP` 연산의 시간 복잡도는?",
+      "question_en": "What is the time complexity of the `BUILD-HEAP` operation that builds a heap from an array of n elements?",
+      "hint_ko": "단순히 삽입을 n번 반복하는 것(O(n log n))보다 더 효율적인 방법이 있습니다.",
+      "hint_en": "There is a more efficient way than simply repeating insertion n times (O(n log n)).",
+      "topic": "algorithm",
+      "difficulty": "hard",
+      "concept": "HeapSort & Priority Queue",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "O(n)",
+          "text_en": "O(n)",
+          "rationale_ko": "Bottom-up 방식으로 힙을 구성하면, 하위 레벨 노드는 많지만 이동 거리가 짧고, 상위 레벨은 적지만 이동 거리가 깁니다. 이들의 합은 O(n)으로 수렴합니다.",
+          "rationale_en": "Using the bottom-up approach, lower-level nodes (many) move short distances, while upper-level nodes (few) move long distances. The sum converges to O(n).",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "O(n log n)",
+          "text_en": "O(n log n)",
+          "rationale_ko": "이는 빈 힙에 원소를 하나씩 삽입할 때의 복잡도입니다. BUILD-HEAP은 이를 최적화한 O(n) 알고리즘을 사용합니다.",
+          "rationale_en": "This is the complexity of inserting elements one by one. BUILD-HEAP uses an optimized O(n) algorithm.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "O(log n)",
+          "text_en": "O(log n)",
+          "rationale_ko": "원소를 한 번씩은 봐야 하므로 선형 시간보다 적을 수 없습니다.",
+          "rationale_en": "Since every element must be visited, it cannot be less than linear time.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "O(n²)",
+          "text_en": "O(n²)",
+          "rationale_ko": "힙 구성은 매우 효율적이므로 O(n²)까지 걸리지 않습니다.",
+          "rationale_en": "Heap construction is very efficient and does not take O(n²).",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "비교 기반 정렬(Comparison-Based Sorting) 알고리즘이 가질 수 있는 최선의 최악 경우 시간 복잡도(Lower Bound)는?",
+      "question_en": "What is the best possible worst-case time complexity (Lower Bound) for any Comparison-Based Sorting algorithm?",
+      "hint_ko": "결정 트리(Decision Tree)의 높이를 생각해 보세요. n!개의 순열을 구분해야 합니다.",
+      "hint_en": "Think about the height of a Decision Tree. It needs to distinguish n! permutations.",
+      "topic": "algorithm",
+      "difficulty": "medium",
+      "concept": "Comparison-Based Sorting Lower Bound",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "Ω(n log n)",
+          "text_en": "Ω(n log n)",
+          "rationale_ko": "n개의 원소를 정렬하는 모든 경우의 수는 n!입니다. 비교 트리의 높이는 log(n!)이어야 하며, 스털링 근사에 의해 이는 n log n에 비례합니다.",
+          "rationale_en": "There are n! permutations for n elements. The height of the comparison tree must be log(n!), which by Stirling's approximation is proportional to n log n.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "Ω(n)",
+          "text_en": "Ω(n)",
+          "rationale_ko": "O(n) 정렬은 기수 정렬(Radix Sort) 등 비교를 사용하지 않는 특수 정렬에서만 가능합니다.",
+          "rationale_en": "O(n) sorting is possible only with non-comparison algorithms like Radix Sort.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "Ω(n²)",
+          "text_en": "Ω(n²)",
+          "rationale_ko": "버블 정렬 등은 O(n²)이지만, 더 효율적인 알고리즘들이 존재합니다.",
+          "rationale_en": "Bubble Sort is O(n²), but more efficient algorithms exist.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "Ω(log n)",
+          "text_en": "Ω(log n)",
+          "rationale_ko": "데이터를 한 번씩 읽는 데만 O(n)이 소요됩니다.",
+          "rationale_en": "Just reading the data once takes O(n).",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "너비 우선 탐색(BFS)과 깊이 우선 탐색(DFS)의 차이점에 대한 설명 중 옳은 것은?",
+      "question_en": "Which statement correctly describes the difference between Breadth-First Search (BFS) and Depth-First Search (DFS)?",
+      "hint_ko": "사용하는 자료구조(큐 vs 스택)와 탐색의 결과(최단 경로 여부)를 비교해 보세요.",
+      "hint_en": "Compare the data structures used (Queue vs Stack) and the search results (shortest path guarantee).",
+      "topic": "algorithm",
+      "difficulty": "easy",
+      "concept": "BFS & DFS Traversal",
+      "questionType": "comparative",
+      "answerOptions": [
+        {
+          "text_ko": "BFS는 큐(Queue)를 사용하여 가중치 없는 그래프에서 최단 경로를 보장하지만, DFS는 스택(Stack)을 사용하며 최단 경로를 보장하지 않는다.",
+          "text_en": "BFS uses a Queue and guarantees the shortest path in unweighted graphs, while DFS uses a Stack and does not guarantee the shortest path.",
+          "rationale_ko": "BFS는 시작점에서 가까운 노드부터 레벨별로 탐색하므로 최단 경로를 찾습니다. 반면 DFS는 한 경로를 끝까지 파고들기 때문에 최단 경로를 놓칠 수 있습니다.",
+          "rationale_en": "BFS explores level by level, finding the shortest path. DFS goes deep into one path, potentially missing the shortest route.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "DFS는 큐를 사용하고, BFS는 스택을 사용한다.",
+          "text_en": "DFS uses a Queue, and BFS uses a Stack.",
+          "rationale_ko": "자료구조가 반대로 설명되었습니다.",
+          "rationale_en": "The data structures are swapped.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "DFS는 항상 BFS보다 메모리를 많이 사용한다.",
+          "text_en": "DFS always uses more memory than BFS.",
+          "rationale_ko": "균형 잡힌 트리나 넓은 그래프에서는 BFS가 큐에 많은 노드를 저장해야 하므로 메모리를 더 많이 쓸 수 있습니다. DFS는 깊이에 비례하는 메모리만 씁니다.",
+          "rationale_en": "In balanced trees or wide graphs, BFS can use more memory as it stores many nodes in the queue. DFS memory usage is proportional to depth.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "BFS는 모든 간선 가중치가 다를 때만 사용할 수 있다.",
+          "text_en": "BFS can only be used when all edge weights are distinct.",
+          "rationale_ko": "BFS는 가중치와 무관하게 탐색할 수 있으나, 최단 경로는 가중치가 없거나(1) 동일할 때만 보장됩니다.",
+          "rationale_en": "BFS works regardless of weights, but guarantees shortest path only for unweighted (or equal weight) graphs.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "다익스트라(Dijkstra) 알고리즘이 음수 가중치를 가진 간선이 있는 그래프에서 올바르게 동작하지 않는 이유는?",
+      "question_en": "Why does Dijkstra's algorithm fail to work correctly in graphs with negative weight edges?",
+      "hint_ko": "다익스트라 알고리즘의 '그리디(Greedy)' 선택이 한 번 방문 확정된 노드에 대해 무엇을 가정하는지 생각해 보세요.",
+      "hint_en": "Think about what Dijkstra's 'Greedy' choice assumes about nodes that have already been finalized.",
+      "topic": "algorithm",
+      "difficulty": "medium",
+      "concept": "Dijkstra's Algorithm",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "한 번 최단 거리가 확정된 정점은 더 이상 거리가 줄어들지 않는다고 가정하기 때문이다.",
+          "text_en": "Because it assumes that once a vertex's shortest distance is finalized, it cannot be reduced further.",
+          "rationale_ko": "다익스트라는 방문 확정 시점의 거리가 최단이라고 믿습니다. 하지만 음수 간선이 있으면 나중에 돌아오는 경로가 더 짧아질 수 있어 이 가정이 깨집니다.",
+          "rationale_en": "Dijkstra assumes the distance at finalization is the shortest. Negative edges can break this assumption by offering a shorter path later.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "음수 가중치는 그래프의 사이클을 만들기 때문이다.",
+          "text_en": "Because negative weights create cycles in the graph.",
+          "rationale_ko": "음수 가중치 자체가 사이클을 만드는 것은 아닙니다. 음수 사이클이 문제이지만, 다익스트라는 사이클이 없어도 음수 간선만으로 실패합니다.",
+          "rationale_en": "Negative weights don't inherently create cycles. Negative cycles are a problem, but Dijkstra fails with negative edges even without cycles.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "우선순위 큐가 음수 값을 처리할 수 없기 때문이다.",
+          "text_en": "Because priority queues cannot handle negative values.",
+          "rationale_ko": "우선순위 큐는 음수 값도 정렬할 수 있습니다. 문제는 알고리즘의 논리에 있습니다.",
+          "rationale_en": "Priority queues can handle negative values. The problem lies in the algorithm's logic.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "시간 복잡도가 지수 시간으로 늘어나기 때문이다.",
+          "text_en": "Because the time complexity increases to exponential time.",
+          "rationale_ko": "동작하지 않는 이유는 정확성(Correctness) 문제이지, 시간 복잡도 문제는 아닙니다.",
+          "rationale_en": "The failure is due to correctness, not time complexity.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "벨만-포드(Bellman-Ford) 알고리즘이 그래프에서 음수 사이클(Negative Cycle)의 존재를 감지하는 방법은?",
+      "question_en": "How does the Bellman-Ford algorithm detect the presence of a negative cycle in a graph?",
+      "hint_ko": "정점이 V개일 때 최단 경로는 최대 V-1개의 간선을 가집니다. V번째 완화(Relaxation)를 시도하면 무슨 일이 일어날까요?",
+      "hint_en": "With V vertices, a shortest path has at most V-1 edges. What happens if you try a V-th relaxation?",
+      "topic": "algorithm",
+      "difficulty": "medium",
+      "concept": "Bellman-Ford Algorithm",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "모든 간선에 대해 V번째 완화(Relaxation)를 수행했을 때 거리 값이 갱신되면 음수 사이클이 존재한다고 판단한다.",
+          "text_en": "If distance values are updated when performing the V-th relaxation on all edges, it determines that a negative cycle exists.",
+          "rationale_ko": "최단 경로는 사이클을 포함하지 않으므로 최대 V-1개 간선을 가집니다. V번째에도 거리가 줄어든다면 계속해서 거리가 줄어드는 순환(음수 사이클)이 있다는 증거입니다.",
+          "rationale_en": "Shortest paths imply no cycles, thus max V-1 edges. If distances shrink on the V-th step, it implies a cycle that continuously reduces distance (negative cycle).",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "알고리즘 실행 중 거리 값이 음수가 되면 즉시 중단한다.",
+          "text_en": "It stops immediately if a distance value becomes negative during execution.",
+          "rationale_ko": "거리 값 자체는 음수가 될 수 있습니다. 이는 정상입니다.",
+          "rationale_en": "Distance values themselves can be negative. This is normal.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "DFS를 사용하여 백 에지(Back Edge)가 있는지 확인한다.",
+          "text_en": "It uses DFS to check for Back Edges.",
+          "rationale_ko": "Back edge는 일반적인 사이클을 의미하며, 음수 사이클 판별은 가중치 합을 확인해야 합니다.",
+          "rationale_en": "Back edges imply cycles in general; detecting negative cycles requires checking weight sums.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "V-1번 반복하기 전에 더 이상 갱신이 없으면 음수 사이클이 있다고 판단한다.",
+          "text_en": "If no updates occur before V-1 iterations, it determines a negative cycle exists.",
+          "rationale_ko": "더 이상 갱신이 없으면 최단 경로가 확정된 것이며, 음수 사이클이 없는 것입니다.",
+          "rationale_en": "If no updates occur, shortest paths are finalized, meaning no negative cycles.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "최소 신장 트리(MST)를 구하는 크루스칼(Kruskal) 알고리즘과 프림(Prim) 알고리즘의 주요 차이점은?",
+      "question_en": "What is the main difference between Kruskal's algorithm and Prim's algorithm for finding the Minimum Spanning Tree (MST)?",
+      "hint_ko": "하나는 간선을 중심으로, 다른 하나는 정점을 중심으로 트리를 키워나갑니다.",
+      "hint_en": "One expands the tree based on edges, the other based on vertices.",
+      "topic": "algorithm",
+      "difficulty": "easy",
+      "concept": "Minimum Spanning Tree (Kruskal & Prim)",
+      "questionType": "comparative",
+      "answerOptions": [
+        {
+          "text_ko": "크루스칼은 가중치가 작은 간선부터 선택하며 숲(Forest)을 합쳐나가고, 프림은 하나의 시작 정점에서 트리를 확장해 나간다.",
+          "text_en": "Kruskal selects edges with the smallest weights merging forests, while Prim expands the tree from a single starting vertex.",
+          "rationale_ko": "크루스칼은 간선 정렬 후 사이클이 없는 간선을 추가하는 방식(전역적 그리디)이고, 프림은 현재 트리에서 가장 가까운 정점을 추가하는 방식(지역적 그리디)입니다.",
+          "rationale_en": "Kruskal sorts edges and adds non-cyclic ones (global greedy). Prim adds the nearest vertex to the current tree (local greedy).",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "크루스칼은 방향 그래프에서만 동작하고, 프림은 무방향 그래프에서만 동작한다.",
+          "text_en": "Kruskal works only on directed graphs, while Prim works only on undirected graphs.",
+          "rationale_ko": "두 알고리즘 모두 무방향 그래프의 MST를 구하는 데 사용됩니다.",
+          "rationale_en": "Both algorithms are used to find MSTs in undirected graphs.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "프림 알고리즘은 O(n)에 동작하여 크루스칼보다 항상 빠르다.",
+          "text_en": "Prim's algorithm runs in O(n), always faster than Kruskal.",
+          "rationale_ko": "프림은 구현에 따라 O(E log V) 또는 O(E + V log V)입니다. 희소 그래프에서는 크루스칼이, 밀집 그래프에서는 프림이 유리할 수 있습니다.",
+          "rationale_en": "Prim is O(E log V) or O(E + V log V). Kruskal may be better for sparse graphs, Prim for dense ones.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "크루스칼은 음수 간선을 처리할 수 없지만, 프림은 가능하다.",
+          "text_en": "Kruskal cannot handle negative edges, but Prim can.",
+          "rationale_ko": "MST 알고리즘은 음수 간선이 있어도 동작합니다(음수 사이클이 없는 무방향 그래프 가정). 최단 경로 문제와는 다릅니다.",
+          "rationale_en": "MST algorithms work with negative edges (assuming undirected graphs without negative cycles). This differs from shortest path problems.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "위상 정렬(Topological Sort)을 수행하기 위한 그래프의 필수 조건은?",
+      "question_en": "What is the mandatory condition for a graph to perform Topological Sort?",
+      "hint_ko": "순서가 정해지려면 순환(Cycle)이 있어서는 안 됩니다.",
+      "hint_en": "To establish an order, there must be no cycles.",
+      "topic": "algorithm",
+      "difficulty": "easy",
+      "concept": "Topological Sort & DAG",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "사이클이 없는 방향 그래프 (DAG)",
+          "text_en": "Directed Acyclic Graph (DAG)",
+          "rationale_ko": "위상 정렬은 선후 관계를 나열하는 것이므로, 사이클(순환)이 있으면 우선순위를 정할 수 없어 불가능합니다.",
+          "rationale_en": "Topological sort lists precedence. If there's a cycle, precedence cannot be established, making it impossible.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "모든 간선의 가중치가 양수여야 한다",
+          "text_en": "All edge weights must be positive",
+          "rationale_ko": "위상 정렬은 가중치와 무관합니다.",
+          "rationale_en": "Topological sort is independent of weights.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "연결 그래프(Connected Graph)여야 한다",
+          "text_en": "Must be a Connected Graph",
+          "rationale_ko": "연결되지 않은 그래프(여러 컴포넌트)라도 각 컴포넌트별로 위상 정렬이 가능합니다.",
+          "rationale_en": "Even disconnected graphs allow topological sort within each component.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "트리(Tree) 구조여야 한다",
+          "text_en": "Must be a Tree structure",
+          "rationale_ko": "트리는 DAG의 일종이지만, 트리가 아니더라도 사이클만 없으면 가능합니다.",
+          "rationale_en": "Trees are DAGs, but non-tree graphs can also be topologically sorted if they are acyclic.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "동적 계획법(DP)을 적용하기 위한 두 가지 핵심 조건은?",
+      "question_en": "What are the two key conditions for applying Dynamic Programming (DP)?",
+      "hint_ko": "문제를 쪼갤 수 있어야 하고(Optimal Substructure), 쪼갠 문제를 재활용할 수 있어야(Overlapping Subproblems) 합니다.",
+      "hint_en": "You must be able to break down the problem (Optimal Substructure) and reuse the subproblems (Overlapping Subproblems).",
+      "topic": "algorithm",
+      "difficulty": "medium",
+      "concept": "DP Principles: Optimal Substructure & Overlapping Subproblems",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "최적 부분 구조(Optimal Substructure)와 중복 부분 문제(Overlapping Subproblems)",
+          "text_en": "Optimal Substructure and Overlapping Subproblems",
+          "rationale_ko": "큰 문제의 최적해가 작은 문제의 최적해로 구성되어야 하며(최적 부분 구조), 동일한 작은 문제가 반복해서 나타나야(중복 부분 문제) 메모이제이션의 이득을 볼 수 있습니다.",
+          "rationale_en": "The optimal solution to the large problem must be composed of optimal solutions to subproblems, and the same subproblems must recur to benefit from memoization.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "탐욕적 선택 속성(Greedy Choice Property)과 최적 부분 구조",
+          "text_en": "Greedy Choice Property and Optimal Substructure",
+          "rationale_ko": "탐욕적 선택 속성은 그리디 알고리즘의 조건입니다.",
+          "rationale_en": "Greedy Choice Property is a condition for Greedy algorithms.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "분할 정복(Divide and Conquer)과 재귀(Recursion)",
+          "text_en": "Divide and Conquer and Recursion",
+          "rationale_ko": "분할 정복은 부분 문제가 서로 독립적일 때(중복되지 않을 때) 주로 사용합니다.",
+          "rationale_en": "Divide and Conquer is used when subproblems are independent (non-overlapping).",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "무작위성(Randomization)과 근사(Approximation)",
+          "text_en": "Randomization and Approximation",
+          "rationale_ko": "이는 무작위 알고리즘이나 근사 알고리즘의 특징입니다.",
+          "rationale_en": "These are characteristics of Randomized or Approximation algorithms.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "0/1 배낭 문제(Knapsack Problem)에 대해 그리디(Greedy) 알고리즘(무게 대비 가치가 높은 순으로 선택)을 적용하면 최적해를 보장하지 못하는 이유는?",
+      "question_en": "Why does the Greedy algorithm (selecting items by highest value-to-weight ratio) fail to guarantee an optimal solution for the 0/1 Knapsack Problem?",
+      "hint_ko": "물건을 쪼갤 수 없기 때문에 빈 공간이 생길 수 있습니다.",
+      "hint_en": "Since items cannot be split, empty space may remain.",
+      "topic": "algorithm",
+      "difficulty": "medium",
+      "concept": "0/1 Knapsack Problem",
+      "questionType": "trap",
+      "answerOptions": [
+        {
+          "text_ko": "물건을 쪼갤 수 없으므로(0 또는 1), 가성비가 좋은 물건을 넣고 남은 애매한 공간을 활용하지 못해 총 가치가 낮아질 수 있다.",
+          "text_en": "Since items cannot be split (0 or 1), picking high-value-ratio items might leave awkward gaps that lower total value.",
+          "rationale_ko": "분수 배낭(Fractional Knapsack)은 빈 공간을 꽉 채울 수 있어 그리디가 통하지만, 0/1 배낭은 빈 공간의 비효율 때문에 DP를 써야 합니다.",
+          "rationale_en": "Fractional Knapsack works with Greedy by filling gaps, but 0/1 Knapsack requires DP due to inefficiency from empty spaces.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "그리디 알고리즘은 가치가 높은 순서가 아니라 무게가 가벼운 순서로만 동작하기 때문이다.",
+          "text_en": "Because Greedy algorithm works only by lightest weight, not highest value.",
+          "rationale_ko": "그리디 기준은 다양하게 정할 수 있습니다. 어떤 기준(가치, 무게, 비율)을 써도 0/1 배낭의 최적해는 보장되지 않습니다.",
+          "rationale_en": "Greedy criteria can vary. No criterion (value, weight, ratio) guarantees optimality for 0/1 Knapsack.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "0/1 배낭 문제는 NP-Complete 문제가 아니기 때문이다.",
+          "text_en": "Because 0/1 Knapsack is not an NP-Complete problem.",
+          "rationale_ko": "0/1 배낭 문제는 NP-Complete입니다. 그렇기 때문에 다항 시간 그리디로 풀리지 않는 것입니다.",
+          "rationale_en": "0/1 Knapsack IS NP-Complete, which is why it's not solvable by polynomial-time Greedy.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "DP보다 그리디 알고리즘의 시간 복잡도가 더 높기 때문이다.",
+          "text_en": "Because Greedy has higher time complexity than DP.",
+          "rationale_ko": "그리디는 O(n log n)으로 DP의 O(nW)보다 보통 빠릅니다. 문제는 속도가 아니라 정확성입니다.",
+          "rationale_en": "Greedy is usually faster O(n log n) than DP O(nW). The issue is correctness, not speed.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "활동 선택 문제(Activity Selection Problem)에서 가장 많은 활동을 선택하기 위한 올바른 그리디 전략은?",
+      "question_en": "What is the correct Greedy strategy to select the maximum number of activities in the Activity Selection Problem?",
+      "hint_ko": "가장 빨리 끝나는 활동을 선택해야 남은 시간이 최대화됩니다.",
+      "hint_en": "Selecting the activity that finishes earliest maximizes the remaining time.",
+      "topic": "algorithm",
+      "difficulty": "easy",
+      "concept": "Activity Selection & Greedy Choice Property",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "종료 시간(Finish Time)이 가장 빠른 활동을 우선 선택한다.",
+          "text_en": "Select the activity with the earliest Finish Time first.",
+          "rationale_ko": "일찍 끝나는 활동을 선택해야 남은 자원을 다른 활동들이 사용할 기회가 많아집니다.",
+          "rationale_en": "Choosing the activity that ends earliest leaves the most resources for subsequent activities.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "시작 시간(Start Time)이 가장 빠른 활동을 우선 선택한다.",
+          "text_en": "Select the activity with the earliest Start Time first.",
+          "rationale_ko": "일찍 시작하더라도 매우 늦게 끝나면 다른 활동을 방해할 수 있습니다.",
+          "rationale_en": "An activity starting early might end very late, blocking others.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "활동 시간(Duration)이 가장 짧은 활동을 우선 선택한다.",
+          "text_en": "Select the activity with the shortest Duration first.",
+          "rationale_ko": "짧은 활동이라도 피크 타임에 겹쳐 있으면 최적이 아닐 수 있습니다.",
+          "rationale_en": "A short activity might overlap with the peak time, preventing optimality.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "가장 적게 겹치는 활동을 우선 선택한다.",
+          "text_en": "Select the activity that overlaps the least.",
+          "rationale_ko": "직관적으로 그럴듯하지만, 이 전략에 대한 반례가 존재합니다.",
+          "rationale_en": "Intuitively appealing, but counterexamples exist for this strategy.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "유니온-파인드(Union-Find) 자료구조에서 경로 압축(Path Compression)과 랭크에 의한 합치기(Union by Rank)를 모두 사용할 때의 시간 복잡도는?",
+      "question_en": "What is the time complexity of Union-Find when both Path Compression and Union by Rank are used?",
+      "hint_ko": "거의 상수 시간에 가깝습니다. 아커만 함수(Ackermann function)의 역함수가 등장합니다.",
+      "hint_en": "It's nearly constant time. The inverse Ackermann function appears.",
+      "topic": "algorithm",
+      "difficulty": "hard",
+      "concept": "Union-Find (Disjoint Set Union)",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "O(α(n))",
+          "text_en": "O(α(n))",
+          "rationale_ko": "α(n)은 역 아커만 함수로, 실질적인 모든 입력 n에 대해 4 이하의 값을 가지므로 사실상 상수 시간 O(1)에 가깝습니다.",
+          "rationale_en": "α(n) is the inverse Ackermann function, which is ≤ 4 for all practical n, effectively making it nearly constant time O(1).",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "O(log n)",
+          "text_en": "O(log n)",
+          "rationale_ko": "경로 압축이나 랭크 합치기 중 하나만 사용하면 O(log n)입니다.",
+          "rationale_en": "It is O(log n) if only one of Path Compression or Union by Rank is used.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "O(1)",
+          "text_en": "O(1)",
+          "rationale_ko": "엄밀히 말해 O(1)은 아닙니다. 아주 느리게 증가하는 함수입니다.",
+          "rationale_en": "Strictly speaking, it is not O(1). It is a very slowly growing function.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "O(n)",
+          "text_en": "O(n)",
+          "rationale_ko": "최적화를 전혀 안 했을 때 최악의 경우 O(n)입니다.",
+          "rationale_en": "It is O(n) in the worst case without any optimizations.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "해시 테이블(Hash Table)의 적재율(Load Factor) α가 1보다 클 때 사용할 수 없는 충돌 해결 방식은?",
+      "question_en": "Which collision resolution method cannot be used when the load factor α of a hash table is greater than 1?",
+      "hint_ko": "슬롯의 개수보다 데이터가 많으면 어디에 저장할 수 없을까요?",
+      "hint_en": "If there is more data than slots, where can't you store it?",
+      "topic": "algorithm",
+      "difficulty": "medium",
+      "concept": "Hash Table: Collision Resolution & Load Factor",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "개방 주소법 (Open Addressing)",
+          "text_en": "Open Addressing",
+          "rationale_ko": "개방 주소법은 테이블 내의 빈 슬롯만 사용하므로, 저장할 데이터 수(n)가 슬롯 수(m)보다 많아지면(α > 1) 저장이 불가능합니다. 체이닝은 가능합니다.",
+          "rationale_en": "Open Addressing uses only existing slots, so if data items (n) exceed slots (m) (i.e., α > 1), storage is impossible. Chaining works.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "체이닝 (Chaining)",
+          "text_en": "Chaining",
+          "rationale_ko": "체이닝은 각 슬롯에 연결 리스트를 매달기 때문에 α가 1보다 커져도 성능만 저하될 뿐 저장은 가능합니다.",
+          "rationale_en": "Chaining uses linked lists at each slot, so it can handle α > 1, albeit with degraded performance.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "이중 해싱 (Double Hashing)",
+          "text_en": "Double Hashing",
+          "rationale_ko": "이중 해싱도 개방 주소법의 일종이므로 α > 1이면 불가능합니다.",
+          "rationale_en": "Double Hashing is a type of Open Addressing, so it also fails if α > 1.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "선형 탐사 (Linear Probing)",
+          "text_en": "Linear Probing",
+          "rationale_ko": "선형 탐사도 개방 주소법의 일종이므로 불가능합니다.",
+          "rationale_en": "Linear Probing is a type of Open Addressing, so it also fails.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "KMP 알고리즘에서 실패 함수(Failure Function, π 배열)의 역할은?",
+      "question_en": "What is the role of the Failure Function (π array) in the KMP algorithm?",
+      "hint_ko": "불일치가 발생했을 때 처음으로 돌아가지 않고 어디까지 건너뛸 수 있는지 알려줍니다.",
+      "hint_en": "It tells you how far to jump back instead of returning to the start when a mismatch occurs.",
+      "topic": "algorithm",
+      "difficulty": "medium",
+      "concept": "KMP (Knuth-Morris-Pratt) Pattern Matching",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "접두사이면서 동시에 접미사가 되는 가장 긴 문자열의 길이를 저장하여, 불일치 시 패턴을 이동시킬 위치를 결정한다.",
+          "text_en": "It stores the length of the longest proper prefix that is also a suffix, determining where to shift the pattern upon mismatch.",
+          "rationale_ko": "이미 매칭된 부분에서 접두사와 접미사가 일치하는 정보를 이용하면, 불일치 발생 시 그만큼을 건너뛰고 매칭을 재개할 수 있습니다.",
+          "rationale_en": "Using info about matching prefixes and suffixes allows skipping ahead and resuming matching upon mismatch.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "패턴 내의 중복 문자를 제거하여 검색 속도를 높인다.",
+          "text_en": "It removes duplicate characters in the pattern to speed up search.",
+          "rationale_ko": "KMP는 패턴을 변형하지 않습니다.",
+          "rationale_en": "KMP does not modify the pattern.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "텍스트의 해시 값을 미리 계산해 둔다.",
+          "text_en": "It pre-calculates the hash values of the text.",
+          "rationale_ko": "이는 라빈-카프(Rabin-Karp) 알고리즘의 설명입니다.",
+          "rationale_en": "This describes the Rabin-Karp algorithm.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "패턴을 거꾸로 비교하기 위해 역순 인덱스를 저장한다.",
+          "text_en": "It stores reverse indices to compare the pattern backwards.",
+          "rationale_ko": "KMP는 앞에서 뒤로 비교합니다. 뒤에서 앞으로 비교하는 건 Boyer-Moore 알고리즘입니다.",
+          "rationale_en": "KMP compares front-to-back. Back-to-front is Boyer-Moore.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "P와 NP 클래스에 대한 설명 중 옳은 것은?",
+      "question_en": "Which statement is correct regarding P and NP classes?",
+      "hint_ko": "NP는 'Not Polynomial'이 아닙니다. 검증 가능성과 해결 가능성의 차이를 생각해 보세요.",
+      "hint_en": "NP does not stand for 'Not Polynomial'. Think about verifiability vs solvability.",
+      "topic": "algorithm",
+      "difficulty": "medium",
+      "concept": "P, NP, NP-Complete, NP-Hard",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "P는 다항 시간에 풀 수 있는 문제들의 집합이고, NP는 답이 주어졌을 때 다항 시간에 검증할 수 있는 문제들의 집합이다.",
+          "text_en": "P is the set of problems solvable in polynomial time, and NP is the set of problems verifiable in polynomial time given a solution.",
+          "rationale_ko": "이것이 P와 NP의 정확한 정의입니다. P ⊆ NP 관계가 성립합니다.",
+          "rationale_en": "This is the precise definition. P ⊆ NP holds.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "NP 문제는 다항 시간에 풀 수 없는 문제들이다.",
+          "text_en": "NP problems are problems that cannot be solved in polynomial time.",
+          "rationale_ko": "NP 문제 중 P에 속하는 문제들은 다항 시간에 풀 수 있습니다. 'NP-Hard이면서 NP인 문제'가 다항 시간 해법이 없는 것으로 추정될 뿐입니다.",
+          "rationale_en": "NP problems inside P are solvable in polynomial time. Only 'NP-Hard problems in NP' are suspected to lack polynomial solutions.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "P = NP임이 증명되었다.",
+          "text_en": "P = NP has been proven.",
+          "rationale_ko": "P vs NP 문제는 아직 해결되지 않은 난제입니다.",
+          "rationale_en": "P vs NP is still an open problem.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "모든 NP 문제는 NP-Complete이다.",
+          "text_en": "All NP problems are NP-Complete.",
+          "rationale_ko": "P에 속하는 문제(예: 정렬)는 NP이지만 NP-Complete는 아닙니다.",
+          "rationale_en": "Problems in P (e.g., sorting) are in NP but not NP-Complete.",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "question_ko": "문제 A를 문제 B로 다항 시간 환원(Reduction)할 수 있다는 것(A ≤p B)의 의미는?",
+      "question_en": "What does it mean if problem A is polynomial-time reducible to problem B (A ≤p B)?",
+      "hint_ko": "B를 풀 수 있으면 A도 풀 수 있습니다. 누가 더 어려운 문제일까요?",
+      "hint_en": "If you can solve B, you can solve A. Which one is harder?",
+      "topic": "algorithm",
+      "difficulty": "hard",
+      "concept": "NP-Completeness Reductions",
+      "questionType": "conceptual",
+      "answerOptions": [
+        {
+          "text_ko": "B가 A보다 같거나 더 어렵다 (B를 풀면 A도 풀린다).",
+          "text_en": "B is as hard as or harder than A (Solving B solves A).",
+          "rationale_ko": "A를 B로 변환해서 풀 수 있다는 뜻이므로, B의 해법이 있으면 A도 해결됩니다. 따라서 B의 난이도가 A보다 낮지 않습니다.",
+          "rationale_en": "It means A can be transformed and solved by B. Thus, B is at least as hard as A.",
+          "isCorrect": true
+        },
+        {
+          "text_ko": "A가 B보다 같거나 더 어렵다.",
+          "text_en": "A is as hard as or harder than B.",
+          "rationale_ko": "환원의 방향이 반대입니다. 쉬운 문제를 어려운 문제의 특수한 경우로 매핑하는 것입니다.",
+          "rationale_en": "The reduction direction is opposite. You map an easy problem to a special case of a hard one.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "A와 B는 서로 독립적이다.",
+          "text_en": "A and B are independent.",
+          "rationale_ko": "환원 관계가 성립하므로 독립적이지 않습니다.",
+          "rationale_en": "Reduction implies dependency, not independence.",
+          "isCorrect": false
+        },
+        {
+          "text_ko": "A를 풀면 B도 풀린다.",
+          "text_en": "Solving A solves B.",
+          "rationale_ko": "A ≤p B는 B를 이용해서 A를 푸는 것이지, 그 역은 성립하지 않습니다.",
+          "rationale_en": "A ≤p B means using B to solve A, not vice versa.",
+          "isCorrect": false
+        }
+      ]
+    }
+  ]

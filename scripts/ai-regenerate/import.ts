@@ -6,6 +6,7 @@
 // Options:
 //   --dry-run       실제 DB에 쓰지 않고 검증만 수행
 //   --dir <path>    JSON 파일 디렉토리 (기본: generated/evaluated/pass)
+//   --file <name>   특정 파일만 import (여러 개 가능: --file a.json --file b.json)
 //   --clear         기존 문제 삭제 후 import (주의!)
 
 // ┌─────────────┬────────────────────────────────────────────────────┐
@@ -31,6 +32,9 @@
 
 // # 3. 실제 투입
 // npm run import-questions
+
+// # 4. 특정 파일만 import
+// npm run import-questions -- --file algorithm-sorting.json
 
 import { PrismaClient } from "@prisma/client";
 import * as fs from "fs";
@@ -83,6 +87,7 @@ const VALID_TOPIC_IDS = [
   "database",
   "algorithm",
   "dataStructure",
+  "computerNetworking",
 ];
 
 function validateQuestion(
@@ -152,7 +157,7 @@ function validateQuestion(
 
 // ─── File Reading ────────────────────────────────────────
 
-function readJsonFiles(dirPath: string): { file: string; data: any[] }[] {
+function readJsonFiles(dirPath: string, fileFilter?: string[]): { file: string; data: any[] }[] {
   const results: { file: string; data: any[] }[] = [];
 
   if (!fs.existsSync(dirPath)) {
@@ -160,7 +165,22 @@ function readJsonFiles(dirPath: string): { file: string; data: any[] }[] {
     return results;
   }
 
-  const files = fs.readdirSync(dirPath).filter((f) => f.endsWith(".json"));
+  let files = fs.readdirSync(dirPath).filter((f) => f.endsWith(".json"));
+
+  // --file 옵션으로 특정 파일만 필터링
+  if (fileFilter && fileFilter.length > 0) {
+    const normalized = fileFilter.map((f) =>
+      f.endsWith(".json") ? f : `${f}.json`
+    );
+    files = files.filter((f) => normalized.includes(f));
+
+    // 존재하지 않는 파일 경고
+    for (const name of normalized) {
+      if (!files.includes(name)) {
+        console.warn(`  WARNING: File not found in directory: ${name}`);
+      }
+    }
+  }
 
   if (files.length === 0) {
     console.log(`No JSON files found in ${dirPath}`);
@@ -232,11 +252,23 @@ async function main() {
       ? args[dirIndex + 1]
       : path.join(__dirname, "generated", "evaluated", "pass");
 
+  // --file 옵션 파싱 (여러 번 사용 가능)
+  const fileFilter: string[] = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--file" && args[i + 1]) {
+      fileFilter.push(args[i + 1]);
+      i++; // skip next arg
+    }
+  }
+
   console.log("╔══════════════════════════════════════════╗");
   console.log("║   CS Quiz — Question Import              ║");
   console.log("╚══════════════════════════════════════════╝");
   console.log();
   console.log(`  Source:   ${inputDir}`);
+  if (fileFilter.length > 0) {
+    console.log(`  Files:    ${fileFilter.join(", ")}`);
+  }
   console.log(`  Dry run:  ${dryRun}`);
   console.log(`  Clear DB: ${clearFirst}`);
   console.log();
@@ -267,7 +299,7 @@ async function main() {
   console.log(`  Existing questions in DB: ${existingTexts.size}\n`);
 
   // Read all JSON files
-  const fileData = readJsonFiles(inputDir);
+  const fileData = readJsonFiles(inputDir, fileFilter.length > 0 ? fileFilter : undefined);
 
   const stats: ImportStats = {
     filesProcessed: fileData.length,

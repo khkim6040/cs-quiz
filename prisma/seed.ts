@@ -17,6 +17,7 @@ const topicsSeedData = [
   { id: "database", name_ko: "데이터베이스", name_en: "Database" },
   { id: "algorithm", name_ko: "알고리즘", name_en: "Algorithm" },
   { id: "dataStructure", name_ko: "자료구조", name_en: "Data Structure" },
+  { id: "computerNetworking", name_ko: "컴퓨터 네트워킹", name_en: "Computer Networking" },
 ];
 
 const questionsSeedData = [
