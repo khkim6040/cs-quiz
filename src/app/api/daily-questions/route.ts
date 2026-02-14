@@ -100,7 +100,7 @@ async function generateDailySet(date: Date) {
     // 토픽별로 고유한 시드 사용
     const topicSeed = seed + topic.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     const shuffled = seededShuffle(questions, topicSeed);
-    const selected = shuffled.slice(0, Math.min(5, questions.length));
+    const selected = shuffled.slice(0, Math.min(2, questions.length));
     questionIds.push(...selected.map(q => q.id));
   }
 
