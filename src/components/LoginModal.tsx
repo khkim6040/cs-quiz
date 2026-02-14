@@ -120,7 +120,7 @@ export default function LoginModal({
             <button
               type="submit"
               disabled={isLoading || !username.trim()}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? '로그인 중...' : '시작하기'}
             </button>

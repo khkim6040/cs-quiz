@@ -243,7 +243,7 @@ export default function DailyQuizPage() {
                   </div>
                   <button
                     onClick={() => setShowLoginModal(true)}
-                    className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-white rounded-lg font-bold hover:from-amber-600 hover:to-yellow-600 transition-all shadow-md hover:shadow-lg"
+                    className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600 transition-all shadow-md hover:shadow-lg"
                   >
                     등록하기
                   </button>

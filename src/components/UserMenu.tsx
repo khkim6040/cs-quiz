@@ -48,7 +48,7 @@ export default function UserMenu() {
       <>
         <button
           onClick={() => setShowLoginModal(true)}
-          className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-medium hover:from-blue-600 hover:to-purple-600 transition-all shadow-md"
+          className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600 transition-all shadow-md hover:shadow-lg"
         >
           로그인
         </button>
