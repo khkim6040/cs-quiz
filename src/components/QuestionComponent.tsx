@@ -31,7 +31,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
   };
 
   const getButtonClass = (option: AnswerOptionType): string => {
-    let baseClasses = "w-full text-left font-medium py-3 px-5 rounded-lg border-2 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-opacity-50 mb-3 ";
+    let baseClasses = "w-full text-left font-medium py-3 px-5 rounded-lg border-2 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-opacity-50 ";
     if (!isAnswered) {
       return baseClasses + "bg-white hover:bg-gray-50 border-gray-300 text-gray-700 hover:border-blue-500 focus:ring-blue-500";
     }
