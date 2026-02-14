@@ -68,6 +68,7 @@ model UserScore {
   user           User             @relation(fields: [userId], references: [id])
   dailySet       DailyQuestionSet @relation(fields: [dailySetId], references: [id])
 
+  @@unique([userId, dailySetId])
   @@unique([userId, dailySetId, topicId])
   @@index([dailySetId, score])
 }

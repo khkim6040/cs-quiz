@@ -26,15 +26,26 @@ export async function POST(request: Request) {
     const topicIdValue = topicId ? topicId : null;
 
     // 기존 점수 찾기
-    const existingScore = await prisma.userScore.findUnique({
-      where: {
-        userId_dailySetId_topicId: {
-          userId,
-          dailySetId,
-          topicId: topicIdValue,
+    // topicId가 null이면 일일 퀴즈이므로 userId_dailySetId 제약 사용
+    // topicId가 있으면 토픽별 퀴즈이므로 userId_dailySetId_topicId 제약 사용
+    const existingScore = topicIdValue
+      ? await prisma.userScore.findUnique({
+        where: {
+          userId_dailySetId_topicId: {
+            userId,
+            dailySetId,
+            topicId: topicIdValue,
+          },
         },
-      },
-    });
+      })
+      : await prisma.userScore.findUnique({
+        where: {
+          userId_dailySetId: {
+            userId,
+            dailySetId,
+          },
+        },
+      });
 
     let userScore;
     if (existingScore) {
