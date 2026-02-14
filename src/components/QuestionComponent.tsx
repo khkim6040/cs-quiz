@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { QuestionData, AnswerOption as AnswerOptionType } from '@/types/quizTypes';
 
 interface QuestionComponentProps {
@@ -120,12 +122,15 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
             {/* 해설 (아코디언 컨텐츠) */}
             {isAnswered && expandedOptions.has(opt.text) && (
               <div className="px-5 pb-4 pt-2 border-t border-gray-200">
-                <p className={`text-sm leading-relaxed ${
-                  opt.isCorrect ? 'text-green-800' : 
-                  opt.text === userAnswer?.text ? 'text-red-800' : 'text-gray-700'
+                <div className={`text-sm leading-relaxed prose prose-sm max-w-none ${
+                  opt.isCorrect ? 'text-green-800 prose-headings:text-green-800 prose-strong:text-green-900 prose-code:text-green-800' : 
+                  opt.text === userAnswer?.text ? 'text-red-800 prose-headings:text-red-800 prose-strong:text-red-900 prose-code:text-red-800' : 
+                  'text-gray-700 prose-headings:text-gray-800 prose-strong:text-gray-900 prose-code:text-gray-800'
                 }`}>
-                  {opt.rationale}
-                </p>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {opt.rationale}
+                  </ReactMarkdown>
+                </div>
               </div>
             )}
           </div>
@@ -143,7 +148,11 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
       )}
       {showHint && (
         <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md text-yellow-700">
-          {questionData.hint}
+          <div className="prose prose-sm max-w-none prose-headings:text-yellow-800 prose-strong:text-yellow-800 prose-code:text-yellow-800">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {questionData.hint}
+            </ReactMarkdown>
+          </div>
         </div>
       )}
 
