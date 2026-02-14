@@ -90,7 +90,7 @@ function LeaderboardContent() {
           <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
             <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-2xl flex items-center justify-center shadow-lg">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
             </div>
             리더보드
@@ -129,15 +129,15 @@ function LeaderboardContent() {
                         key={index}
                         className={`
                           transition-colors
-                          ${isCurrent 
-                            ? 'bg-orange-50 border-l-4 border-orange-500 hover:bg-orange-100' 
-                            : entry.rank === 1 
-                            ? 'bg-amber-50 hover:bg-amber-100' 
-                            : entry.rank === 2 
-                            ? 'bg-gray-50 hover:bg-gray-100' 
-                            : entry.rank === 3 
-                            ? 'bg-orange-50/50 hover:bg-orange-100/50' 
-                            : 'hover:bg-gray-50'
+                          ${isCurrent
+                            ? 'bg-orange-50 border-l-4 border-orange-500 hover:bg-orange-100'
+                            : entry.rank === 1
+                              ? 'bg-amber-50 hover:bg-amber-100'
+                              : entry.rank === 2
+                                ? 'bg-gray-50 hover:bg-gray-100'
+                                : entry.rank === 3
+                                  ? 'bg-orange-50/50 hover:bg-orange-100/50'
+                                  : 'hover:bg-gray-50'
                           }
                         `}
                       >
@@ -146,21 +146,21 @@ function LeaderboardContent() {
                             {entry.rank === 1 && (
                               <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-lg flex items-center justify-center shadow-md">
                                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                 </svg>
                               </div>
                             )}
                             {entry.rank === 2 && (
                               <div className="w-8 h-8 bg-gradient-to-br from-gray-300 to-gray-400 rounded-lg flex items-center justify-center shadow-md">
                                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                 </svg>
                               </div>
                             )}
                             {entry.rank === 3 && (
                               <div className="w-8 h-8 bg-gradient-to-br from-orange-300 to-amber-400 rounded-lg flex items-center justify-center shadow-md">
                                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                 </svg>
                               </div>
                             )}
