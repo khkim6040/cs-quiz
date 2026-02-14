@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface LeaderboardEntry {
   rank: number;
@@ -18,6 +19,7 @@ function LeaderboardContent() {
   const searchParams = useSearchParams();
   const dailySetId = searchParams.get('dailySetId');
   const topicId = searchParams.get('topicId');
+  const { user } = useAuth();
 
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,6 +79,10 @@ function LeaderboardContent() {
     );
   }
 
+  // 현재 사용자가 리더보드에 있는지 확인
+  const currentUserEntry = user ? leaderboard.find(entry => entry.username === user.username) : null;
+  const isCurrentUser = (username: string) => user && user.username === username;
+
   return (
     <main className="container mx-auto px-4 py-8 min-h-screen">
       <div className="max-w-4xl mx-auto">
@@ -111,46 +117,78 @@ function LeaderboardContent() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {leaderboard.map((entry, index) => (
-                    <tr
-                      key={index}
-                      className={`
-                        hover:bg-gray-50 transition-colors
-                        ${entry.rank === 1 ? 'bg-yellow-50' : ''}
-                        ${entry.rank === 2 ? 'bg-gray-50' : ''}
-                        ${entry.rank === 3 ? 'bg-orange-50' : ''}
-                      `}
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center">
-                          {entry.rank === 1 && <span className="text-2xl mr-2">🥇</span>}
-                          {entry.rank === 2 && <span className="text-2xl mr-2">🥈</span>}
-                          {entry.rank === 3 && <span className="text-2xl mr-2">🥉</span>}
-                          <span className="font-semibold text-lg">#{entry.rank}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="font-medium text-gray-900">{entry.username}</span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="font-bold text-purple-600 text-lg">
-                          {entry.score}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="text-gray-700">
-                          {entry.correctAnswers} / {entry.totalQuestions}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="text-gray-600">
-                          {Math.floor(entry.timeSpent / 60)}분 {entry.timeSpent % 60}초
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
+                  {leaderboard.map((entry, index) => {
+                    const isCurrent = isCurrentUser(entry.username);
+                    return (
+                      <tr
+                        key={index}
+                        className={`
+                          transition-colors
+                          ${isCurrent 
+                            ? 'bg-blue-50 border-l-4 border-blue-500 hover:bg-blue-100' 
+                            : entry.rank === 1 
+                            ? 'bg-yellow-50 hover:bg-yellow-100' 
+                            : entry.rank === 2 
+                            ? 'bg-gray-50 hover:bg-gray-100' 
+                            : entry.rank === 3 
+                            ? 'bg-orange-50 hover:bg-orange-100' 
+                            : 'hover:bg-gray-50'
+                          }
+                        `}
+                      >
+                        <td className="px-6 py-4">
+                          <div className="flex items-center">
+                            {entry.rank === 1 && <span className="text-2xl mr-2">🥇</span>}
+                            {entry.rank === 2 && <span className="text-2xl mr-2">🥈</span>}
+                            {entry.rank === 3 && <span className="text-2xl mr-2">🥉</span>}
+                            <span className={`font-semibold text-lg ${isCurrent ? 'text-blue-700' : ''}`}>
+                              #{entry.rank}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <span className={`font-medium ${isCurrent ? 'text-blue-900 font-bold' : 'text-gray-900'}`}>
+                              {entry.username}
+                            </span>
+                            {isCurrent && (
+                              <span className="px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full font-semibold">
+                                나
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className={`font-bold text-lg ${isCurrent ? 'text-blue-600' : 'text-purple-600'}`}>
+                            {entry.score}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className={isCurrent ? 'text-blue-900 font-semibold' : 'text-gray-700'}>
+                            {entry.correctAnswers} / {entry.totalQuestions}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className={isCurrent ? 'text-blue-900 font-semibold' : 'text-gray-600'}>
+                            {Math.floor(entry.timeSpent / 60)}분 {entry.timeSpent % 60}초
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* 내 순위 요약 (100위 밖일 때) */}
+        {user && currentUserEntry && currentUserEntry.rank > 100 && (
+          <div className="mt-6 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg">
+            <p className="text-sm text-blue-700 mb-2 font-semibold">내 순위</p>
+            <div className="flex justify-between items-center">
+              <span className="text-blue-900 font-bold">#{currentUserEntry.rank}</span>
+              <span className="text-blue-800">{currentUserEntry.score}점</span>
             </div>
           </div>
         )}
