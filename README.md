@@ -48,6 +48,25 @@ npm run dev
 
 http://localhost:3000 접속
 
+## 🔍 코드 품질 관리
+
+### 린트 실행
+```bash
+# 기본 린트 검사
+npm run lint
+
+# 자동 수정
+npm run lint:fix
+
+# TypeScript 타입 체크
+npm run type-check
+
+# 모두 실행 (커밋 전 권장)
+npm run check
+```
+
+자세한 내용은 [LINT_GUIDE.md](LINT_GUIDE.md)를 참고하세요.
+
 ## 📁 프로젝트 구조
 
 ```

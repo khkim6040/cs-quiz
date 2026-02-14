@@ -50,7 +50,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
   };
 
   const getCardClass = (option: AnswerOptionType): string => {
-    let baseClasses = "w-full rounded-lg border-2 transition-all duration-200 ease-in-out overflow-hidden ";
+    const baseClasses = "w-full rounded-lg border-2 transition-all duration-200 ease-in-out overflow-hidden ";
     if (!isAnswered) {
       return baseClasses + "bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-500";
     }
@@ -64,7 +64,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
   };
 
   const getHeaderClass = (option: AnswerOptionType): string => {
-    let baseClasses = "w-full text-left font-medium py-3 px-5 transition-all duration-200 ease-in-out focus:outline-none ";
+    const baseClasses = "w-full text-left font-medium py-3 px-5 transition-all duration-200 ease-in-out focus:outline-none ";
     if (!isAnswered) {
       return baseClasses + "text-gray-700 hover:text-blue-600 cursor-pointer";
     }
@@ -89,7 +89,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
       <h3 className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 leading-relaxed">
         {questionData.question}
       </h3>
-      
+
       <div className="space-y-3">
         {questionData.answerOptions.map((opt) => (
           <div key={opt.text} className={getCardClass(opt)}>
@@ -105,9 +105,8 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
                   <span className="ml-2 flex items-center gap-2">
                     <span>{getStatusIcon(opt)}</span>
                     <svg
-                      className={`w-5 h-5 transition-transform duration-200 ${
-                        expandedOptions.has(opt.text) ? 'rotate-180' : ''
-                      }`}
+                      className={`w-5 h-5 transition-transform duration-200 ${expandedOptions.has(opt.text) ? 'rotate-180' : ''
+                        }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -122,11 +121,10 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
             {/* 해설 (아코디언 컨텐츠) */}
             {isAnswered && expandedOptions.has(opt.text) && (
               <div className="px-5 pb-4 pt-2 border-t border-gray-200">
-                <div className={`text-sm leading-relaxed prose prose-sm max-w-none ${
-                  opt.isCorrect ? 'text-green-800 prose-headings:text-green-800 prose-strong:text-green-900 prose-code:text-green-800' : 
-                  opt.text === userAnswer?.text ? 'text-red-800 prose-headings:text-red-800 prose-strong:text-red-900 prose-code:text-red-800' : 
-                  'text-gray-700 prose-headings:text-gray-800 prose-strong:text-gray-900 prose-code:text-gray-800'
-                }`}>
+                <div className={`text-sm leading-relaxed prose prose-sm max-w-none ${opt.isCorrect ? 'text-green-800 prose-headings:text-green-800 prose-strong:text-green-900 prose-code:text-green-800' :
+                    opt.text === userAnswer?.text ? 'text-red-800 prose-headings:text-red-800 prose-strong:text-red-900 prose-code:text-red-800' :
+                      'text-gray-700 prose-headings:text-gray-800 prose-strong:text-gray-900 prose-code:text-gray-800'
+                  }`}>
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {opt.rationale}
                   </ReactMarkdown>
