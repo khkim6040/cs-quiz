@@ -1,11 +1,11 @@
 // src/app/api/daily-set/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getTodayInKST } from "@/lib/timezone";
 
 export async function GET() {
   try {
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
+    const today = getTodayInKST();
 
     console.log("[Daily Set API] Looking for date:", today.toISOString());
 

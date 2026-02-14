@@ -8,6 +8,23 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+/**
+ * 한국 시간(KST, UTC+9) 기준으로 오늘 날짜를 계산합니다.
+ */
+function getTodayInKST(): Date {
+  const now = new Date();
+  const kstOffset = 9 * 60; // 9시간을 분으로
+  const kstTime = new Date(now.getTime() + kstOffset * 60 * 1000);
+  
+  // UTC 기준으로 한국 시간의 날짜만 추출하여 00:00:00으로 설정
+  return new Date(Date.UTC(
+    kstTime.getUTCFullYear(),
+    kstTime.getUTCMonth(),
+    kstTime.getUTCDate(),
+    0, 0, 0, 0
+  ));
+}
+
 // Fisher-Yates 셔플 알고리즘 (날짜 기반 시드)
 function seededShuffle<T>(array: T[], seed: number): T[] {
   const arr = [...array];
@@ -70,9 +87,12 @@ async function main() {
   const results = [];
   
   for (let i = 0; i < daysAhead; i++) {
-    const targetDate = new Date();
-    targetDate.setUTCHours(0, 0, 0, 0);
-    targetDate.setDate(targetDate.getDate() + i);
+    // 한국 시간 기준으로 날짜 계산
+    const today = getTodayInKST();
+    const targetDate = new Date(today);
+    targetDate.setUTCDate(targetDate.getUTCDate() + i);
+
+    console.log(`Processing date: ${targetDate.toISOString().split('T')[0]} (KST-based)`);
 
     try {
       // 이미 존재하는지 확인

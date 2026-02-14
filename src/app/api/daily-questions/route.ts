@@ -1,6 +1,7 @@
 // src/app/api/daily-questions/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getTodayInKST } from "@/lib/timezone";
 
 export const dynamic = 'force-dynamic';
 
@@ -9,8 +10,9 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const lang = searchParams.get("lang") || "ko";
 
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
+    const today = getTodayInKST();
+
+    console.log("[Daily Questions API] Looking for date:", today.toISOString());
 
     // 오늘의 문제 세트 조회
     const dailySet = await prisma.dailyQuestionSet.findUnique({
@@ -40,16 +42,16 @@ export async function GET(request: Request) {
 
     // 순서 유지하며 변환
     const orderedQuestions = questionIds
-      .map(id => questions.find(q => q.id === id))
-      .filter(q => q !== undefined);
+      .map((id: string) => questions.find((q: any) => q.id === id))
+      .filter((q: any): q is NonNullable<typeof q> => q !== undefined);
 
-    const formattedQuestions = orderedQuestions.map((question) => ({
+    const formattedQuestions = orderedQuestions.map((question: any) => ({
       id: question.id,
       topicId: question.topicId,
       topicName: lang === "en" ? question.topic.name_en : question.topic.name_ko,
       question: lang === "en" ? question.text_en : question.text_ko,
       hint: lang === "en" ? question.hint_en : question.hint_ko,
-      answerOptions: question.answerOptions.map((option) => ({
+      answerOptions: question.answerOptions.map((option: any) => ({
         text: lang === "en" ? option.text_en : option.text_ko,
         rationale: lang === "en" ? option.rationale_en : option.rationale_ko,
         isCorrect: option.isCorrect,
