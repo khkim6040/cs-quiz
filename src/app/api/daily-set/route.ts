@@ -7,6 +7,8 @@ export async function GET() {
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
 
+    console.log("[Daily Set API] Looking for date:", today.toISOString());
+
     // 오늘의 문제 세트 조회
     let dailySet = await prisma.dailyQuestionSet.findUnique({
       where: { date: today },
@@ -14,8 +16,15 @@ export async function GET() {
 
     // 오늘의 세트가 없으면 생성
     if (!dailySet) {
+      console.log("[Daily Set API] No daily set found, generating...");
       dailySet = await generateDailySet(today);
     }
+
+    console.log("[Daily Set API] Returning dailySet:", {
+      id: dailySet.id,
+      date: dailySet.date,
+      questionCount: dailySet.questionIds.length,
+    });
 
     return NextResponse.json(dailySet);
   } catch (error) {

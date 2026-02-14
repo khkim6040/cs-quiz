@@ -20,12 +20,25 @@ export async function GET(request: Request) {
       );
     }
 
+    // 디버깅: 쿼리 파라미터 로깅
+    console.log("[Leaderboard API] Query params:", { 
+      dailySetId, 
+      topicId, 
+      topicIdRaw: searchParams.get("topicId"),
+      limit, 
+      userId 
+    });
+
     // 전체 리더보드 조회 (순위 계산용)
+    const whereClause = {
+      dailySetId,
+      topicId: topicId || null,
+    };
+    
+    console.log("[Leaderboard API] Where clause:", whereClause);
+
     const allScores = await prisma.userScore.findMany({
-      where: {
-        dailySetId,
-        topicId: topicId || null,
-      },
+      where: whereClause,
       orderBy: [
         { score: "desc" },
         { completedAt: "asc" }, // 동점이면 먼저 완료한 사람 우선
@@ -39,6 +52,17 @@ export async function GET(request: Request) {
         },
       },
     });
+
+    // 디버깅: 조회된 스코어 수 로깅
+    console.log(`[Leaderboard API] Found ${allScores.length} scores`);
+    if (allScores.length > 0) {
+      console.log("[Leaderboard API] Sample score:", {
+        userId: allScores[0].userId,
+        dailySetId: allScores[0].dailySetId,
+        topicId: allScores[0].topicId,
+        score: allScores[0].score,
+      });
+    }
 
     // 순위 매기기
     const formattedLeaderboard = allScores.map((entry, index) => ({
@@ -70,6 +94,12 @@ export async function GET(request: Request) {
         };
       }
     }
+
+    console.log("[Leaderboard API] Response:", {
+      topUsersCount: topUsers.length,
+      currentUserRank: currentUserRank?.rank,
+      totalParticipants: formattedLeaderboard.length,
+    });
 
     return NextResponse.json({
       topUsers,

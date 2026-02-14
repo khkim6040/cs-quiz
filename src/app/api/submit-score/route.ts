@@ -17,6 +17,16 @@ export async function POST(request: Request) {
     const { dailySetId, topicId, correctAnswers, totalQuestions, timeSpent } =
       await request.json();
 
+    console.log("[Submit Score API] Request data:", {
+      userId,
+      dailySetId,
+      topicId,
+      topicIdType: typeof topicId,
+      correctAnswers,
+      totalQuestions,
+      timeSpent,
+    });
+
     // 점수 계산
     const accuracy = correctAnswers / totalQuestions;
     const timeBonus = Math.max(0, 1000 - timeSpent);
@@ -24,6 +34,11 @@ export async function POST(request: Request) {
 
     // topicId가 null인 경우 명시적으로 null 사용
     const topicIdValue = topicId ? topicId : null;
+
+    console.log("[Submit Score API] Processed topicId:", {
+      original: topicId,
+      processed: topicIdValue,
+    });
 
     // 기존 점수 찾기
     // topicId가 null이면 일일 퀴즈이므로 userId_dailySetId 제약 사용
@@ -47,9 +62,12 @@ export async function POST(request: Request) {
         },
       });
 
+    console.log("[Submit Score API] Existing score:", existingScore ? "found" : "not found");
+
     let userScore;
     if (existingScore) {
       // 업데이트
+      console.log("[Submit Score API] Updating existing score");
       userScore = await prisma.userScore.update({
         where: {
           id: existingScore.id,
@@ -64,6 +82,7 @@ export async function POST(request: Request) {
       });
     } else {
       // 생성
+      console.log("[Submit Score API] Creating new score");
       userScore = await prisma.userScore.create({
         data: {
           userId,
@@ -76,6 +95,14 @@ export async function POST(request: Request) {
         },
       });
     }
+
+    console.log("[Submit Score API] Saved score:", {
+      id: userScore.id,
+      userId: userScore.userId,
+      dailySetId: userScore.dailySetId,
+      topicId: userScore.topicId,
+      score: userScore.score,
+    });
 
     // 사용자의 순위 조회
     const rank = await prisma.userScore.count({
