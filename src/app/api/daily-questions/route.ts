@@ -65,7 +65,29 @@ export async function GET(request: Request) {
   }
 }
 
+// Fisher-Yates 셔플 알고리즘 (날짜 기반 시드)
+function seededShuffle<T>(array: T[], seed: number): T[] {
+  const arr = [...array];
+  let random = seed;
+  
+  // 간단한 선형 합동 생성기 (LCG)
+  const lcg = () => {
+    random = (random * 1103515245 + 12345) % 2147483648;
+    return random / 2147483648;
+  };
+
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(lcg() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  
+  return arr;
+}
+
 async function generateDailySet(date: Date) {
+  // 날짜를 시드로 사용 (YYYYMMDD 형식)
+  const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
+  
   const topics = await prisma.topic.findMany();
   const questionIds: string[] = [];
 
@@ -75,12 +97,15 @@ async function generateDailySet(date: Date) {
       select: { id: true },
     });
 
-    const shuffled = questions.sort(() => Math.random() - 0.5);
+    // 토픽별로 고유한 시드 사용
+    const topicSeed = seed + topic.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const shuffled = seededShuffle(questions, topicSeed);
     const selected = shuffled.slice(0, Math.min(5, questions.length));
     questionIds.push(...selected.map(q => q.id));
   }
 
-  const finalShuffled = questionIds.sort(() => Math.random() - 0.5);
+  // 전체 문제를 다시 섞음
+  const finalShuffled = seededShuffle(questionIds, seed);
 
   return await prisma.dailyQuestionSet.create({
     data: {
