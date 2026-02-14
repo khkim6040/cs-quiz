@@ -35,6 +35,7 @@ export default function DailyQuizPage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [scoreSubmitError, setScoreSubmitError] = useState<string | null>(null);
   const [pendingScoreSubmit, setPendingScoreSubmit] = useState(false);
+  const [isSubmittingScore, setIsSubmittingScore] = useState(false);
 
   useEffect(() => {
     async function fetchDailyQuestions() {
@@ -67,6 +68,7 @@ export default function DailyQuizPage() {
   const submitScore = useCallback(async () => {
     const timeSpent = Math.floor((Date.now() - startTime) / 1000);
     setScoreSubmitError(null);
+    setIsSubmittingScore(true);
 
     try {
       const res = await fetch('/api/submit-score', {
@@ -105,6 +107,8 @@ export default function DailyQuizPage() {
     } catch (error) {
       console.error('Failed to submit score:', error);
       setScoreSubmitError('네트워크 오류가 발생했습니다');
+    } finally {
+      setIsSubmittingScore(false);
     }
   }, [startTime, dailySetId, correctAnswers, questions.length]);
 
@@ -185,6 +189,17 @@ export default function DailyQuizPage() {
                 </p>
               </div>
 
+              {/* 점수 제출 중 로딩 */}
+              {isSubmittingScore && (
+                <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl">
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="w-6 h-6 border-3 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-blue-700 font-semibold">점수를 제출하는 중...</p>
+                  </div>
+                  <p className="text-xs text-blue-600 mt-2 text-center">잠시만 기다려주세요</p>
+                </div>
+              )}
+
               {/* 점수 */}
               {score !== null ? (
                 <div className="p-5 bg-gradient-to-br from-gray-50 to-slate-50 border border-gray-200 rounded-xl">
@@ -211,7 +226,7 @@ export default function DailyQuizPage() {
               ) : null}
 
               {/* 비로그인 사용자 안내 */}
-              {!user && (
+              {!user && !isSubmittingScore && (
                 <div className="p-5 bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-300 rounded-xl">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
@@ -236,7 +251,7 @@ export default function DailyQuizPage() {
               )}
 
               {/* 에러 메시지 */}
-              {scoreSubmitError && user && (
+              {scoreSubmitError && user && !isSubmittingScore && (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                   <p className="text-sm text-red-700">{scoreSubmitError}</p>
                 </div>
@@ -248,14 +263,16 @@ export default function DailyQuizPage() {
               {user && score !== null ? (
                 <button
                   onClick={() => router.push('/leaderboard?dailySetId=' + dailySetId)}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all font-bold shadow-md hover:shadow-lg"
+                  disabled={isSubmittingScore}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all font-bold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   리더보드 보기
                 </button>
               ) : null}
               <button
                 onClick={() => router.push('/')}
-                className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold"
+                disabled={isSubmittingScore}
+                className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 홈으로
               </button>
