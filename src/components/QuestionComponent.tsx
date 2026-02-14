@@ -120,16 +120,12 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
             {/* 해설 (아코디언 컨텐츠) */}
             {isAnswered && expandedOptions.has(opt.text) && (
               <div className="px-5 pb-4 pt-2 border-t border-gray-200">
-                <div className={`text-sm ${
+                <p className={`text-sm leading-relaxed ${
                   opt.isCorrect ? 'text-green-800' : 
                   opt.text === userAnswer?.text ? 'text-red-800' : 'text-gray-700'
                 }`}>
-                  <p className="font-semibold mb-1">
-                    {opt.isCorrect ? '💡 정답 해설:' : 
-                     opt.text === userAnswer?.text ? '❗ 오답 이유:' : '📖 해설:'}
-                  </p>
-                  <p className="leading-relaxed">{opt.rationale}</p>
-                </div>
+                  {opt.rationale}
+                </p>
               </div>
             )}
           </div>
@@ -142,32 +138,24 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
           onClick={() => setShowHint(true)}
           className="mt-5 text-sm text-blue-600 hover:text-blue-800 font-medium"
         >
-          💡 힌트 보기
+          힌트
         </button>
       )}
       {showHint && (
         <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md text-yellow-700">
-          <strong className="font-bold">힌트:</strong> {questionData.hint}
+          {questionData.hint}
         </div>
       )}
 
       {/* 다음 문제 버튼 */}
       {isAnswered && (
-        <div className="mt-6 flex flex-col items-center gap-3">
-          <div className={`text-center font-semibold text-lg ${
-            userAnswer?.isCorrect ? 'text-green-700' : 'text-red-700'
-          }`}>
-            {userAnswer?.isCorrect ? "정답입니다! 🎉" : "아쉽습니다. 다시 도전해보세요! 💪"}
-          </div>
+        <div className="mt-6 flex justify-center">
           <button
             onClick={onNextQuestion}
             className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
           >
             다음 문제
           </button>
-          <p className="text-sm text-gray-500">
-            💡 다른 보기를 클릭하여 해설을 확인해보세요
-          </p>
         </div>
       )}
     </div>
