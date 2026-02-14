@@ -141,9 +141,14 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
 
   return (
     <div className="my-6 md:my-8">
-      <h3 className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 leading-relaxed">
-        {questionData.question}
-      </h3>
+      <div className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 leading-relaxed">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={markdownComponents}
+        >
+          {questionData.question}
+        </ReactMarkdown>
+      </div>
 
       <div className="space-y-3">
         {questionData.answerOptions.map((opt) => (
@@ -155,7 +160,14 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
               className={getHeaderClass(opt)}
             >
               <div className="flex items-start justify-between">
-                <span className="flex-1">{opt.text}</span>
+                <span className="flex-1">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={markdownComponents}
+                  >
+                    {opt.text}
+                  </ReactMarkdown>
+                </span>
                 {isAnswered && (
                   <span className="ml-2 flex items-center gap-2">
                     <span>{getStatusIcon(opt)}</span>
