@@ -100,7 +100,7 @@ export default function LoginModal({
               onChange={(e) => setUsername(e.target.value)}
               placeholder="닉네임을 입력하세요"
               maxLength={15}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors text-center text-lg"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors text-center text-lg"
               disabled={isLoading}
             />
             <p className="text-xs text-gray-500 mt-1 text-center">
@@ -120,7 +120,7 @@ export default function LoginModal({
             <button
               type="submit"
               disabled={isLoading || !username.trim()}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-amber-600 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? '로그인 중...' : '시작하기'}
             </button>

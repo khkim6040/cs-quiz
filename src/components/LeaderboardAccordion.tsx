@@ -24,7 +24,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
     setLoading(true);
     setError(null);
     try {
-      const params = new URLSearchParams({ 
+      const params = new URLSearchParams({
         dailySetId,
         limit: '10' // 상위 10명만 조회
       });
@@ -75,7 +75,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
               <h3 className="text-xl font-bold text-gray-800 mb-1 group-hover:text-orange-600 transition-colors">
                 오늘의 리더보드
               </h3>
-              
+
               {/* 데이터 로딩 전 */}
               {!data && !loading && (
                 <p className="text-sm text-gray-500">클릭하여 순위 확인하기</p>
@@ -148,9 +148,8 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
 
           {/* 펼치기/접기 화살표 */}
           <svg
-            className={`w-6 h-6 text-gray-400 transition-transform duration-300 flex-shrink-0 ml-2 ${
-              isExpanded ? 'rotate-180' : ''
-            }`}
+            className={`w-6 h-6 text-gray-400 transition-transform duration-300 flex-shrink-0 ml-2 ${isExpanded ? 'rotate-180' : ''
+              }`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -162,7 +161,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
 
       {/* 펼쳐진 상태 */}
       {isExpanded && (
-        <div 
+        <div
           className="mt-2 bg-white rounded-xl shadow-lg border-2 border-orange-100 overflow-hidden animate-in slide-in-from-top-2 fade-in duration-300"
         >
           <div className="p-6">
@@ -185,7 +184,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                 <p className="text-red-600 font-medium">{error}</p>
                 <button
                   onClick={fetchLeaderboard}
-                  className="mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all font-semibold shadow-md hover:shadow-lg"
+                  className="mt-4 px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
                 >
                   다시 시도
                 </button>
@@ -216,7 +215,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                     return (
                       <div
                         key={entry.rank}
-                        style={{ 
+                        style={{
                           animationDelay: `${index * 50}ms`,
                         }}
                         className={`

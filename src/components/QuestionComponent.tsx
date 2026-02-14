@@ -107,7 +107,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
   const getCardClass = (option: AnswerOptionType): string => {
     const baseClasses = "w-full rounded-lg border-2 transition-all duration-200 ease-in-out overflow-hidden ";
     if (!isAnswered) {
-      return baseClasses + "bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-500";
+      return baseClasses + "bg-white hover:bg-gray-50 border-gray-300 hover:border-orange-500";
     }
     if (option.isCorrect) {
       return baseClasses + "bg-green-50 border-green-500";
@@ -121,7 +121,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
   const getHeaderClass = (option: AnswerOptionType): string => {
     const baseClasses = "w-full text-left font-medium py-3 px-5 transition-all duration-200 ease-in-out focus:outline-none ";
     if (!isAnswered) {
-      return baseClasses + "text-gray-700 hover:text-blue-600 cursor-pointer";
+      return baseClasses + "text-gray-700 hover:text-orange-600 cursor-pointer";
     }
     if (option.isCorrect) {
       return baseClasses + "text-green-700 cursor-pointer";
@@ -209,7 +209,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
       {!isAnswered && !showHint && (
         <button
           onClick={() => setShowHint(true)}
-          className="mt-5 px-4 py-2 text-sm bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors font-medium"
+          className="mt-5 px-4 py-2 text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors font-medium"
         >
           💡 힌트 보기
         </button>
@@ -232,7 +232,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
         <div className="mt-6 flex justify-center">
           <button
             onClick={onNextQuestion}
-            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all font-semibold shadow-md hover:shadow-lg"
+            className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
           >
             다음 문제
           </button>
