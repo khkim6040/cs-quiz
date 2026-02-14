@@ -63,7 +63,7 @@ export default function DailyQuizPage() {
     if (user && pendingScoreSubmit && isCompleted) {
       submitScore();
     }
-  }, [user, pendingScoreSubmit, isCompleted]);
+  }, [user, pendingScoreSubmit, isCompleted, submitScore]);
 
   const handleAnswer = useCallback((isCorrect: boolean) => {
     if (isCorrect) {
@@ -71,7 +71,7 @@ export default function DailyQuizPage() {
     }
   }, []);
 
-  const submitScore = async () => {
+  const submitScore = useCallback(async () => {
     const timeSpent = Math.floor((Date.now() - startTime) / 1000);
     setScoreSubmitError(null);
 
@@ -104,7 +104,7 @@ export default function DailyQuizPage() {
       console.error('Failed to submit score:', error);
       setScoreSubmitError('네트워크 오류가 발생했습니다');
     }
-  };
+  }, [startTime, dailySetId, correctAnswers, questions.length]);
 
   const handleNextQuestion = useCallback(async () => {
     if (currentIndex < questions.length - 1) {
@@ -118,7 +118,7 @@ export default function DailyQuizPage() {
         await submitScore();
       }
     }
-  }, [currentIndex, questions.length, user]);
+  }, [currentIndex, questions.length, user, submitScore]);
 
   const handleLoginSuccess = () => {
     setShowLoginModal(false);
