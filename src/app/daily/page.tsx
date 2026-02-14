@@ -191,12 +191,12 @@ export default function DailyQuizPage() {
 
               {/* 점수 제출 중 로딩 */}
               {isSubmittingScore && (
-                <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl">
+                <div className="p-5 bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-300 rounded-xl">
                   <div className="flex items-center justify-center gap-3">
-                    <div className="w-6 h-6 border-3 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-blue-700 font-semibold">점수를 제출하는 중...</p>
+                    <div className="w-6 h-6 border-3 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-orange-700 font-semibold">점수를 제출하는 중...</p>
                   </div>
-                  <p className="text-xs text-blue-600 mt-2 text-center">잠시만 기다려주세요</p>
+                  <p className="text-xs text-orange-600 mt-2 text-center">잠시만 기다려주세요</p>
                 </div>
               )}
 
