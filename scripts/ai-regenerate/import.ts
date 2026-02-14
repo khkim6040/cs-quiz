@@ -89,6 +89,7 @@ const VALID_TOPIC_IDS = [
   "dataStructure",
   "computerNetworking",
   "operatingSystem",
+  "computerArchitecture",
 ];
 
 function validateQuestion(
