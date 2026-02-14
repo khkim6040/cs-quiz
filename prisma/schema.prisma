@@ -2,21 +2,14 @@
 
 generator client {
   provider = "prisma-client-js"
-  // Alpine Linux (musl libc)에서 실행될 것이므로 해당 바이너리 타겟 명시
-  // OpenSSL 버전에 따라 1.1.x 또는 3.0.x를 선택
-  binaryTargets = ["native", "debian-openssl-1.1.x"]
+  binaryTargets = ["native"]
 }
 
 datasource db {
-  provider = "sqlite"
-  // 로컬 개발 시: 프로젝트 루트의 prisma 폴더 내 dev.db 파일을 사용
-  // 배포 시: Docker 컨테이너 내의 특정 경로 (예: /app/prisma/prod.db) 또는 볼륨 마운트 경로
-  // 환경 변수를 사용하여 경로를 동적으로 설정하는 것이 좋습니다.
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// 모델 정의는 이전 PostgreSQL 예시와 동일하게 유지합니다.
-// Topic, Question, AnswerOption 모델들...
 model Topic {
   id        String     @id @default(cuid())
   name_ko   String
@@ -46,7 +39,6 @@ model AnswerOption {
   question      Question @relation(fields: [questionId], references: [id])
 }
 
-// 사용자 모델
 model User {
   id        String      @id @default(cuid())
   username  String      @unique
@@ -54,25 +46,23 @@ model User {
   scores    UserScore[]
 }
 
-// 일일 문제 세트
 model DailyQuestionSet {
   id          String      @id @default(cuid())
-  date        DateTime    @unique
-  questionIds String      // JSON array of question IDs
+  date        DateTime    @unique @db.Date
+  questionIds String[]
   createdAt   DateTime    @default(now())
   scores      UserScore[]
 }
 
-// 사용자 점수 기록
 model UserScore {
   id             String           @id @default(cuid())
   userId         String
   dailySetId     String
-  topicId        String?          // null for random/daily quiz
+  topicId        String?
   score          Int
   correctAnswers Int
   totalQuestions Int
-  timeSpent      Int              // 초 단위
+  timeSpent      Int
   completedAt    DateTime         @default(now())
 
   user           User             @relation(fields: [userId], references: [id])
