@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "CS 지식 퀴즈",
   description: "컴퓨터 과학 지식을 퀴즈로 쉽고 재미있게 배워보세요!",
+  icons: {
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:rgb(251,146,60);stop-opacity:1'/><stop offset='100%' style='stop-color:rgb(245,158,11);stop-opacity:1'/></linearGradient></defs><rect width='100' height='100' rx='20' fill='url(%23grad)'/><path fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round' d='M40.3 71h19.5M50 12.5v4.2m26.5 6.8l-3 3M87.5 50h-4.2M16.7 50h-4.2M27.6 23.6l-3-3m11.8 41.2a20.8 20.8 0 1129.5 0l-2.3 2.3a14 14 0 00-4.1 9.9v2.2a8.3 8.3 0 11-16.7 0V77a14 14 0 00-4.1-9.9l-2.3-2.3z'/></svg>",
+  },
 };
 
 export default function RootLayout({
