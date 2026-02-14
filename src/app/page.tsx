@@ -4,24 +4,34 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Topic } from '@/types/quizTypes';
 import { useAuth } from '@/contexts/AuthContext';
+import LeaderboardAccordion from '@/components/LeaderboardAccordion';
 
 export default function HomePage() {
   const { user, isLoading: authLoading } = useAuth();
   const [topics, setTopics] = useState<Topic[]>([]);
+  const [dailySetId, setDailySetId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchTopics() {
+    async function fetchData() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch('/api/topics');
-        if (!res.ok) {
+        // 주제 목록 가져오기
+        const topicsRes = await fetch('/api/topics');
+        if (!topicsRes.ok) {
           throw new Error('주제 목록을 불러오는 데 실패했습니다.');
         }
-        const data: Topic[] = await res.json();
-        setTopics(data);
+        const topicsData: Topic[] = await topicsRes.json();
+        setTopics(topicsData);
+
+        // 오늘의 dailySetId 가져오기
+        const dailySetRes = await fetch('/api/daily-set');
+        if (dailySetRes.ok) {
+          const dailySetData = await dailySetRes.json();
+          setDailySetId(dailySetData.id);
+        }
       } catch (err: any) {
         console.error(err);
         setError(err.message);
@@ -29,7 +39,7 @@ export default function HomePage() {
         setLoading(false);
       }
     }
-    fetchTopics();
+    fetchData();
   }, []);
 
   if (loading) {
@@ -67,10 +77,11 @@ export default function HomePage() {
         )}
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl">
+      <div className="w-full max-w-4xl space-y-3">
+        {/* 오늘의 퀴즈 - 큰 버튼 */}
         <Link
           href={`/daily`}
-          className="block p-8 bg-gradient-to-br from-orange-400 to-amber-500 text-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out sm:col-span-2 lg:col-span-3 group"
+          className="block p-8 bg-gradient-to-br from-orange-400 to-amber-500 text-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out group"
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -82,6 +93,14 @@ export default function HomePage() {
           </div>
         </Link>
 
+        {/* 리더보드 아코디언 */}
+        {dailySetId && (
+          <LeaderboardAccordion dailySetId={dailySetId} />
+        )}
+      </div>
+
+      {/* 주제별 퀴즈 그리드 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl mt-8">
         {topics.map((topic) => (
           <Link
             href={`/quiz/${topic.id}`}
