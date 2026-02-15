@@ -16,23 +16,27 @@ interface QuestionComponentProps {
 // 마크다운 컴포넌트 커스터마이징
 const markdownComponents: Components = {
   code({ node, inline, className, children, ...props }: any) {
-    if (inline) {
+    // inline 값이 true이거나, className이 없으면(언어 지정 안됨) 인라인 코드
+    if (inline || !className) {
       return (
         <code className="px-1.5 py-0.5 bg-gray-900/10 text-[0.9em] rounded font-mono" {...props}>
           {children}
         </code>
       );
     }
+    // 블록 코드 (```로 시작하는 경우)
     return (
-      <pre className="bg-slate-800 text-slate-100 rounded-lg p-4 overflow-x-auto my-3">
-        <code className={className} {...props}>
-          {children}
-        </code>
-      </pre>
+      <code className={`${className || ''} block bg-slate-800 text-slate-100 rounded-lg p-4 overflow-x-auto my-0`} {...props}>
+        {children}
+      </code>
     );
   },
+  pre({ children }) {
+    // pre 태그는 my-3만 추가
+    return <div className="my-3">{children}</div>;
+  },
   p({ children }) {
-    return <p className="mb-3 last:mb-0">{children}</p>;
+    return <>{children}</>;
   },
   ul({ children }) {
     return <ul className="list-disc list-inside mb-3 space-y-1">{children}</ul>;
