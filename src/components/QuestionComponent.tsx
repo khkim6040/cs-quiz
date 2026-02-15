@@ -136,13 +136,6 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
     return baseClasses + "text-gray-600 cursor-pointer";
   };
 
-  const getStatusIcon = (option: AnswerOptionType): string => {
-    if (!isAnswered) return "";
-    if (option.isCorrect) return "✅";
-    if (option.id === userAnswerId && !option.isCorrect) return "❌";
-    return "";
-  };
-
   return (
     <div className="my-6 md:my-8">
       <div className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 leading-relaxed">
@@ -172,8 +165,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
                   </ReactMarkdown>
                 </span>
                 {isAnswered && (
-                  <span className="ml-2 flex items-center gap-2">
-                    <span>{getStatusIcon(opt)}</span>
+                  <span className="ml-2">
                     <svg
                       className={`w-5 h-5 transition-transform duration-200 ${expandedOptions.has(opt.id) ? 'rotate-180' : ''
                         }`}
