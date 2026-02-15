@@ -239,7 +239,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
 
       {/* 힌트 + 푸터 영역 */}
       <div className="mt-5">
-        <div className="flex items-start justify-between gap-4">
+        <div className="relative flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             {!isAnswered && !showHint && (
               <button
@@ -262,21 +262,20 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
               </div>
             )}
           </div>
-          {footerRight && <div className="flex-shrink-0">{footerRight}</div>}
+          {/* 다음 문제 버튼 - 절대 중앙 배치 */}
+          {isAnswered && (
+            <div className="absolute left-1/2 transform -translate-x-1/2">
+              <button
+                onClick={onNextQuestion}
+                className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
+              >
+                다음 문제
+              </button>
+            </div>
+          )}
+          {footerRight && <div className="flex-1 flex justify-end">{footerRight}</div>}
         </div>
       </div>
-
-      {/* 다음 문제 버튼 */}
-      {isAnswered && (
-        <div className="mt-6 flex justify-center">
-          <button
-            onClick={onNextQuestion}
-            className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
-          >
-            다음 문제
-          </button>
-        </div>
-      )}
     </div>
   );
 };
