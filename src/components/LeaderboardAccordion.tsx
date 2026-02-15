@@ -286,7 +286,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                           rank={entry.rank}
                           username={entry.username}
                           value={`${entry.correctCount}개`}
-                          subValue="정답"
+                          subValue=""
                           isCurrentUser={!!isCurrentUser}
                           index={index}
                         />
