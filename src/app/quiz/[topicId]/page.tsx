@@ -29,6 +29,7 @@ export default function QuizPage({ params }: QuizPageProps) {
   // 풀이 추적
   const [solvedCount, setSolvedCount] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
+  const [showStatTooltip, setShowStatTooltip] = useState(false);
 
   const fetchBatch = useCallback(async () => {
     if (isFetchingRef.current) return;
@@ -128,19 +129,34 @@ export default function QuizPage({ params }: QuizPageProps) {
     );
   }
 
+  const handleStatTap = () => {
+    setShowStatTooltip(true);
+    setTimeout(() => setShowStatTooltip(false), 2000);
+  };
+
+  const pillClass = "px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors text-sm font-medium";
+
   const quizFooter = (
-    <button
-      onClick={handleQuit}
-      className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
-    >
+    <div className="flex items-center gap-2">
       {solvedCount > 0 && (
-        <span className="text-sm font-bold text-green-600">
-          {correctCount}/{solvedCount}
-        </span>
+        <div className="relative">
+          <button onClick={handleStatTap} className={pillClass}>
+            <span className="text-green-600 font-bold">{correctCount}</span>
+            <span className="text-gray-400"> / </span>
+            <span className="text-gray-600">{solvedCount}</span>
+          </button>
+          {showStatTooltip && (
+            <div className="absolute bottom-full right-0 mb-2 px-3 py-1.5 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap shadow-lg animate-in fade-in duration-200">
+              맞은 문제 / 푼 문제
+              <div className="absolute top-full right-4 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-gray-800" />
+            </div>
+          )}
+        </div>
       )}
-      {solvedCount > 0 && <span className="text-gray-300">·</span>}
-      <span className="text-sm text-gray-500 font-medium">그만하기</span>
-    </button>
+      <button onClick={handleQuit} className={`${pillClass} text-gray-500`}>
+        그만하기
+      </button>
+    </div>
   );
 
   return (
