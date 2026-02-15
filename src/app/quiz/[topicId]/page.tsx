@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { QuestionData } from '@/types/quizTypes';
+import { useAuth } from '@/contexts/AuthContext';
 import QuestionComponent from '@/components/QuestionComponent';
 
 const BATCH_SIZE = 10;
@@ -16,12 +17,18 @@ interface QuizPageProps {
 
 export default function QuizPage({ params }: QuizPageProps) {
   const router = useRouter();
+  const { user } = useAuth();
   const [questionQueue, setQuestionQueue] = useState<QuestionData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentLanguage] = useState('ko');
   const isFetchingRef = useRef(false);
+  const startTimeRef = useRef(Date.now());
+
+  // 풀이 추적
+  const [solvedCount, setSolvedCount] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
 
   const fetchBatch = useCallback(async () => {
     if (isFetchingRef.current) return;
@@ -65,6 +72,36 @@ export default function QuizPage({ params }: QuizPageProps) {
     setCurrentIndex((prev) => prev + 1);
   };
 
+  const handleAnswer = (isCorrect: boolean) => {
+    setSolvedCount((prev) => prev + 1);
+    if (isCorrect) {
+      setCorrectCount((prev) => prev + 1);
+    }
+  };
+
+  const handleQuit = async () => {
+    // 로그인 상태이고 문제를 1개 이상 풀었으면 세션 저장
+    if (user && solvedCount > 0) {
+      const timeSpent = Math.round((Date.now() - startTimeRef.current) / 1000);
+      try {
+        await fetch('/api/quiz-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            quizType: params.topicId === 'random' ? 'random' : 'topic',
+            topicId: params.topicId === 'random' ? null : params.topicId,
+            solvedCount,
+            correctCount,
+            timeSpent,
+          }),
+        });
+      } catch {
+        // 저장 실패해도 홈으로 이동
+      }
+    }
+    router.push('/');
+  };
+
   const currentQuestion = questionQueue[currentIndex] ?? null;
 
   if (loading && !currentQuestion) {
@@ -98,18 +135,26 @@ export default function QuizPage({ params }: QuizPageProps) {
           <h1 className="text-3xl font-bold text-gray-800">
             {params.topicId === 'random' ? '랜덤 퀴즈' : '퀴즈'}
           </h1>
-          <button
-            onClick={() => router.push('/')}
-            className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-          >
-            종료하기
-          </button>
+          <div className="flex items-center gap-4">
+            {solvedCount > 0 && (
+              <span className="text-sm text-gray-500">
+                {correctCount}/{solvedCount}
+              </span>
+            )}
+            <button
+              onClick={handleQuit}
+              className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              종료하기
+            </button>
+          </div>
         </div>
 
         {currentQuestion && (
           <QuestionComponent
             questionData={currentQuestion}
             onNextQuestion={handleNextQuestion}
+            onAnswer={handleAnswer}
           />
         )}
       </div>
