@@ -207,31 +207,33 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
       </div>
 
       {/* 힌트 + 푸터 영역 */}
-      <div className="mt-5 flex items-center justify-between">
-        <div>
-          {!isAnswered && !showHint && (
-            <button
-              onClick={() => setShowHint(true)}
-              className="px-4 py-2 text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors font-medium"
-            >
-              💡 힌트 보기
-            </button>
-          )}
-        </div>
-        {footerRight && <div>{footerRight}</div>}
-      </div>
-      {showHint && (
-        <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md text-yellow-700">
-          <div className="text-sm">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={markdownComponents}
-            >
-              {questionData.hint}
-            </ReactMarkdown>
+      <div className="mt-5">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            {!isAnswered && !showHint && (
+              <button
+                onClick={() => setShowHint(true)}
+                className="px-4 py-2 text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors font-medium"
+              >
+                💡 힌트 보기
+              </button>
+            )}
+            {showHint && (
+              <div className="p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md text-yellow-700">
+                <div className="text-sm">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={markdownComponents}
+                  >
+                    {questionData.hint}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            )}
           </div>
+          {footerRight && <div className="flex-shrink-0">{footerRight}</div>}
         </div>
-      )}
+      </div>
 
       {/* 다음 문제 버튼 */}
       {isAnswered && (
