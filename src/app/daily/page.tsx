@@ -71,6 +71,19 @@ export default function DailyQuizPage() {
     setIsSubmittingScore(true);
 
     try {
+      // QuizSession도 함께 저장 (오늘의 다풀기 리더보드용)
+      fetch('/api/quiz-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          quizType: 'daily',
+          dailySetId,
+          solvedCount: questions.length,
+          correctCount: correctAnswers,
+          timeSpent,
+        }),
+      }).catch(() => {}); // 실패해도 무시
+
       const res = await fetch('/api/submit-score', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
