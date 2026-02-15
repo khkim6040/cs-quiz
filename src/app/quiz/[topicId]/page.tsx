@@ -128,33 +128,31 @@ export default function QuizPage({ params }: QuizPageProps) {
     );
   }
 
+  const quizFooter = (
+    <div className="flex items-center gap-3">
+      {solvedCount > 0 && (
+        <span className="text-sm text-gray-500 font-medium">
+          {correctCount}/{solvedCount}
+        </span>
+      )}
+      <button
+        onClick={handleQuit}
+        className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors font-medium"
+      >
+        종료하기
+      </button>
+    </div>
+  );
+
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">
-            {params.topicId === 'random' ? '랜덤 퀴즈' : '퀴즈'}
-          </h1>
-          <div className="flex items-center gap-4">
-            {solvedCount > 0 && (
-              <span className="text-sm text-gray-500">
-                {correctCount}/{solvedCount}
-              </span>
-            )}
-            <button
-              onClick={handleQuit}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-            >
-              종료하기
-            </button>
-          </div>
-        </div>
-
         {currentQuestion && (
           <QuestionComponent
             questionData={currentQuestion}
             onNextQuestion={handleNextQuestion}
             onAnswer={handleAnswer}
+            footerRight={quizFooter}
           />
         )}
       </div>

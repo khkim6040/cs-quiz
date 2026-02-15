@@ -10,6 +10,7 @@ interface QuestionComponentProps {
   questionData: QuestionData;
   onNextQuestion: () => void;
   onAnswer?: (isCorrect: boolean) => void;
+  footerRight?: React.ReactNode;
 }
 
 // 마크다운 컴포넌트 커스터마이징
@@ -66,7 +67,7 @@ const markdownComponents: Components = {
   },
 };
 
-const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onNextQuestion, onAnswer }) => {
+const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onNextQuestion, onAnswer, footerRight }) => {
   const [showHint, setShowHint] = useState(false);
   const [userAnswer, setUserAnswer] = useState<AnswerOptionType | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -205,15 +206,20 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
         ))}
       </div>
 
-      {/* 힌트 섹션 */}
-      {!isAnswered && !showHint && (
-        <button
-          onClick={() => setShowHint(true)}
-          className="mt-5 px-4 py-2 text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors font-medium"
-        >
-          💡 힌트 보기
-        </button>
-      )}
+      {/* 힌트 + 푸터 영역 */}
+      <div className="mt-5 flex items-center justify-between">
+        <div>
+          {!isAnswered && !showHint && (
+            <button
+              onClick={() => setShowHint(true)}
+              className="px-4 py-2 text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors font-medium"
+            >
+              💡 힌트 보기
+            </button>
+          )}
+        </div>
+        {footerRight && <div>{footerRight}</div>}
+      </div>
       {showHint && (
         <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md text-yellow-700">
           <div className="text-sm">
