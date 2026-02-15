@@ -158,7 +158,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-amber-600 font-bold">🥇</span>
                     <span className="text-sm font-semibold text-gray-700">{todayData.topUsers[0].username}</span>
-                    <span className="text-sm font-bold text-amber-600">{todayData.topUsers[0].solvedCount}문제</span>
+                    <span className="text-sm font-bold text-amber-600">{todayData.topUsers[0].correctCount}개 정답</span>
                   </div>
                   {user && todayData.currentUserRank && (
                     <>
@@ -220,7 +220,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              일일 종합
+              정답 개수
             </button>
           </div>
 
@@ -285,8 +285,8 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                           key={entry.rank}
                           rank={entry.rank}
                           username={entry.username}
-                          value={`${entry.solvedCount}문제`}
-                          subValue={`정답 ${entry.correctCount}`}
+                          value={`${entry.correctCount}개`}
+                          subValue="정답"
                           isCurrentUser={!!isCurrentUser}
                           index={index}
                         />
