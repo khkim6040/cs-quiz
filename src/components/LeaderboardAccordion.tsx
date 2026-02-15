@@ -204,23 +204,21 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
           <div className="flex border-b border-gray-200">
             <button
               onClick={() => handleTabChange('daily')}
-              className={`flex-1 py-3 text-sm font-bold transition-colors ${
-                activeTab === 'daily'
+              className={`flex-1 py-3 text-sm font-bold transition-colors ${activeTab === 'daily'
                   ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
+                }`}
             >
               오늘의 퀴즈
             </button>
             <button
               onClick={() => handleTabChange('today')}
-              className={`flex-1 py-3 text-sm font-bold transition-colors ${
-                activeTab === 'today'
+              className={`flex-1 py-3 text-sm font-bold transition-colors ${activeTab === 'today'
                   ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
+                }`}
             >
-              정답 개수
+              맞춘 수
             </button>
           </div>
 
@@ -336,11 +334,10 @@ function RankRow({ rank, username, value, subValue, isCurrentUser, index }: {
       <div className="flex items-center gap-3 flex-1">
         <div className="flex items-center gap-2 min-w-[60px]">
           {rank <= 3 ? (
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-md ${
-              rank === 1 ? 'bg-gradient-to-br from-amber-400 to-yellow-500'
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-md ${rank === 1 ? 'bg-gradient-to-br from-amber-400 to-yellow-500'
                 : rank === 2 ? 'bg-gradient-to-br from-gray-300 to-gray-400'
                   : 'bg-gradient-to-br from-orange-300 to-amber-400'
-            }`}>
+              }`}>
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
