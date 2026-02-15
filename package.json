@@ -11,7 +11,6 @@
     "lint:strict": "next lint --max-warnings 0",
     "type-check": "tsc --noEmit",
     "check": "npm run lint && npm run type-check",
-    "regenerate": "ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/regenerate.ts",
     "import-questions": "ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/import.ts",
     "import-questions:dry": "ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/import.ts --dry-run",
     "generate-daily": "ts-node -P scripts/tsconfig.scripts.json scripts/generate-daily-questions.ts",
@@ -22,7 +21,6 @@
     "seed": "ts-node -P scripts/tsconfig.scripts.json prisma/seed.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.32.1",
     "@prisma/client": "^5.22.0",
     "next": "14.2.3",
     "react": "^18",

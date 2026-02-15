@@ -29,14 +29,8 @@ npm install
 `.env` 파일 생성:
 
 ```bash
-# PostgreSQL 데이터베이스 URL (개발용 SQLite도 가능)
+# PostgreSQL 데이터베이스 URL
 DATABASE_URL="postgresql://username:password@localhost:5432/cs_quiz"
-
-# 또는 SQLite (개발용)
-# DATABASE_URL="file:./dev.db"
-
-# Anthropic API 키 (AI 재가공 스크립트 사용 시 필요, 선택사항)
-ANTHROPIC_API_KEY="your-claude-api-key-here"
 ```
 
 ### 3. 데이터베이스 설정
@@ -89,9 +83,6 @@ cs-quiz/
 │       ├── computerSecurity.ts  # 보안 문제
 │       ├── database.ts        # 데이터베이스 문제
 │       └── dataStructure.ts   # 자료구조 문제
-├── scripts/
-│   ├── generate-daily-questions.ts  # 일일 문제 생성
-│   └── tsconfig.scripts.json
 ├── src/
 │   ├── app/
 │   │   ├── api/               # API 라우트
@@ -131,7 +122,6 @@ cs-quiz/
 │   │       └── index.ts       # 번역 헬퍼
 │   └── types/
 │       └── quizTypes.ts       # 타입 정의
-├── DAILY_BATCH_GUIDE.md       # 일일 퀴즈 생성 가이드
 ├── DEPLOYMENT.md              # 배포 가이드
 ├── LINT_GUIDE.md              # 린트 가이드
 └── README.md
@@ -166,23 +156,6 @@ cs-quiz/
    - 상단 메뉴에서 한국어/영어 전환
    - 실시간 반영 (새로고침 불필요)
 
-### 관리자
-
-#### 일일 문제 세트 생성
-
-```bash
-# 오늘 문제 세트 생성
-npm run generate-daily
-
-# 일주일치 생성
-npm run generate-daily:week
-
-# 한 달치 생성
-npm run generate-daily:month
-```
-
-자세한 내용은 [DAILY_BATCH_GUIDE.md](DAILY_BATCH_GUIDE.md)를 참고하세요.
-
 ## 🧩 API 엔드포인트
 
 ### 인증
@@ -209,12 +182,12 @@ npm run generate-daily:month
 
 - **Frontend**: Next.js 14 (App Router), React 18, TailwindCSS
 - **Backend**: Next.js API Routes
-- **Database**: PostgreSQL (프로덕션), SQLite (개발)
+- **Database**: PostgreSQL (Neon)
 - **ORM**: Prisma
 - **UI**: React Markdown, Tailwind Typography
 - **상태 관리**: React Context API
 - **인증**: 세션 기반 (localStorage)
-- **배포**: Vercel / Cloudflare Pages
+- **배포**: Vercel
 
 ## 🗄️ 데이터베이스 스키마
 
@@ -233,19 +206,40 @@ npm run generate-daily:month
 
 상세한 배포 가이드는 [DEPLOYMENT.md](DEPLOYMENT.md)를 참고하세요.
 
-### Vercel (권장)
+### Vercel + Neon (권장)
 
-1. GitHub에 푸시
-2. Vercel에서 Import Project
-3. 환경 변수 설정 (`DATABASE_URL`)
-4. PostgreSQL 데이터베이스 연결 (Vercel Postgres 또는 외부)
-5. 마이그레이션 실행
-6. Deploy!
+1. **Neon에서 PostgreSQL 데이터베이스 생성**
+   - https://neon.tech 에서 무료 계정 생성
+   - 새 프로젝트 생성 후 연결 문자열 복사
+
+2. **GitHub에 푸시**
+   ```bash
+   git push origin main
+   ```
+
+3. **Vercel에서 프로젝트 연동**
+   - https://vercel.com 에서 Import Project
+   - GitHub 저장소 선택
+   - 환경 변수 설정:
+     ```
+     DATABASE_URL="postgresql://..."
+     ```
+
+4. **초기 데이터 설정**
+   ```bash
+   # 로컬에서 프로덕션 DB에 마이그레이션 실행
+   npx prisma migrate deploy
+   
+   # 시드 데이터 삽입
+   npx prisma db seed
+   ```
+
+5. **Deploy!**
 
 ### 환경 변수 (프로덕션)
 
 ```bash
-DATABASE_URL="postgresql://..."  # PostgreSQL 연결 문자열
+DATABASE_URL="postgresql://..."  # Neon PostgreSQL 연결 문자열
 ```
 
 ## 🎨 주요 기능 상세
