@@ -129,19 +129,18 @@ export default function QuizPage({ params }: QuizPageProps) {
   }
 
   const quizFooter = (
-    <div className="flex items-center gap-3">
+    <button
+      onClick={handleQuit}
+      className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+    >
       {solvedCount > 0 && (
-        <span className="text-sm text-gray-500 font-medium">
+        <span className="text-sm font-bold text-green-600">
           {correctCount}/{solvedCount}
         </span>
       )}
-      <button
-        onClick={handleQuit}
-        className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors font-medium"
-      >
-        종료하기
-      </button>
-    </div>
+      {solvedCount > 0 && <span className="text-gray-300">·</span>}
+      <span className="text-sm text-gray-500 font-medium">그만하기</span>
+    </button>
   );
 
   return (
