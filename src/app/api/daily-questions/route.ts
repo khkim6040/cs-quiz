@@ -7,9 +7,6 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const lang = searchParams.get("lang") || "ko";
-
     const today = getTodayInKST();
 
     console.log("[Daily Questions API] Looking for date:", today.toISOString());
@@ -48,12 +45,18 @@ export async function GET(request: Request) {
     const formattedQuestions = orderedQuestions.map((question: any) => ({
       id: question.id,
       topicId: question.topicId,
-      topicName: lang === "en" ? question.topic.name_en : question.topic.name_ko,
-      question: lang === "en" ? question.text_en : question.text_ko,
-      hint: lang === "en" ? question.hint_en : question.hint_ko,
+      topicName_ko: question.topic.name_ko,
+      topicName_en: question.topic.name_en || question.topic.name_ko,
+      question_ko: question.text_ko,
+      question_en: question.text_en || question.text_ko,
+      hint_ko: question.hint_ko,
+      hint_en: question.hint_en || question.hint_ko,
       answerOptions: question.answerOptions.map((option: any) => ({
-        text: lang === "en" ? option.text_en : option.text_ko,
-        rationale: lang === "en" ? option.rationale_en : option.rationale_ko,
+        id: option.id,
+        text_ko: option.text_ko,
+        text_en: option.text_en || option.text_ko,
+        rationale_ko: option.rationale_ko,
+        rationale_en: option.rationale_en || option.rationale_ko,
         isCorrect: option.isCorrect,
       })),
     }));

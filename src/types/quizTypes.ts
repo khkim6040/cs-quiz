@@ -1,15 +1,20 @@
 export interface AnswerOption {
-  text: string;
-  rationale: string;
+  id: string;
+  text_ko: string;
+  text_en: string;
+  rationale_ko: string;
+  rationale_en: string;
   isCorrect: boolean;
 }
 
 export interface QuestionData {
   id: string;
   topicId: string;
-  question: string;
+  question_ko: string;
+  question_en: string;
+  hint_ko: string;
+  hint_en: string;
   answerOptions: AnswerOption[];
-  hint: string;
 }
 
 export interface Topic {

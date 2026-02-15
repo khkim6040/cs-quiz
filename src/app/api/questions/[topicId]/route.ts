@@ -9,7 +9,6 @@ export async function GET(
 ) {
   const topicId = params.topicId;
   const { searchParams } = new URL(request.url);
-  const lang = searchParams.get("lang") || "ko";
   const count = Math.min(
     Math.max(parseInt(searchParams.get("count") || "1", 10) || 1, 1),
     MAX_BATCH_SIZE
@@ -79,17 +78,16 @@ export async function GET(
     const formatQuestion = (q: (typeof questionsFromDB)[0]) => ({
       id: q.id,
       topicId: q.topicId,
-      question:
-        lang === "en" && q.text_en ? q.text_en : q.text_ko,
-      hint:
-        lang === "en" && q.hint_en ? q.hint_en : q.hint_ko,
+      question_ko: q.text_ko,
+      question_en: q.text_en || q.text_ko,
+      hint_ko: q.hint_ko,
+      hint_en: q.hint_en || q.hint_ko,
       answerOptions: q.answerOptions.map((opt) => ({
         id: opt.id,
-        text: lang === "en" && opt.text_en ? opt.text_en : opt.text_ko,
-        rationale:
-          lang === "en" && opt.rationale_en
-            ? opt.rationale_en
-            : opt.rationale_ko,
+        text_ko: opt.text_ko,
+        text_en: opt.text_en || opt.text_ko,
+        rationale_ko: opt.rationale_ko,
+        rationale_en: opt.rationale_en || opt.rationale_ko,
         isCorrect: opt.isCorrect,
       })),
     });

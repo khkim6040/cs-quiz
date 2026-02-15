@@ -10,12 +10,18 @@ import { useLanguage } from '@/contexts/LanguageContext';
 interface Question {
   id: string;
   topicId: string;
-  topicName: string;
-  question: string;
-  hint: string;
+  topicName_ko: string;
+  topicName_en: string;
+  question_ko: string;
+  question_en: string;
+  hint_ko: string;
+  hint_en: string;
   answerOptions: Array<{
-    text: string;
-    rationale: string;
+    id: string;
+    text_ko: string;
+    text_en: string;
+    rationale_ko: string;
+    rationale_en: string;
     isCorrect: boolean;
   }>;
 }
@@ -44,7 +50,7 @@ export default function DailyQuizPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/daily-questions?lang=${language}`);
+        const res = await fetch('/api/daily-questions');
         if (!res.ok) {
           throw new Error(t('daily.errorLoad'));
         }
@@ -59,7 +65,7 @@ export default function DailyQuizPage() {
       }
     }
     fetchDailyQuestions();
-  }, [language, t]);
+  }, [t]);
 
   const handleAnswer = useCallback((isCorrect: boolean) => {
     if (isCorrect) {
@@ -336,14 +342,16 @@ export default function DailyQuizPage() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
               </svg>
-              {currentQuestion.topicName}
+              {language === 'en' ? currentQuestion.topicName_en : currentQuestion.topicName_ko}
             </div>
             <QuestionComponent
               questionData={{
                 id: currentQuestion.id,
                 topicId: currentQuestion.topicId,
-                question: currentQuestion.question,
-                hint: currentQuestion.hint,
+                question_ko: currentQuestion.question_ko,
+                question_en: currentQuestion.question_en,
+                hint_ko: currentQuestion.hint_ko,
+                hint_en: currentQuestion.hint_en,
                 answerOptions: currentQuestion.answerOptions,
               }}
               onNextQuestion={handleNextQuestion}

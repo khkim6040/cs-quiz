@@ -19,7 +19,7 @@ interface QuizPageProps {
 export default function QuizPage({ params }: QuizPageProps) {
   const router = useRouter();
   const { user } = useAuth();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [questionQueue, setQuestionQueue] = useState<QuestionData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -37,7 +37,7 @@ export default function QuizPage({ params }: QuizPageProps) {
 
     try {
       const res = await fetch(
-        `/api/questions/${params.topicId}?lang=${language}&count=${BATCH_SIZE}`
+        `/api/questions/${params.topicId}?count=${BATCH_SIZE}`
       );
       if (!res.ok) {
         throw new Error(t('quiz.errorLoad'));
@@ -53,17 +53,11 @@ export default function QuizPage({ params }: QuizPageProps) {
       isFetchingRef.current = false;
       setLoading(false);
     }
-  }, [params.topicId, language, questionQueue.length, currentIndex, t]);
+  }, [params.topicId, questionQueue.length, currentIndex, t]);
 
   useEffect(() => {
-    // 언어 변경 시 기존 문제 캐시를 비우고 새로 fetch
-    setQuestionQueue([]);
-    setCurrentIndex(0);
-    setLoading(true);
-    setError(null);
-    isFetchingRef.current = false;
     fetchBatch();
-  }, [params.topicId, language]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [params.topicId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const remaining = questionQueue.length - currentIndex;

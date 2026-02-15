@@ -69,26 +69,28 @@ const markdownComponents: Components = {
 };
 
 const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onNextQuestion, onAnswer, footerRight }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+
+  const l = (ko: string, en: string) => language === 'en' ? en : ko;
   const [showHint, setShowHint] = useState(false);
-  const [userAnswer, setUserAnswer] = useState<AnswerOptionType | null>(null);
+  const [userAnswerId, setUserAnswerId] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [expandedOptions, setExpandedOptions] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setShowHint(false);
-    setUserAnswer(null);
+    setUserAnswerId(null);
     setIsAnswered(false);
     setExpandedOptions(new Set());
   }, [questionData.id]);
 
   const handleAnswerSelect = (selectedOption: AnswerOptionType) => {
     if (!isAnswered) {
-      setUserAnswer(selectedOption);
+      setUserAnswerId(selectedOption.id);
       setIsAnswered(true);
       const correctOption = questionData.answerOptions.find(opt => opt.isCorrect);
       if (correctOption) {
-        setExpandedOptions(new Set([correctOption.text]));
+        setExpandedOptions(new Set([correctOption.id]));
       }
       if (onAnswer) {
         onAnswer(selectedOption.isCorrect);
@@ -96,12 +98,12 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
     }
   };
 
-  const toggleExpand = (optionText: string) => {
+  const toggleExpand = (optionId: string) => {
     const newExpanded = new Set(expandedOptions);
-    if (newExpanded.has(optionText)) {
-      newExpanded.delete(optionText);
+    if (newExpanded.has(optionId)) {
+      newExpanded.delete(optionId);
     } else {
-      newExpanded.add(optionText);
+      newExpanded.add(optionId);
     }
     setExpandedOptions(newExpanded);
   };
@@ -114,7 +116,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
     if (option.isCorrect) {
       return baseClasses + "bg-green-50 border-green-500";
     }
-    if (option.text === userAnswer?.text && !option.isCorrect) {
+    if (option.id === userAnswerId && !option.isCorrect) {
       return baseClasses + "bg-red-50 border-red-500";
     }
     return baseClasses + "bg-gray-50 border-gray-300";
@@ -128,7 +130,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
     if (option.isCorrect) {
       return baseClasses + "text-green-700 cursor-pointer";
     }
-    if (option.text === userAnswer?.text && !option.isCorrect) {
+    if (option.id === userAnswerId && !option.isCorrect) {
       return baseClasses + "text-red-700 cursor-pointer";
     }
     return baseClasses + "text-gray-600 cursor-pointer";
@@ -137,7 +139,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
   const getStatusIcon = (option: AnswerOptionType): string => {
     if (!isAnswered) return "";
     if (option.isCorrect) return "✅";
-    if (option.text === userAnswer?.text && !option.isCorrect) return "❌";
+    if (option.id === userAnswerId && !option.isCorrect) return "❌";
     return "";
   };
 
@@ -148,15 +150,15 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
           remarkPlugins={[remarkGfm]}
           components={markdownComponents}
         >
-          {questionData.question}
+          {l(questionData.question_ko, questionData.question_en)}
         </ReactMarkdown>
       </div>
 
       <div className="space-y-3">
         {questionData.answerOptions.map((opt) => (
-          <div key={opt.text} className={getCardClass(opt)}>
+          <div key={opt.id} className={getCardClass(opt)}>
             <button
-              onClick={() => isAnswered ? toggleExpand(opt.text) : handleAnswerSelect(opt)}
+              onClick={() => isAnswered ? toggleExpand(opt.id) : handleAnswerSelect(opt)}
               disabled={!isAnswered && isAnswered}
               className={getHeaderClass(opt)}
             >
@@ -166,14 +168,14 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
                     remarkPlugins={[remarkGfm]}
                     components={markdownComponents}
                   >
-                    {opt.text}
+                    {l(opt.text_ko, opt.text_en)}
                   </ReactMarkdown>
                 </span>
                 {isAnswered && (
                   <span className="ml-2 flex items-center gap-2">
                     <span>{getStatusIcon(opt)}</span>
                     <svg
-                      className={`w-5 h-5 transition-transform duration-200 ${expandedOptions.has(opt.text) ? 'rotate-180' : ''
+                      className={`w-5 h-5 transition-transform duration-200 ${expandedOptions.has(opt.id) ? 'rotate-180' : ''
                         }`}
                       fill="none"
                       stroke="currentColor"
@@ -186,17 +188,17 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
               </div>
             </button>
 
-            {isAnswered && expandedOptions.has(opt.text) && (
+            {isAnswered && expandedOptions.has(opt.id) && (
               <div className="px-5 pb-4 pt-2 border-t border-gray-200">
                 <div className={`text-sm leading-relaxed ${opt.isCorrect ? 'text-green-800' :
-                  opt.text === userAnswer?.text ? 'text-red-800' :
+                  opt.id === userAnswerId ? 'text-red-800' :
                     'text-gray-700'
                   }`}>
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={markdownComponents}
                   >
-                    {opt.rationale}
+                    {l(opt.rationale_ko, opt.rationale_en)}
                   </ReactMarkdown>
                 </div>
               </div>
@@ -226,7 +228,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
               remarkPlugins={[remarkGfm]}
               components={markdownComponents}
             >
-              {questionData.hint}
+              {l(questionData.hint_ko, questionData.hint_en)}
             </ReactMarkdown>
           </div>
         </div>
