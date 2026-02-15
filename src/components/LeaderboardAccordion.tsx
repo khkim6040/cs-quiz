@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LeaderboardResponse } from '@/types/quizTypes';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LeaderboardAccordionProps {
   dailySetId: string;
@@ -33,15 +34,14 @@ type TabType = 'daily' | 'today';
 export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordionProps) {
   const router = useRouter();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('daily');
 
-  // 일일 퀴즈 리더보드
   const [dailyData, setDailyData] = useState<LeaderboardResponse | null>(null);
   const [dailyLoading, setDailyLoading] = useState(false);
   const [dailyError, setDailyError] = useState<string | null>(null);
 
-  // 오늘의 다풀기 리더보드
   const [todayData, setTodayData] = useState<TodayLeaderboardResponse | null>(null);
   const [todayLoading, setTodayLoading] = useState(false);
   const [todayError, setTodayError] = useState<string | null>(null);
@@ -53,7 +53,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
     try {
       const params = new URLSearchParams({ dailySetId, limit: '10' });
       const res = await fetch(`/api/leaderboard?${params}`);
-      if (!res.ok) throw new Error('리더보드를 불러오는 데 실패했습니다.');
+      if (!res.ok) throw new Error(t('leaderboard.errorLoad'));
       setDailyData(await res.json());
     } catch (err: any) {
       setDailyError(err.message);
@@ -68,7 +68,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
     setTodayError(null);
     try {
       const res = await fetch('/api/leaderboard/today?limit=10');
-      if (!res.ok) throw new Error('리더보드를 불러오는 데 실패했습니다.');
+      if (!res.ok) throw new Error(t('leaderboard.errorLoad'));
       setTodayData(await res.json());
     } catch (err: any) {
       setTodayError(err.message);
@@ -95,13 +95,11 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
     router.push(`/leaderboard?dailySetId=${dailySetId}`);
   };
 
-  // 접힌 상태에서 보여줄 미리보기 데이터
   const previewData = activeTab === 'daily' ? dailyData : todayData;
   const isLoading = activeTab === 'daily' ? dailyLoading : todayLoading;
 
   return (
     <div className="w-full">
-      {/* 접힌 상태 헤더 */}
       <button
         onClick={handleToggle}
         className="w-full p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border-2 border-gray-100 hover:border-orange-300 group"
@@ -116,73 +114,69 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
 
             <div className="flex-1 text-left">
               <h3 className="text-xl font-bold text-gray-800 mb-1 group-hover:text-orange-600 transition-colors">
-                오늘의 리더보드
+                {t('leaderboard.todayLeaderboard')}
               </h3>
 
               {!previewData && !isLoading && (
-                <p className="text-sm text-gray-500">클릭하여 순위 확인하기</p>
+                <p className="text-sm text-gray-500">{t('leaderboard.clickToCheck')}</p>
               )}
               {isLoading && (
-                <p className="text-sm text-gray-500 animate-pulse">로딩 중...</p>
+                <p className="text-sm text-gray-500 animate-pulse">{t('common.loading')}</p>
               )}
 
-              {/* 일일 퀴즈 미리보기 */}
               {activeTab === 'daily' && dailyData && dailyData.topUsers.length > 0 && (
                 <div className="flex items-center gap-4 mt-1">
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-amber-600 font-bold">🥇</span>
                     <span className="text-sm font-semibold text-gray-700">{dailyData.topUsers[0].username}</span>
-                    <span className="text-sm font-bold text-amber-600">{dailyData.topUsers[0].score}점</span>
+                    <span className="text-sm font-bold text-amber-600">{t('common.points', { score: dailyData.topUsers[0].score })}</span>
                   </div>
                   {user && dailyData.currentUserRank && (
                     <>
                       <span className="text-gray-300">|</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-orange-600 font-bold">나:</span>
-                        <span className="text-sm font-semibold text-orange-700">{dailyData.currentUserRank.rank}위</span>
+                        <span className="text-sm text-orange-600 font-bold">{t('common.me')}:</span>
+                        <span className="text-sm font-semibold text-orange-700">{t('common.rankNumber', { rank: dailyData.currentUserRank.rank })}</span>
                       </div>
                     </>
                   )}
                   {!user && (
                     <>
                       <span className="text-gray-300">|</span>
-                      <span className="text-sm text-gray-500">로그인하고 순위 확인하기</span>
+                      <span className="text-sm text-gray-500">{t('leaderboard.loginForRank')}</span>
                     </>
                   )}
                 </div>
               )}
 
-              {/* 오늘의 다풀기 미리보기 */}
               {activeTab === 'today' && todayData && todayData.topUsers.length > 0 && (
                 <div className="flex items-center gap-4 mt-1">
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-amber-600 font-bold">🥇</span>
                     <span className="text-sm font-semibold text-gray-700">{todayData.topUsers[0].username}</span>
-                    <span className="text-sm font-bold text-amber-600">{todayData.topUsers[0].correctCount}개 정답</span>
+                    <span className="text-sm font-bold text-amber-600">{t('leaderboard.correctAnswerPreview', { count: todayData.topUsers[0].correctCount })}</span>
                   </div>
                   {user && todayData.currentUserRank && (
                     <>
                       <span className="text-gray-300">|</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-orange-600 font-bold">나:</span>
-                        <span className="text-sm font-semibold text-orange-700">{todayData.currentUserRank.rank}위</span>
+                        <span className="text-sm text-orange-600 font-bold">{t('common.me')}:</span>
+                        <span className="text-sm font-semibold text-orange-700">{t('common.rankNumber', { rank: todayData.currentUserRank.rank })}</span>
                       </div>
                     </>
                   )}
                 </div>
               )}
 
-              {/* 참가자 수 */}
               {previewData && previewData.totalParticipants > 0 && (
                 <p className="text-xs text-gray-400 mt-1">
-                  총 {previewData.totalParticipants}명 참여 중
+                  {t('leaderboard.totalParticipants', { count: previewData.totalParticipants })}
                 </p>
               )}
 
-              {/* 빈 상태 */}
               {previewData && previewData.topUsers.length === 0 && (
                 <p className="text-sm text-gray-500">
-                  아직 참가자가 없습니다 · 첫 번째가 되어보세요!
+                  {t('leaderboard.noParticipantsInline')}
                 </p>
               )}
             </div>
@@ -197,10 +191,8 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
         </div>
       </button>
 
-      {/* 펼쳐진 상태 */}
       {isExpanded && (
         <div className="mt-2 bg-white rounded-xl shadow-lg border-2 border-orange-100 overflow-hidden animate-in slide-in-from-top-2 fade-in duration-300">
-          {/* 탭 */}
           <div className="flex border-b border-gray-200">
             <button
               onClick={() => handleTabChange('daily')}
@@ -209,7 +201,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                   : 'text-gray-500 hover:text-gray-700'
                 }`}
             >
-              오늘의 퀴즈
+              {t('leaderboard.dailyQuizTab')}
             </button>
             <button
               onClick={() => handleTabChange('today')}
@@ -218,12 +210,11 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                   : 'text-gray-500 hover:text-gray-700'
                 }`}
             >
-              맞춘 수
+              {t('leaderboard.correctCountTab')}
             </button>
           </div>
 
           <div className="p-6">
-            {/* 일일 퀴즈 탭 */}
             {activeTab === 'daily' && (
               <>
                 {dailyLoading && <LoadingState />}
@@ -239,7 +230,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                             key={entry.rank}
                             rank={entry.rank}
                             username={entry.username}
-                            value={`${entry.score}점`}
+                            value={t('common.points', { score: entry.score })}
                             subValue={`${entry.correctAnswers}/${entry.totalQuestions}`}
                             isCurrentUser={!!isCurrentUser}
                             index={index}
@@ -251,14 +242,13 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                       onClick={handleViewAll}
                       className="mt-6 w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                     >
-                      전체 순위 보기 →
+                      {t('leaderboard.viewAll')}
                     </button>
                   </>
                 )}
               </>
             )}
 
-            {/* 오늘의 다풀기 탭 */}
             {activeTab === 'today' && (
               <>
                 {todayLoading && <LoadingState />}
@@ -270,8 +260,8 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
-                    <p className="text-xl font-bold text-gray-800 mb-2">오늘 첫 도전자가 되어보세요!</p>
-                    <p className="text-sm text-gray-500">퀴즈를 풀고 종료하면 자동으로 기록됩니다</p>
+                    <p className="text-xl font-bold text-gray-800 mb-2">{t('leaderboard.firstChallenger')}</p>
+                    <p className="text-sm text-gray-500">{t('leaderboard.autoRecord')}</p>
                   </div>
                 )}
                 {todayData && todayData.topUsers.length > 0 && (
@@ -283,7 +273,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                           key={entry.rank}
                           rank={entry.rank}
                           username={entry.username}
-                          value={`${entry.correctCount}개`}
+                          value={t('leaderboard.correctCount', { count: entry.correctCount })}
                           subValue=""
                           isCurrentUser={!!isCurrentUser}
                           index={index}
@@ -301,8 +291,6 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
   );
 }
 
-// 공통 컴포넌트들
-
 function RankRow({ rank, username, value, subValue, isCurrentUser, index }: {
   rank: number;
   username: string;
@@ -311,6 +299,7 @@ function RankRow({ rank, username, value, subValue, isCurrentUser, index }: {
   isCurrentUser: boolean;
   index: number;
 }) {
+  const { t } = useLanguage();
   const isTopThree = rank <= 3;
 
   return (
@@ -355,7 +344,7 @@ function RankRow({ rank, username, value, subValue, isCurrentUser, index }: {
           </span>
           {isCurrentUser && (
             <span className="px-2 py-0.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs rounded-full font-bold shadow-sm">
-              나
+              {t('common.me')}
             </span>
           )}
         </div>
@@ -374,15 +363,17 @@ function RankRow({ rank, username, value, subValue, isCurrentUser, index }: {
 }
 
 function LoadingState() {
+  const { t } = useLanguage();
   return (
     <div className="text-center py-12 animate-in fade-in duration-500">
       <div className="inline-block w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mb-3"></div>
-      <p className="text-gray-600 animate-pulse">순위를 불러오는 중...</p>
+      <p className="text-gray-600 animate-pulse">{t('leaderboard.loadingRanks')}</p>
     </div>
   );
 }
 
 function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  const { t } = useLanguage();
   return (
     <div className="text-center py-12">
       <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -395,13 +386,14 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
         onClick={onRetry}
         className="mt-4 px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
       >
-        다시 시도
+        {t('common.retry')}
       </button>
     </div>
   );
 }
 
 function EmptyState() {
+  const { t } = useLanguage();
   return (
     <div className="text-center py-12">
       <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -409,8 +401,8 @@ function EmptyState() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
         </svg>
       </div>
-      <p className="text-xl font-bold text-gray-800 mb-2">첫 번째 도전자가 되어보세요!</p>
-      <p className="text-sm text-gray-500">아직 아무도 오늘의 퀴즈를 완료하지 않았습니다</p>
+      <p className="text-xl font-bold text-gray-800 mb-2">{t('leaderboard.firstChallengerDaily')}</p>
+      <p className="text-sm text-gray-500">{t('leaderboard.noDailyComplete')}</p>
     </div>
   );
 }

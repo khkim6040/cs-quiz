@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { LeaderboardEntry, LeaderboardResponse } from '@/types/quizTypes';
 
 function LeaderboardContent() {
@@ -11,6 +12,7 @@ function LeaderboardContent() {
   const dailySetId = searchParams.get('dailySetId');
   const topicId = searchParams.get('topicId');
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +21,7 @@ function LeaderboardContent() {
   useEffect(() => {
     async function fetchLeaderboard() {
       if (!dailySetId) {
-        setError('dailySetId가 필요합니다');
+        setError('dailySetId required');
         setLoading(false);
         return;
       }
@@ -32,7 +34,7 @@ function LeaderboardContent() {
 
         const res = await fetch(`/api/leaderboard?${params}`);
         if (!res.ok) {
-          throw new Error('리더보드를 불러오는 데 실패했습니다.');
+          throw new Error(t('leaderboard.errorLoad'));
         }
         const data: LeaderboardResponse = await res.json();
         setLeaderboard(data.topUsers);
@@ -44,12 +46,12 @@ function LeaderboardContent() {
       }
     }
     fetchLeaderboard();
-  }, [dailySetId, topicId]);
+  }, [dailySetId, topicId, t]);
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl text-gray-600 animate-pulse">리더보드를 불러오는 중...</p>
+        <p className="text-xl text-gray-600 animate-pulse">{t('leaderboard.loading')}</p>
       </div>
     );
   }
@@ -58,19 +60,18 @@ function LeaderboardContent() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-xl text-red-600 mb-4">오류: {error}</p>
+          <p className="text-xl text-red-600 mb-4">{t('common.error')}: {error}</p>
           <button
             onClick={() => router.push('/')}
             className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
           >
-            홈으로 돌아가기
+            {t('common.goHome')}
           </button>
         </div>
       </div>
     );
   }
 
-  // 현재 사용자가 리더보드에 있는지 확인
   const currentUserEntry = user ? leaderboard.find(entry => entry.username === user.username) : null;
   const isCurrentUser = (username: string) => user && user.username === username;
 
@@ -84,20 +85,20 @@ function LeaderboardContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
             </div>
-            리더보드
+            {t('leaderboard.title')}
           </h1>
           <button
             onClick={() => router.push('/')}
             className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors font-medium"
           >
-            홈으로
+            {t('common.homeShort')}
           </button>
         </div>
 
         {leaderboard.length === 0 ? (
           <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <p className="text-xl text-gray-600">아직 참가자가 없습니다</p>
-            <p className="text-gray-500 mt-2">첫 번째 참가자가 되어보세요!</p>
+            <p className="text-xl text-gray-600">{t('leaderboard.noParticipants')}</p>
+            <p className="text-gray-500 mt-2">{t('leaderboard.beFirst')}</p>
           </div>
         ) : (
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-orange-100">
@@ -105,11 +106,11 @@ function LeaderboardContent() {
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-orange-500 to-amber-500 text-white">
                   <tr>
-                    <th className="px-6 py-4 text-left font-bold">순위</th>
-                    <th className="px-6 py-4 text-left font-bold">사용자</th>
-                    <th className="px-6 py-4 text-center font-bold">점수</th>
-                    <th className="px-6 py-4 text-center font-bold">정답률</th>
-                    <th className="px-6 py-4 text-center font-bold">소요 시간</th>
+                    <th className="px-6 py-4 text-left font-bold">{t('leaderboard.rankHeader')}</th>
+                    <th className="px-6 py-4 text-left font-bold">{t('leaderboard.userHeader')}</th>
+                    <th className="px-6 py-4 text-center font-bold">{t('leaderboard.scoreHeader')}</th>
+                    <th className="px-6 py-4 text-center font-bold">{t('leaderboard.correctHeader')}</th>
+                    <th className="px-6 py-4 text-center font-bold">{t('leaderboard.timeHeader')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -167,7 +168,7 @@ function LeaderboardContent() {
                             </span>
                             {isCurrent && (
                               <span className="px-2 py-0.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs rounded-full font-bold shadow-sm">
-                                나
+                                {t('common.me')}
                               </span>
                             )}
                           </div>
@@ -184,7 +185,7 @@ function LeaderboardContent() {
                         </td>
                         <td className="px-6 py-4 text-center">
                           <span className={isCurrent ? 'text-orange-900 font-semibold' : 'text-gray-600'}>
-                            {entry.timeSpent ? `${Math.floor(entry.timeSpent / 60)}분 ${entry.timeSpent % 60}초` : '-'}
+                            {entry.timeSpent ? t('common.timeFormat', { min: Math.floor(entry.timeSpent / 60), sec: entry.timeSpent % 60 }) : '-'}
                           </span>
                         </td>
                       </tr>
@@ -199,10 +200,10 @@ function LeaderboardContent() {
         {/* 내 순위 요약 (100위 밖일 때) */}
         {user && currentUserEntry && currentUserEntry.rank > 100 && (
           <div className="mt-6 p-5 bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-300 rounded-xl">
-            <p className="text-sm text-orange-700 mb-2 font-bold">내 순위</p>
+            <p className="text-sm text-orange-700 mb-2 font-bold">{t('leaderboard.myRank')}</p>
             <div className="flex justify-between items-center">
               <span className="text-orange-900 font-bold text-lg">#{currentUserEntry.rank}</span>
-              <span className="text-orange-800 font-semibold">{currentUserEntry.score}점</span>
+              <span className="text-orange-800 font-semibold">{t('common.points', { score: currentUserEntry.score })}</span>
             </div>
           </div>
         )}
@@ -212,7 +213,7 @@ function LeaderboardContent() {
             onClick={() => router.push('/daily')}
             className="px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
-            오늘의 퀴즈 도전하기
+            {t('leaderboard.challengeDaily')}
           </button>
         </div>
       </div>
@@ -224,7 +225,7 @@ export default function LeaderboardPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl text-gray-600 animate-pulse">로딩 중...</p>
+        <p className="text-xl text-gray-600 animate-pulse">&nbsp;</p>
       </div>
     }>
       <LeaderboardContent />

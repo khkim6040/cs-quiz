@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import QuestionComponent from '@/components/QuestionComponent';
 import LoginModal from '@/components/LoginModal';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Question {
   id: string;
@@ -22,6 +23,7 @@ interface Question {
 export default function DailyQuizPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
+  const { t, language } = useLanguage();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [dailySetId, setDailySetId] = useState('');
@@ -42,9 +44,9 @@ export default function DailyQuizPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch('/api/daily-questions');
+        const res = await fetch(`/api/daily-questions?lang=${language}`);
         if (!res.ok) {
-          throw new Error('오늘의 퀴즈를 불러오는 데 실패했습니다.');
+          throw new Error(t('daily.errorLoad'));
         }
         const data = await res.json();
         setQuestions(data.questions);
@@ -57,7 +59,7 @@ export default function DailyQuizPage() {
       }
     }
     fetchDailyQuestions();
-  }, []);
+  }, [language, t]);
 
   const handleAnswer = useCallback((isCorrect: boolean) => {
     if (isCorrect) {
@@ -71,7 +73,6 @@ export default function DailyQuizPage() {
     setIsSubmittingScore(true);
 
     try {
-      // QuizSession도 함께 저장 (오늘의 다풀기 리더보드용)
       fetch('/api/quiz-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -82,7 +83,7 @@ export default function DailyQuizPage() {
           correctCount: correctAnswers,
           timeSpent,
         }),
-      }).catch(() => {}); // 실패해도 무시
+      }).catch(() => {});
 
       const res = await fetch('/api/submit-score', {
         method: 'POST',
@@ -102,30 +103,26 @@ export default function DailyQuizPage() {
         setRank(result.rank);
         setPendingScoreSubmit(false);
       } else if (res.status === 401) {
-        // 로그인 필요 또는 User not found
         const errorData = await res.json();
-        const errorMsg = errorData.error || '로그인이 필요합니다';
+        const errorMsg = errorData.error || t('daily.loginRequired');
         setScoreSubmitError(errorMsg);
         setPendingScoreSubmit(true);
 
-        // User not found인 경우 로그아웃 처리
         if (errorMsg.includes('User not found')) {
-          // 로그아웃하여 사용자가 다시 로그인하도록 유도
           await fetch('/api/auth/logout', { method: 'POST' });
           setShowLoginModal(true);
         }
       } else {
-        setScoreSubmitError('점수 제출에 실패했습니다');
+        setScoreSubmitError(t('daily.submitFailed'));
       }
     } catch (error) {
       console.error('Failed to submit score:', error);
-      setScoreSubmitError('네트워크 오류가 발생했습니다');
+      setScoreSubmitError(t('daily.networkError'));
     } finally {
       setIsSubmittingScore(false);
     }
-  }, [startTime, dailySetId, correctAnswers, questions.length]);
+  }, [startTime, dailySetId, correctAnswers, questions.length, t]);
 
-  // 로그인 후 자동으로 점수 제출
   useEffect(() => {
     if (user && pendingScoreSubmit && isCompleted) {
       submitScore();
@@ -136,15 +133,10 @@ export default function DailyQuizPage() {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      // 퀴즈 완료
       setIsCompleted(true);
-
-      // 로그인된 경우에만 점수 제출
       if (user) {
         await submitScore();
       } else {
-        // 비로그인 상태에서는 pendingScoreSubmit을 true로 설정
-        // 나중에 로그인하면 useEffect에서 자동으로 점수 제출
         setPendingScoreSubmit(true);
       }
     }
@@ -152,13 +144,12 @@ export default function DailyQuizPage() {
 
   const handleLoginSuccess = () => {
     setShowLoginModal(false);
-    // 로그인 성공 후 자동으로 점수 제출 (useEffect에서 처리)
   };
 
   if (loading || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl text-gray-600 animate-pulse">오늘의 퀴즈를 불러오는 중...</p>
+        <p className="text-xl text-gray-600 animate-pulse">{t('daily.loading')}</p>
       </div>
     );
   }
@@ -167,12 +158,12 @@ export default function DailyQuizPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-xl text-red-600 mb-4">오류: {error}</p>
+          <p className="text-xl text-red-600 mb-4">{t('common.error')}: {error}</p>
           <button
             onClick={() => router.push('/')}
             className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
           >
-            홈으로 돌아가기
+            {t('common.goHome')}
           </button>
         </div>
       </div>
@@ -190,13 +181,13 @@ export default function DailyQuizPage() {
               </svg>
             </div>
             <h2 className="text-3xl font-bold mb-6 text-gray-900">
-              퀴즈 완료!
+              {t('daily.complete')}
             </h2>
 
             <div className="space-y-4 mb-6">
               {/* 정답률 */}
               <div className="p-5 bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-xl">
-                <p className="text-orange-700 text-sm font-semibold">정답률</p>
+                <p className="text-orange-700 text-sm font-semibold">{t('common.correct')}</p>
                 <p className="text-4xl font-bold text-orange-600">
                   {correctAnswers} / {questions.length}
                 </p>
@@ -207,16 +198,16 @@ export default function DailyQuizPage() {
                 <div className="p-5 bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-300 rounded-xl">
                   <div className="flex items-center justify-center gap-3">
                     <div className="w-6 h-6 border-3 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-orange-700 font-semibold">점수를 제출하는 중...</p>
+                    <p className="text-orange-700 font-semibold">{t('daily.submittingScore')}</p>
                   </div>
-                  <p className="text-xs text-orange-600 mt-2 text-center">잠시만 기다려주세요</p>
+                  <p className="text-xs text-orange-600 mt-2 text-center">{t('daily.pleaseWait')}</p>
                 </div>
               )}
 
               {/* 점수 */}
               {score !== null ? (
                 <div className="p-5 bg-gradient-to-br from-gray-50 to-slate-50 border border-gray-200 rounded-xl">
-                  <p className="text-gray-700 text-sm font-semibold">점수</p>
+                  <p className="text-gray-700 text-sm font-semibold">{t('common.score')}</p>
                   <p className="text-4xl font-bold text-gray-800">{score}</p>
                 </div>
               ) : null}
@@ -226,7 +217,7 @@ export default function DailyQuizPage() {
                 <div className="p-5 bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-green-700 text-sm font-semibold">순위</p>
+                      <p className="text-green-700 text-sm font-semibold">{t('common.rank')}</p>
                       <p className="text-4xl font-bold text-green-600">#{rank}</p>
                     </div>
                     <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center shadow-md">
@@ -248,9 +239,9 @@ export default function DailyQuizPage() {
                       </svg>
                     </div>
                     <div className="flex-1">
-                      <p className="text-amber-900 font-bold mb-1">좋은 결과네요!</p>
+                      <p className="text-amber-900 font-bold mb-1">{t('daily.niceResult')}</p>
                       <p className="text-sm text-amber-800">
-                        리더보드에 등록하시겠어요?
+                        {t('daily.registerLeaderboard')}
                       </p>
                     </div>
                   </div>
@@ -258,7 +249,7 @@ export default function DailyQuizPage() {
                     onClick={() => setShowLoginModal(true)}
                     className="w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-amber-600 transition-all shadow-md hover:shadow-lg"
                   >
-                    등록하기
+                    {t('daily.register')}
                   </button>
                 </div>
               )}
@@ -279,7 +270,7 @@ export default function DailyQuizPage() {
                   disabled={isSubmittingScore}
                   className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all font-bold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  리더보드 보기
+                  {t('daily.viewLeaderboard')}
                 </button>
               ) : null}
               <button
@@ -287,7 +278,7 @@ export default function DailyQuizPage() {
                 disabled={isSubmittingScore}
                 className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                홈으로
+                {t('common.homeShort')}
               </button>
             </div>
           </div>
@@ -298,7 +289,7 @@ export default function DailyQuizPage() {
           isOpen={showLoginModal}
           onClose={() => setShowLoginModal(false)}
           onSuccess={handleLoginSuccess}
-          message="리더보드에 기록하려면 로그인이 필요해요"
+          message={t('daily.loginForLeaderboard')}
         />
       </>
     );
@@ -317,7 +308,7 @@ export default function DailyQuizPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
-              오늘의 퀴즈
+              {t('daily.title')}
             </h1>
             <p className="text-gray-600 mt-2">
               {currentIndex + 1} / {questions.length}
@@ -327,7 +318,7 @@ export default function DailyQuizPage() {
             onClick={() => router.push('/')}
             className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors font-medium"
           >
-            종료하기
+            {t('daily.quit')}
           </button>
         </div>
 
