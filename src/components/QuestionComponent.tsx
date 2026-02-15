@@ -76,12 +76,39 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
   const [userAnswer, setUserAnswer] = useState<AnswerOptionType | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [expandedOptions, setExpandedOptions] = useState<Set<string>>(new Set());
+  const [shuffledOptions, setShuffledOptions] = useState<AnswerOptionType[]>([]);
+
+  // 보기 순서 섞기 함수
+  const shuffleOptions = (options: AnswerOptionType[]): AnswerOptionType[] => {
+    // T/F 문제인지 확인 (모든 보기가 "True" 또는 "False"로 시작하는 경우)
+    const isTrueFalseQuestion = options.every(opt =>
+      opt.text.trim().toLowerCase().startsWith('true') ||
+      opt.text.trim().toLowerCase().startsWith('false')
+    );
+
+    if (isTrueFalseQuestion) {
+      // T/F 문제는 True를 첫 번째로 고정
+      const trueOption = options.find(opt => opt.text.trim().toLowerCase().startsWith('true'));
+      const falseOption = options.find(opt => opt.text.trim().toLowerCase().startsWith('false'));
+      return [trueOption, falseOption].filter(Boolean) as AnswerOptionType[];
+    } else {
+      // 일반 문제는 순서를 섞음
+      const shuffled = [...options];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+  };
 
   useEffect(() => {
     setShowHint(false);
     setUserAnswer(null);
     setIsAnswered(false);
     setExpandedOptions(new Set());
+    // 문제가 바뀔 때마다 보기 순서 섞기
+    setShuffledOptions(shuffleOptions(questionData.answerOptions));
   }, [questionData.id]);
 
   const handleAnswerSelect = (selectedOption: AnswerOptionType) => {
@@ -156,7 +183,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
       </div>
 
       <div className="space-y-3">
-        {questionData.answerOptions.map((opt) => (
+        {shuffledOptions.map((opt) => (
           <div key={opt.text} className={getCardClass(opt)}>
             {/* 보기 헤더 (답변 선택 또는 펼치기/접기) */}
             <button
