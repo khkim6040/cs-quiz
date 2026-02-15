@@ -72,3 +72,9 @@ model UserScore {
   @@unique([userId, dailySetId, topicId])
   @@index([dailySetId, score])
 }
+
+model Feedback {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+}

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css"; // Tailwind CSS가 포함된 전역 CSS 임포트 (Next.js가 src/app 기준으로 경로 해석)
 import { AuthProvider } from "@/contexts/AuthContext";
 import UserMenu from "@/components/UserMenu";
+import FeedbackButton from "@/components/FeedbackButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -62,6 +63,7 @@ export default function RootLayout({
               </p>
             </div>
           </footer>
+          <FeedbackButton />
         </AuthProvider>
       </body>
     </html>
