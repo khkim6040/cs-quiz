@@ -15,6 +15,7 @@ export interface QuestionData {
 export interface Topic {
   id: string;
   name: string;
+  questionCount?: number;
 }
 
 export interface LeaderboardEntry {
