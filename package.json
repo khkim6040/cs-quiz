@@ -13,6 +13,7 @@
     "check": "npm run lint && npm run type-check",
     "import-questions": "ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/import.ts",
     "import-questions:dry": "ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/import.ts --dry-run",
+    "add-topic": "ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/add-topic.ts",
     "generate-daily": "ts-node -P scripts/tsconfig.scripts.json scripts/generate-daily-questions.ts",
     "generate-daily:week": "ts-node -P scripts/tsconfig.scripts.json scripts/generate-daily-questions.ts 7",
     "generate-daily:month": "ts-node -P scripts/tsconfig.scripts.json scripts/generate-daily-questions.ts 30"

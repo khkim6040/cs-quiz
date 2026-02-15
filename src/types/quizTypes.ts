@@ -7,9 +7,19 @@ export interface AnswerOption {
   isCorrect: boolean;
 }
 
+export type TopicId =
+  | "computerSecurity"
+  | "database"
+  | "algorithm"
+  | "dataStructure"
+  | "computerNetworking"
+  | "operatingSystem"
+  | "computerArchitecture"
+  | "softwareEngineering";
+
 export interface QuestionData {
   id: string;
-  topicId: string;
+  topicId: TopicId;
   question_ko: string;
   question_en: string;
   hint_ko: string;
@@ -18,7 +28,7 @@ export interface QuestionData {
 }
 
 export interface Topic {
-  id: string;
+  id: TopicId;
   name: string;
   questionCount?: number;
 }
