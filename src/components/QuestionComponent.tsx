@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { QuestionData, AnswerOption as AnswerOptionType } from '@/types/quizTypes';
+import { useLanguage } from '@/contexts/LanguageContext';
 import type { Components } from 'react-markdown';
 
 interface QuestionComponentProps {
@@ -16,27 +17,23 @@ interface QuestionComponentProps {
 // 마크다운 컴포넌트 커스터마이징
 const markdownComponents: Components = {
   code({ node, inline, className, children, ...props }: any) {
-    // inline 값이 true이거나, className이 없으면(언어 지정 안됨) 인라인 코드
-    if (inline || !className) {
+    if (inline) {
       return (
         <code className="px-1.5 py-0.5 bg-gray-900/10 text-[0.9em] rounded font-mono" {...props}>
           {children}
         </code>
       );
     }
-    // 블록 코드 (```로 시작하는 경우)
     return (
-      <code className={`${className || ''} block bg-slate-800 text-slate-100 rounded-lg p-4 overflow-x-auto my-0`} {...props}>
-        {children}
-      </code>
+      <pre className="bg-slate-800 text-slate-100 rounded-lg p-4 overflow-x-auto my-3">
+        <code className={className} {...props}>
+          {children}
+        </code>
+      </pre>
     );
   },
-  pre({ children }) {
-    // pre 태그는 my-3만 추가
-    return <div className="my-3">{children}</div>;
-  },
   p({ children }) {
-    return <>{children}</>;
+    return <p className="mb-3 last:mb-0">{children}</p>;
   },
   ul({ children }) {
     return <ul className="list-disc list-inside mb-3 space-y-1">{children}</ul>;
@@ -72,50 +69,23 @@ const markdownComponents: Components = {
 };
 
 const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onNextQuestion, onAnswer, footerRight }) => {
+  const { t } = useLanguage();
   const [showHint, setShowHint] = useState(false);
   const [userAnswer, setUserAnswer] = useState<AnswerOptionType | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [expandedOptions, setExpandedOptions] = useState<Set<string>>(new Set());
-  const [shuffledOptions, setShuffledOptions] = useState<AnswerOptionType[]>([]);
-
-  // 보기 순서 섞기 함수
-  const shuffleOptions = (options: AnswerOptionType[]): AnswerOptionType[] => {
-    // T/F 문제인지 확인 (모든 보기가 "True" 또는 "False"로 시작하는 경우)
-    const isTrueFalseQuestion = options.every(opt =>
-      opt.text.trim().toLowerCase().startsWith('true') ||
-      opt.text.trim().toLowerCase().startsWith('false')
-    );
-
-    if (isTrueFalseQuestion) {
-      // T/F 문제는 True를 첫 번째로 고정
-      const trueOption = options.find(opt => opt.text.trim().toLowerCase().startsWith('true'));
-      const falseOption = options.find(opt => opt.text.trim().toLowerCase().startsWith('false'));
-      return [trueOption, falseOption].filter(Boolean) as AnswerOptionType[];
-    } else {
-      // 일반 문제는 순서를 섞음
-      const shuffled = [...options];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      return shuffled;
-    }
-  };
 
   useEffect(() => {
     setShowHint(false);
     setUserAnswer(null);
     setIsAnswered(false);
     setExpandedOptions(new Set());
-    // 문제가 바뀔 때마다 보기 순서 섞기
-    setShuffledOptions(shuffleOptions(questionData.answerOptions));
   }, [questionData.id]);
 
   const handleAnswerSelect = (selectedOption: AnswerOptionType) => {
     if (!isAnswered) {
       setUserAnswer(selectedOption);
       setIsAnswered(true);
-      // 정답은 자동으로 펼침
       const correctOption = questionData.answerOptions.find(opt => opt.isCorrect);
       if (correctOption) {
         setExpandedOptions(new Set([correctOption.text]));
@@ -183,9 +153,8 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
       </div>
 
       <div className="space-y-3">
-        {shuffledOptions.map((opt) => (
+        {questionData.answerOptions.map((opt) => (
           <div key={opt.text} className={getCardClass(opt)}>
-            {/* 보기 헤더 (답변 선택 또는 펼치기/접기) */}
             <button
               onClick={() => isAnswered ? toggleExpand(opt.text) : handleAnswerSelect(opt)}
               disabled={!isAnswered && isAnswered}
@@ -217,7 +186,6 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
               </div>
             </button>
 
-            {/* 해설 (아코디언 컨텐츠) */}
             {isAnswered && expandedOptions.has(opt.text) && (
               <div className="px-5 pb-4 pt-2 border-t border-gray-200">
                 <div className={`text-sm leading-relaxed ${opt.isCorrect ? 'text-green-800' :
@@ -238,46 +206,45 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
       </div>
 
       {/* 힌트 + 푸터 영역 */}
-      <div className="mt-5">
-        <div className="relative flex items-start justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            {!isAnswered && !showHint && (
-              <button
-                onClick={() => setShowHint(true)}
-                className="px-4 py-2 text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors font-medium"
-              >
-                💡 힌트 보기
-              </button>
-            )}
-            {showHint && (
-              <div className="p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md text-yellow-700">
-                <div className="text-sm">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={markdownComponents}
-                  >
-                    {questionData.hint}
-                  </ReactMarkdown>
-                </div>
-              </div>
-            )}
-          </div>
-          {/* 다음 문제 버튼 - 절대 중앙 배치 */}
-          {isAnswered && (
-            <div className="absolute left-1/2 transform -translate-x-1/2">
-              <button
-                onClick={onNextQuestion}
-                className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
-              >
-                다음 문제
-              </button>
-            </div>
+      <div className="mt-5 flex items-center justify-between">
+        <div>
+          {!isAnswered && !showHint && (
+            <button
+              onClick={() => setShowHint(true)}
+              className="px-4 py-2 text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors font-medium"
+            >
+              {t('quiz.hint')}
+            </button>
           )}
-          {footerRight && <div className="flex-1 flex justify-end">{footerRight}</div>}
         </div>
+        {footerRight && <div>{footerRight}</div>}
       </div>
+      {showHint && (
+        <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md text-yellow-700">
+          <div className="text-sm">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={markdownComponents}
+            >
+              {questionData.hint}
+            </ReactMarkdown>
+          </div>
+        </div>
+      )}
+
+      {/* 다음 문제 버튼 */}
+      {isAnswered && (
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={onNextQuestion}
+            className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
+          >
+            {t('quiz.next')}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
-export default QuestionComponent; 
+export default QuestionComponent;
