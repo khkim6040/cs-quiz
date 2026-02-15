@@ -4,19 +4,22 @@ AI로 재가공한 양질의 Computer Science 문제로 실력을 키우세요!
 
 ## ✨ 주요 기능
 
-- 📚 **4개 주제**: 컴퓨터 보안, 데이터베이스, 알고리즘, 자료구조
+- 📚 **6개 주제**: 컴퓨터 보안, 데이터베이스, 알고리즘, 자료구조, 컴퓨터 네트워킹, 운영체제
 - 📅 **오늘의 퀴즈**: 매일 새로운 문제 세트 (전체 사용자 공통)
 - 🏆 **실시간 리더보드**: 점수와 순위 경쟁
-- 🎲 **랜덤 퀴즈**: 모든 주제에서 무작위 출제
-- 🌐 **다국어 지원**: 한국어/영어
-- 🤖 **AI 재가공**: Claude를 활용한 독창적인 문제 생성
+- 🎲 **랜덤 퀴즈**: 주제별 또는 전체 주제 무작위 출제
+- 🌐 **다국어 지원**: 한국어/영어 (실시간 전환)
+- 💡 **힌트 시스템**: 문제별 힌트 제공
+- 📝 **상세한 해설**: 모든 답안에 대한 해설 제공
+- 💬 **피드백 기능**: 사용자 의견 수집
+- 🔐 **간편 인증**: 사용자명 기반 로그인
 
 ## 🚀 빠른 시작
 
 ### 1. 설치
 
 ```bash
-git clone https://github.com/yourusername/cs-quiz.git
+git clone https://github.com/khkim6040/cs-quiz.git
 cd cs-quiz
 npm install
 ```
@@ -26,7 +29,13 @@ npm install
 `.env` 파일 생성:
 
 ```bash
-DATABASE_URL="file:./dev.db"
+# PostgreSQL 데이터베이스 URL (개발용 SQLite도 가능)
+DATABASE_URL="postgresql://username:password@localhost:5432/cs_quiz"
+
+# 또는 SQLite (개발용)
+# DATABASE_URL="file:./dev.db"
+
+# Anthropic API 키 (AI 재가공 스크립트 사용 시 필요, 선택사항)
 ANTHROPIC_API_KEY="your-claude-api-key-here"
 ```
 
@@ -36,7 +45,7 @@ ANTHROPIC_API_KEY="your-claude-api-key-here"
 # Prisma 마이그레이션 실행
 npx prisma migrate dev
 
-# Seed 데이터 삽입
+# Seed 데이터 삽입 (샘플 문제 포함)
 npx prisma db seed
 ```
 
@@ -72,37 +81,59 @@ npm run check
 ```
 cs-quiz/
 ├── prisma/
-│   ├── schema.prisma          # DB 스키마
+│   ├── schema.prisma          # DB 스키마 (PostgreSQL)
 │   ├── migrations/            # 마이그레이션 파일들
-│   ├── seed.ts                # 초기 데이터
+│   ├── seed.ts                # 초기 데이터 (주제, 문제)
 │   └── seed-data/             # 문제 데이터
+│       ├── algorithm.ts       # 알고리즘 문제
+│       ├── computerSecurity.ts  # 보안 문제
+│       ├── database.ts        # 데이터베이스 문제
+│       └── dataStructure.ts   # 자료구조 문제
 ├── scripts/
-│   └── ai-regenerate/         # AI 재가공 스크립트
-│       ├── prompts.ts         # 프롬프트 템플릿
-│       └── regenerate.ts      # 메인 로직
+│   ├── generate-daily-questions.ts  # 일일 문제 생성
+│   └── tsconfig.scripts.json
 ├── src/
 │   ├── app/
 │   │   ├── api/               # API 라우트
-│   │   │   ├── auth/          # 인증 (로그인/로그아웃)
-│   │   │   ├── daily-set/     # 일일 문제 세트 생성
+│   │   │   ├── auth/          # 인증 (로그인/로그아웃/me)
+│   │   │   ├── daily-set/     # 일일 문제 세트 생성/조회
 │   │   │   ├── daily-questions/  # 일일 퀴즈 조회
+│   │   │   ├── feedback/      # 피드백 제출
 │   │   │   ├── leaderboard/   # 리더보드
+│   │   │   │   └── today/     # 오늘의 리더보드
+│   │   │   ├── questions/[topicId]/  # 주제별 문제 조회
+│   │   │   ├── quiz-session/  # 퀴즈 세션 저장
 │   │   │   ├── submit-score/  # 점수 제출
-│   │   │   ├── topics/        # 주제 목록
-│   │   │   └── questions/     # 문제 조회
+│   │   │   └── topics/        # 주제 목록
 │   │   ├── daily/             # 오늘의 퀴즈 페이지
 │   │   ├── leaderboard/       # 리더보드 페이지
-│   │   ├── quiz/              # 주제별 퀴즈 페이지
+│   │   ├── quiz/[topicId]/    # 주제별 퀴즈 페이지
 │   │   ├── page.tsx           # 홈페이지
-│   │   └── layout.tsx
+│   │   ├── layout.tsx         # 레이아웃 (헤더, 메뉴)
+│   │   └── globals.css        # 전역 스타일
 │   ├── components/
-│   │   └── QuestionComponent.tsx  # 문제 컴포넌트
+│   │   ├── FeedbackButton.tsx      # 피드백 버튼
+│   │   ├── LanguageToggle.tsx      # 언어 전환 버튼
+│   │   ├── LeaderboardAccordion.tsx  # 리더보드 아코디언
+│   │   ├── LoginModal.tsx          # 로그인 모달
+│   │   ├── QuestionComponent.tsx   # 문제 컴포넌트
+│   │   └── UserMenu.tsx            # 사용자 메뉴
+│   ├── contexts/
+│   │   ├── AuthContext.tsx    # 인증 컨텍스트
+│   │   └── LanguageContext.tsx  # 언어 컨텍스트
 │   ├── lib/
-│   │   └── prisma.ts          # Prisma 클라이언트
+│   │   ├── localStorage.ts    # 로컬 스토리지 유틸
+│   │   ├── prisma.ts          # Prisma 클라이언트
+│   │   ├── timezone.ts        # 타임존 유틸
+│   │   └── translations/      # 다국어 번역
+│   │       ├── ko.ts          # 한국어
+│   │       ├── en.ts          # 영어
+│   │       └── index.ts       # 번역 헬퍼
 │   └── types/
 │       └── quizTypes.ts       # 타입 정의
+├── DAILY_BATCH_GUIDE.md       # 일일 퀴즈 생성 가이드
 ├── DEPLOYMENT.md              # 배포 가이드
-├── IMPLEMENTATION_PLAN.md     # 구현 계획
+├── LINT_GUIDE.md              # 린트 가이드
 └── README.md
 ```
 
@@ -111,82 +142,134 @@ cs-quiz/
 ### 일반 사용자
 
 1. **홈페이지**에서 원하는 모드 선택:
-   - 📅 오늘의 퀴즈 (일일 도전)
-   - 주제별 퀴즈 (컴퓨터 보안, 데이터베이스 등)
-   - 🎲 랜덤 퀴즈
+   - 📅 **오늘의 퀴즈**: 매일 새로운 20문제 (일일 도전)
+   - 🎲 **랜덤 퀴즈**: 주제별 또는 전체 무작위 출제
+   - 📚 **주제별 퀴즈**: 6개 주제 중 선택
 
 2. **퀴즈 풀기**:
-   - 문제 읽기
-   - 💡 힌트 보기 (선택)
+   - 문제 읽기 (마크다운 지원)
+   - 💡 힌트 보기 (선택, 통계와 같은 줄에 표시)
    - 답안 선택
-   - 해설 확인
+   - 해설 확인 (정답/오답 모두 제공)
    - 다음 문제로
 
-3. **리더보드 확인**:
+3. **통계 확인**:
+   - 맞은 문제 / 푼 문제 실시간 표시
+   - 퀴즈 완료 후 세션 저장
+
+4. **리더보드**:
    - 오늘의 퀴즈 완료 후 자동 표시
-   - 또는 직접 리더보드 페이지 방문
+   - 점수 등록 및 순위 확인
+   - 주제별 / 일일 리더보드
 
-### AI 문제 재가공 (관리자)
+5. **언어 전환**:
+   - 상단 메뉴에서 한국어/영어 전환
+   - 실시간 반영 (새로고침 불필요)
 
-새로운 문제를 AI로 생성:
+### 관리자
+
+#### 일일 문제 세트 생성
 
 ```bash
-# Anthropic API 키 필요
-npm run regenerate
+# 오늘 문제 세트 생성
+npm run generate-daily
+
+# 일주일치 생성
+npm run generate-daily:week
+
+# 한 달치 생성
+npm run generate-daily:month
 ```
 
-프롬프트는 `scripts/ai-regenerate/prompts.ts`에서 커스터마이즈 가능합니다.
+자세한 내용은 [DAILY_BATCH_GUIDE.md](DAILY_BATCH_GUIDE.md)를 참고하세요.
 
 ## 🧩 API 엔드포인트
 
 ### 인증
 - `POST /api/auth/login` - 로그인 (username)
-- `GET /api/auth/me` - 현재 사용자
+- `GET /api/auth/me` - 현재 사용자 조회
 - `POST /api/auth/logout` - 로그아웃
 
 ### 퀴즈
-- `GET /api/topics` - 주제 목록
-- `GET /api/questions/:topicId` - 주제별 랜덤 문제
-- `GET /api/daily-questions` - 오늘의 퀴즈
+- `GET /api/topics?lang={ko|en}` - 주제 목록
+- `GET /api/questions/:topicId?lang={ko|en}&count={number}` - 주제별 랜덤 문제
+- `GET /api/daily-questions?lang={ko|en}` - 오늘의 퀴즈
 - `GET /api/daily-set` - 오늘의 문제 세트 조회/생성
 
 ### 점수 & 순위
 - `POST /api/submit-score` - 점수 제출
-- `GET /api/leaderboard?dailySetId=xxx` - 리더보드 조회
+- `GET /api/leaderboard?dailySetId={id}&topicId={id}&limit={number}` - 리더보드 조회
+- `GET /api/leaderboard/today?limit={number}` - 오늘의 리더보드
+
+### 세션 & 피드백
+- `POST /api/quiz-session` - 퀴즈 세션 저장
+- `POST /api/feedback` - 피드백 제출
 
 ## 🛠 기술 스택
 
-- **Frontend**: Next.js 14, React, TailwindCSS
+- **Frontend**: Next.js 14 (App Router), React 18, TailwindCSS
 - **Backend**: Next.js API Routes
-- **Database**: SQLite (개발), Cloudflare D1 (프로덕션)
+- **Database**: PostgreSQL (프로덕션), SQLite (개발)
 - **ORM**: Prisma
-- **AI**: Anthropic Claude API
-- **Hosting**: Cloudflare Pages (무료)
+- **UI**: React Markdown, Tailwind Typography
+- **상태 관리**: React Context API
+- **인증**: 세션 기반 (localStorage)
+- **배포**: Vercel / Cloudflare Pages
+
+## 🗄️ 데이터베이스 스키마
+
+### 주요 모델
+
+- **Topic**: 퀴즈 주제 (6개)
+- **Question**: 문제 (한/영 지원)
+- **AnswerOption**: 답안 선택지 (해설 포함)
+- **User**: 사용자
+- **DailyQuestionSet**: 일일 문제 세트
+- **UserScore**: 사용자 점수 (리더보드용)
+- **QuizSession**: 퀴즈 세션 (통계용)
+- **Feedback**: 사용자 피드백
 
 ## 📦 배포
 
 상세한 배포 가이드는 [DEPLOYMENT.md](DEPLOYMENT.md)를 참고하세요.
 
-### Cloudflare Pages (무료)
+### Vercel (권장)
+
+1. GitHub에 푸시
+2. Vercel에서 Import Project
+3. 환경 변수 설정 (`DATABASE_URL`)
+4. PostgreSQL 데이터베이스 연결 (Vercel Postgres 또는 외부)
+5. 마이그레이션 실행
+6. Deploy!
+
+### 환경 변수 (프로덕션)
 
 ```bash
-# 1. D1 데이터베이스 생성
-wrangler d1 create cs-quiz-db
-
-# 2. 마이그레이션 실행
-wrangler d1 execute cs-quiz-db --file=./prisma/migrations/*/migration.sql
-
-# 3. GitHub 푸시
-git push origin main
-
-# 4. Cloudflare Pages에서 GitHub 연동
+DATABASE_URL="postgresql://..."  # PostgreSQL 연결 문자열
 ```
 
-### Vercel (더 쉬운 대안)
+## 🎨 주요 기능 상세
 
-1. Vercel에서 Import Project
-2. 환경 변수 설정
-3. Deploy!
+### 다국어 지원
+- Context API 기반 언어 전환
+- 실시간 UI 업데이트
+- localStorage 저장으로 설정 유지
+
+### 힌트 시스템
+- 문제당 1개 힌트 제공
+- 답변 전에만 확인 가능
+- 통계 버튼과 같은 줄에 표시되어 공간 효율적
+
+### 해설 아코디언
+- 모든 답안에 대한 상세 해설
+- 정답은 자동 펼침
+- 오답도 클릭하여 확인 가능
+
+### 리더보드
+- 일일 퀴즈 전용
+- 점수 = (정답 수 × 100) - (소요 시간(초) / 10)
+- 실시간 순위 업데이트
+- 주제별 필터링
 
 ## 🤝 기여
 
@@ -195,6 +278,16 @@ git push origin main
 3. Commit your changes (`git commit -m 'feat: 멋진 기능 추가'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+### 커밋 컨벤션
+
+- `feat:` 새로운 기능
+- `fix:` 버그 수정
+- `docs:` 문서 수정
+- `style:` 코드 포맷팅
+- `refactor:` 코드 리팩토링
+- `test:` 테스트 추가
+- `chore:` 빌드/설정 변경
 
 ## 📄 라이선스
 
@@ -206,13 +299,12 @@ MIT License
 - MIT OpenCourseWare
 - Khan Academy
 - Open Data Structures
-- Project Euler
 
-모든 문제는 AI를 통해 재가공되었으며, 원본 자료의 저작권을 존중합니다.
+모든 문제는 교육 목적으로 작성되었으며, 원본 자료의 저작권을 존중합니다.
 
 ## 📞 문의
 
-문제나 제안사항이 있으시면 [Issues](https://github.com/yourusername/cs-quiz/issues)에 남겨주세요!
+문제나 제안사항이 있으시면 [Issues](https://github.com/khkim6040/cs-quiz/issues)에 남겨주세요!
 
 ---
 
