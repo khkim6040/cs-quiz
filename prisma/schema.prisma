@@ -40,10 +40,11 @@ model AnswerOption {
 }
 
 model User {
-  id        String      @id @default(cuid())
-  username  String      @unique
-  createdAt DateTime    @default(now())
-  scores    UserScore[]
+  id           String        @id @default(cuid())
+  username     String        @unique
+  createdAt    DateTime      @default(now())
+  scores       UserScore[]
+  quizSessions QuizSession[]
 }
 
 model DailyQuestionSet {
@@ -71,6 +72,23 @@ model UserScore {
   @@unique([userId, dailySetId])
   @@unique([userId, dailySetId, topicId])
   @@index([dailySetId, score])
+}
+
+model QuizSession {
+  id           String   @id @default(cuid())
+  userId       String
+  quizType     String   // 'daily' | 'topic' | 'random'
+  topicId      String?
+  dailySetId   String?
+  solvedCount  Int
+  correctCount Int
+  timeSpent    Int      // seconds
+  completedAt  DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, completedAt])
+  @@index([completedAt])
 }
 
 model Feedback {
