@@ -210,7 +210,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              일일 퀴즈
+              오늘의 퀴즈
             </button>
             <button
               onClick={() => handleTabChange('today')}
@@ -220,7 +220,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              오늘의 다풀기
+              일일 종합
             </button>
           </div>
 
