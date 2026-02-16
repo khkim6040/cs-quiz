@@ -75,22 +75,45 @@ export async function GET(
       [questionsFromDB[i], questionsFromDB[j]] = [questionsFromDB[j], questionsFromDB[i]];
     }
 
-    const formatQuestion = (q: (typeof questionsFromDB)[0]) => ({
-      id: q.id,
-      topicId: q.topicId,
-      question_ko: q.text_ko,
-      question_en: q.text_en || q.text_ko,
-      hint_ko: q.hint_ko,
-      hint_en: q.hint_en || q.hint_ko,
-      answerOptions: q.answerOptions.map((opt) => ({
+    const formatQuestion = (q: (typeof questionsFromDB)[0]) => {
+      const options = q.answerOptions.map((opt) => ({
         id: opt.id,
         text_ko: opt.text_ko,
         text_en: opt.text_en || opt.text_ko,
         rationale_ko: opt.rationale_ko,
         rationale_en: opt.rationale_en || opt.rationale_ko,
         isCorrect: opt.isCorrect,
-      })),
-    });
+      }));
+
+      // T/F 문제 판별: 보기가 2개이고 True/False 텍스트인 경우
+      const isTrueFalse =
+        options.length === 2 &&
+        options.some((o) => /^true$/i.test(o.text_en.trim())) &&
+        options.some((o) => /^false$/i.test(o.text_en.trim()));
+
+      if (isTrueFalse) {
+        // True가 항상 첫 번째
+        options.sort((a, b) =>
+          /^true$/i.test(a.text_en.trim()) ? -1 : 1
+        );
+      } else {
+        // Fisher-Yates 셔플
+        for (let i = options.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [options[i], options[j]] = [options[j], options[i]];
+        }
+      }
+
+      return {
+        id: q.id,
+        topicId: q.topicId,
+        question_ko: q.text_ko,
+        question_en: q.text_en || q.text_ko,
+        hint_ko: q.hint_ko,
+        hint_en: q.hint_en || q.hint_ko,
+        answerOptions: options,
+      };
+    };
 
     // count=1이면 기존 호환성을 위해 단일 객체 반환
     if (count === 1) {

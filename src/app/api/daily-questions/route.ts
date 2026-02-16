@@ -42,24 +42,47 @@ export async function GET(request: Request) {
       .map((id: string) => questions.find((q: any) => q.id === id))
       .filter((q: any): q is NonNullable<typeof q> => q !== undefined);
 
-    const formattedQuestions = orderedQuestions.map((question: any) => ({
-      id: question.id,
-      topicId: question.topicId,
-      topicName_ko: question.topic.name_ko,
-      topicName_en: question.topic.name_en || question.topic.name_ko,
-      question_ko: question.text_ko,
-      question_en: question.text_en || question.text_ko,
-      hint_ko: question.hint_ko,
-      hint_en: question.hint_en || question.hint_ko,
-      answerOptions: question.answerOptions.map((option: any) => ({
+    const formattedQuestions = orderedQuestions.map((question: any) => {
+      const options = question.answerOptions.map((option: any) => ({
         id: option.id,
         text_ko: option.text_ko,
         text_en: option.text_en || option.text_ko,
         rationale_ko: option.rationale_ko,
         rationale_en: option.rationale_en || option.rationale_ko,
         isCorrect: option.isCorrect,
-      })),
-    }));
+      }));
+
+      // T/F 문제 판별: 보기가 2개이고 True/False 텍스트인 경우
+      const isTrueFalse =
+        options.length === 2 &&
+        options.some((o: any) => /^true$/i.test(o.text_en.trim())) &&
+        options.some((o: any) => /^false$/i.test(o.text_en.trim()));
+
+      if (isTrueFalse) {
+        // True가 항상 첫 번째
+        options.sort((a: any, b: any) =>
+          /^true$/i.test(a.text_en.trim()) ? -1 : 1
+        );
+      } else {
+        // Fisher-Yates 셔플
+        for (let i = options.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [options[i], options[j]] = [options[j], options[i]];
+        }
+      }
+
+      return {
+        id: question.id,
+        topicId: question.topicId,
+        topicName_ko: question.topic.name_ko,
+        topicName_en: question.topic.name_en || question.topic.name_ko,
+        question_ko: question.text_ko,
+        question_en: question.text_en || question.text_ko,
+        hint_ko: question.hint_ko,
+        hint_en: question.hint_en || question.hint_ko,
+        answerOptions: options,
+      };
+    });
 
     return NextResponse.json({
       dailySetId: dailySet.id,
