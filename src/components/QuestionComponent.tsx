@@ -18,8 +18,8 @@ interface QuestionComponentProps {
 const markdownComponents: Components = {
   pre({ children }: any) {
     // 코드 블럭: code 자식의 인라인 스타일을 블럭 스타일로 교체
-    const child = React.Children.toArray(children)[0] as React.ReactElement<any> | undefined;
-    const codeContent = child && React.isValidElement(child) ? child.props.children : children;
+    const child = React.Children.toArray(children)[0];
+    const codeContent = child && React.isValidElement(child) ? (child.props as any).children : children;
     return (
       <pre className="bg-slate-800 text-slate-100 rounded-lg p-4 overflow-x-auto my-3">
         <code>{codeContent}</code>

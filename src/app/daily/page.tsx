@@ -6,6 +6,7 @@ import QuestionComponent from '@/components/QuestionComponent';
 import LoginModal from '@/components/LoginModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { TopicId } from '@/types/quizTypes';
 
 interface Question {
   id: string;
@@ -89,7 +90,7 @@ export default function DailyQuizPage() {
           correctCount: correctAnswers,
           timeSpent,
         }),
-      }).catch(() => {});
+      }).catch(() => { });
 
       const res = await fetch('/api/submit-score', {
         method: 'POST',
@@ -347,7 +348,7 @@ export default function DailyQuizPage() {
             <QuestionComponent
               questionData={{
                 id: currentQuestion.id,
-                topicId: currentQuestion.topicId,
+                topicId: currentQuestion.topicId as TopicId,
                 question_ko: currentQuestion.question_ko,
                 question_en: currentQuestion.question_en,
                 hint_ko: currentQuestion.hint_ko,
