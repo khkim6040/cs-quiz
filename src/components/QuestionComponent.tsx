@@ -16,20 +16,22 @@ interface QuestionComponentProps {
 
 // 마크다운 컴포넌트 커스터마이징
 const markdownComponents: Components = {
-  code({ node, inline, className, children, ...props }: any) {
-    if (inline) {
-      return (
-        <code className="px-1.5 py-0.5 bg-gray-900/10 text-[0.9em] rounded font-mono" {...props}>
-          {children}
-        </code>
-      );
-    }
+  pre({ children }: any) {
+    // 코드 블럭: code 자식의 인라인 스타일을 블럭 스타일로 교체
+    const child = React.Children.toArray(children)[0] as React.ReactElement<any> | undefined;
+    const codeContent = child && React.isValidElement(child) ? child.props.children : children;
     return (
       <pre className="bg-slate-800 text-slate-100 rounded-lg p-4 overflow-x-auto my-3">
-        <code className={className} {...props}>
-          {children}
-        </code>
+        <code>{codeContent}</code>
       </pre>
+    );
+  },
+  code({ children, ...props }: any) {
+    // 인라인 코드 (코드 블럭의 code는 pre가 재구성)
+    return (
+      <code className="px-1.5 py-0.5 bg-gray-900/10 text-[0.9em] rounded font-mono" {...props}>
+        {children}
+      </code>
     );
   },
   p({ children }) {
