@@ -15,7 +15,8 @@ export type TopicId =
   | "computerNetworking"
   | "operatingSystem"
   | "computerArchitecture"
-  | "softwareEngineering";
+  | "softwareEngineering"
+  | "springBoot";
 
 export interface QuestionData {
   id: string;
