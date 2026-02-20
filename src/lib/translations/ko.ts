@@ -109,6 +109,22 @@ const ko = {
     send: '보내기',
     close: '닫기',
   },
+  report: {
+    button: '오류 신고',
+    title: '문제 오류 신고',
+    description: '이 문제에서 발견한 오류를 알려주세요',
+    categoryLabel: '오류 유형',
+    wrongAnswer: '정답이 틀림',
+    questionError: '문제 내용 오류',
+    optionError: '보기 내용 오류',
+    rationaleError: '해설이 부정확',
+    translationError: '번역 오류',
+    other: '기타',
+    placeholder: '추가 설명 (선택사항)',
+    selectCategory: '오류 유형을 선택해주세요',
+    thanks: '감사합니다!',
+    sent: '오류 신고가 접수되었어요',
+  },
 } as const;
 
 export default ko;

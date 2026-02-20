@@ -26,6 +26,7 @@ model Question {
   hint_en       String
   topic         Topic          @relation(fields: [topicId], references: [id])
   answerOptions AnswerOption[]
+  feedbacks     Feedback[]
 }
 
 model AnswerOption {
@@ -92,7 +93,14 @@ model QuizSession {
 }
 
 model Feedback {
-  id        String   @id @default(cuid())
-  content   String
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  content    String
+  questionId String?
+  category   String?
+  userId     String?
+  createdAt  DateTime @default(now())
+
+  question   Question? @relation(fields: [questionId], references: [id])
+
+  @@index([questionId])
 }

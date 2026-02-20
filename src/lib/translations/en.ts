@@ -109,6 +109,22 @@ const en = {
     send: 'Send',
     close: 'Close',
   },
+  report: {
+    button: 'Report Error',
+    title: 'Report Question Error',
+    description: 'Let us know about the error in this question',
+    categoryLabel: 'Error Type',
+    wrongAnswer: 'Wrong answer',
+    questionError: 'Question content error',
+    optionError: 'Answer option error',
+    rationaleError: 'Inaccurate explanation',
+    translationError: 'Translation error',
+    other: 'Other',
+    placeholder: 'Additional details (optional)',
+    selectCategory: 'Please select an error type',
+    thanks: 'Thank you!',
+    sent: 'Your error report has been submitted',
+  },
 } as const;
 
 export default en;
