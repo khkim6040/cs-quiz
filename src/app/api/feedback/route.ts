@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 
 export async function POST(request: Request) {
   try {
-    const { content } = await request.json();
+    const { content, questionId, category, userId } = await request.json();
 
     if (!content || typeof content !== "string" || !content.trim()) {
       return NextResponse.json(
@@ -13,7 +13,12 @@ export async function POST(request: Request) {
     }
 
     await prisma.feedback.create({
-      data: { content: content.trim() },
+      data: {
+        content: content.trim(),
+        questionId: questionId || null,
+        category: category || null,
+        userId: userId || null,
+      },
     });
 
     return NextResponse.json({ success: true });
