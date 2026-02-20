@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { QuestionData, AnswerOption as AnswerOptionType } from '@/types/quizTypes';
 import { useLanguage } from '@/contexts/LanguageContext';
+import QuestionReportButton from './QuestionReportButton';
 import type { Components } from 'react-markdown';
 
 interface QuestionComponentProps {
@@ -228,15 +229,16 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
         </div>
       )}
 
-      {/* 다음 문제 버튼 */}
+      {/* 다음 문제 버튼 + 오류 신고 */}
       {isAnswered && (
-        <div className="mt-6 flex justify-center">
+        <div className="mt-6 flex flex-col items-center gap-3">
           <button
             onClick={onNextQuestion}
             className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
           >
             {t('quiz.next')}
           </button>
+          <QuestionReportButton questionId={questionData.id} />
         </div>
       )}
     </div>
