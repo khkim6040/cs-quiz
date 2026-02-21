@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { LeaderboardResponse } from '@/types/quizTypes';
 import { useAuth } from '@/contexts/AuthContext';
@@ -35,7 +35,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
   const router = useRouter();
   const { user } = useAuth();
   const { t } = useLanguage();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const [activeTab, setActiveTab] = useState<TabType>('daily');
 
   const [dailyData, setDailyData] = useState<LeaderboardResponse | null>(null);
@@ -45,6 +45,10 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
   const [todayData, setTodayData] = useState<TodayLeaderboardResponse | null>(null);
   const [todayLoading, setTodayLoading] = useState(false);
   const [todayError, setTodayError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchDailyLeaderboard();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchDailyLeaderboard = async () => {
     if (dailyLoading || dailyData) return;
