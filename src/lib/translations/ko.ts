@@ -125,6 +125,11 @@ const ko = {
     thanks: '감사합니다!',
     sent: '오류 신고가 접수되었어요',
   },
+  showcase: {
+    title: '다루는 분야',
+    subtitle: '{topics}개 분야, {concepts}개 이상의 개념',
+    loading: '더 불러오는 중...',
+  },
 } as const;
 
 export default ko;

@@ -125,6 +125,11 @@ const en = {
     thanks: 'Thank you!',
     sent: 'Your error report has been submitted',
   },
+  showcase: {
+    title: 'Topics We Cover',
+    subtitle: '{topics} fields, {concepts}+ concepts',
+    loading: 'Loading more...',
+  },
 } as const;
 
 export default en;
