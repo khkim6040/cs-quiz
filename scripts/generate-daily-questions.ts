@@ -48,19 +48,28 @@ async function generateDailySet(date: Date, questionCount: number = 15) {
   // 날짜를 시드로 사용 (YYYYMMDD 형식)
   const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
   
-  // ID만 가져오기 (효율적)
+  const MAX_PER_TOPIC = 3;
+
   const allQuestions = await prisma.question.findMany({
-    select: { id: true },
+    select: { id: true, topicId: true },
   });
 
   if (allQuestions.length === 0) {
     throw new Error('No questions found in database');
   }
 
-  // 전체 문제를 섞어서 지정된 개수만큼 선택
+  // 전체 문제를 섞은 뒤 토픽당 최대 3문제까지만 선택
   const shuffled = seededShuffle(allQuestions, seed);
-  const selected = shuffled.slice(0, Math.min(questionCount, allQuestions.length));
-  const questionIds = selected.map(q => q.id);
+  const topicCount: Record<string, number> = {};
+  const questionIds: string[] = [];
+
+  for (const q of shuffled) {
+    if (questionIds.length >= questionCount) break;
+    const count = topicCount[q.topicId] || 0;
+    if (count >= MAX_PER_TOPIC) continue;
+    topicCount[q.topicId] = count + 1;
+    questionIds.push(q.id);
+  }
 
   console.log(`Selected ${questionIds.length} questions for ${date.toISOString().split('T')[0]}`);
 
