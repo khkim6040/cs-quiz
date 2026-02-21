@@ -93,7 +93,7 @@ async function main() {
 
   console.log(`Generating daily question sets for ${daysAhead} day(s) ahead with ${questionCount} questions each...`);
 
-  const results = [];
+  const results: Array<{ date: Date; status: string; id?: string; error?: unknown }> = [];
   
   for (let i = 0; i < daysAhead; i++) {
     // 한국 시간 기준으로 날짜 계산
@@ -104,19 +104,19 @@ async function main() {
     console.log(`Processing date: ${targetDate.toISOString().split('T')[0]} (KST-based)`);
 
     try {
-      // 이미 존재하는지 확인
+      // 기존 세트가 있으면 삭제 후 재생성
       const existing = await prisma.dailyQuestionSet.findUnique({
         where: { date: targetDate },
       });
 
       if (existing) {
-        console.log(`✓ Daily set for ${targetDate.toISOString().split('T')[0]} already exists (ID: ${existing.id})`);
-        results.push({ date: targetDate, status: 'exists', id: existing.id });
-      } else {
-        const dailySet = await generateDailySet(targetDate, questionCount);
-        console.log(`✓ Created daily set for ${targetDate.toISOString().split('T')[0]} (ID: ${dailySet.id})`);
-        results.push({ date: targetDate, status: 'created', id: dailySet.id });
+        await prisma.dailyQuestionSet.delete({ where: { id: existing.id } });
+        console.log(`  Deleted existing set (ID: ${existing.id})`);
       }
+
+      const dailySet = await generateDailySet(targetDate, questionCount);
+      console.log(`✓ Created daily set for ${targetDate.toISOString().split('T')[0]} (ID: ${dailySet.id})`);
+      results.push({ date: targetDate, status: 'created', id: dailySet.id });
     } catch (error) {
       console.error(`✗ Failed to generate set for ${targetDate.toISOString().split('T')[0]}:`, error);
       results.push({ date: targetDate, status: 'error', error });
@@ -126,7 +126,6 @@ async function main() {
   console.log('\n=== Summary ===');
   console.log(`Total: ${results.length}`);
   console.log(`Created: ${results.filter(r => r.status === 'created').length}`);
-  console.log(`Already exists: ${results.filter(r => r.status === 'exists').length}`);
   console.log(`Errors: ${results.filter(r => r.status === 'error').length}`);
 }
 
