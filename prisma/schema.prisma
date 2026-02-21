@@ -15,6 +15,17 @@ model Topic {
   name_ko   String
   name_en   String
   questions Question[]
+  concepts  Concept[]
+}
+
+model Concept {
+  id        String  @id @default(cuid())
+  topicId   String
+  name_ko   String
+  name_en   String
+  topic     Topic   @relation(fields: [topicId], references: [id])
+
+  @@index([topicId])
 }
 
 model Question {
