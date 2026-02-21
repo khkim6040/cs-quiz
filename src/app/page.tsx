@@ -6,6 +6,7 @@ import { Topic } from '@/types/quizTypes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LeaderboardAccordion from '@/components/LeaderboardAccordion';
+import ConceptShowcase from '@/components/ConceptShowcase';
 
 export default function HomePage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -136,6 +137,9 @@ export default function HomePage() {
           </div>
         </Link>
       </div>
+
+      {/* CS 분야 쇼케이스 */}
+      <ConceptShowcase />
     </main>
   );
 }
