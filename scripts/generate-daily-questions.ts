@@ -44,7 +44,7 @@ function seededShuffle<T>(array: T[], seed: number): T[] {
   return arr;
 }
 
-async function generateDailySet(date: Date, questionCount: number = 20) {
+async function generateDailySet(date: Date, questionCount: number = 15) {
   // 날짜를 시드로 사용 (YYYYMMDD 형식)
   const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
   
@@ -75,7 +75,7 @@ async function generateDailySet(date: Date, questionCount: number = 20) {
 async function main() {
   const args = process.argv.slice(2);
   const daysAhead = args.length > 0 ? parseInt(args[0], 10) : 1;
-  const questionCount = args.length > 1 ? parseInt(args[1], 10) : 20;
+  const questionCount = args.length > 1 ? parseInt(args[1], 10) : 15;
 
   if (isNaN(daysAhead) || daysAhead < 0) {
     console.error('Invalid days ahead parameter. Usage: npm run generate-daily [daysAhead] [questionCount]');

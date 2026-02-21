@@ -55,30 +55,22 @@ function seededShuffle<T>(array: T[], seed: number): T[] {
   return arr;
 }
 
-async function generateDailySet(date: Date) {
+async function generateDailySet(date: Date, questionCount: number = 15) {
   // 날짜를 시드로 사용 (YYYYMMDD 형식)
   const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
-  
-  // 각 주제에서 5문제씩 랜덤 선택
-  const topics = await prisma.topic.findMany();
 
-  const questionIds: string[] = [];
+  // 전체 문제에서 랜덤하게 선택
+  const allQuestions = await prisma.question.findMany({
+    select: { id: true },
+  });
 
-  for (const topic of topics) {
-    const questions = await prisma.question.findMany({
-      where: { topicId: topic.id },
-      select: { id: true },
-    });
-
-    // 토픽별로 고유한 시드 사용
-    const topicSeed = seed + topic.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const shuffled = seededShuffle(questions, topicSeed);
-    const selected = shuffled.slice(0, Math.min(5, questions.length));
-    questionIds.push(...selected.map(q => q.id));
+  if (allQuestions.length === 0) {
+    throw new Error('No questions found in database');
   }
 
-  // 전체 셔플
-  const finalShuffled = seededShuffle(questionIds, seed);
+  const shuffled = seededShuffle(allQuestions, seed);
+  const selected = shuffled.slice(0, Math.min(questionCount, allQuestions.length));
+  const finalShuffled = selected.map(q => q.id);
 
   // 데이터베이스에 저장
   const dailySet = await prisma.dailyQuestionSet.create({
