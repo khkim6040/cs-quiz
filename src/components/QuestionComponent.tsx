@@ -143,7 +143,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
     <div className="my-6 md:my-8">
       <div className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 leading-relaxed">
         <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
+          remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
           components={markdownComponents}
         >
           {l(questionData.question_ko, questionData.question_en)}
@@ -161,7 +161,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
               <div className="flex items-start justify-between">
                 <span className="flex-1">
                   <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
+                    remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
                     components={markdownComponents}
                   >
                     {l(opt.text_ko, opt.text_en)}
@@ -190,7 +190,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
                     'text-gray-700'
                   }`}>
                   <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
+                    remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
                     components={markdownComponents}
                   >
                     {l(opt.rationale_ko, opt.rationale_en)}
@@ -220,7 +220,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
         <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md text-yellow-700">
           <div className="text-sm">
             <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
+              remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
               components={markdownComponents}
             >
               {l(questionData.hint_ko, questionData.hint_en)}
