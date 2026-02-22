@@ -127,7 +127,7 @@ const ko = {
   },
   showcase: {
     title: '다루는 분야',
-    subtitle: '{topics}개 분야, {concepts}개 이상의 개념',
+    subtitle: '{topics}개 분야, {concepts}개 개념',
     loading: '더 불러오는 중...',
   },
 } as const;

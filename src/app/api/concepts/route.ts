@@ -10,16 +10,21 @@ export async function GET(request: Request) {
     const offset = parseInt(searchParams.get("offset") || "0", 10);
     const limit = parseInt(searchParams.get("limit") || "3", 10);
 
+    // 문제가 연결된 concept이 있는 토픽만 카운트
     const totalTopics = await prisma.topic.count({
-      where: { concepts: { some: {} } },
+      where: { concepts: { some: { questions: { some: {} } } } },
     });
 
-    const totalConcepts = await prisma.concept.count();
+    const totalConcepts = await prisma.concept.count({
+      where: { questions: { some: {} } },
+    });
 
     const topics = await prisma.topic.findMany({
-      where: { concepts: { some: {} } },
+      where: { concepts: { some: { questions: { some: {} } } } },
       include: {
         concepts: {
+          where: { questions: { some: {} } },
+          include: { _count: { select: { questions: true } } },
           orderBy: { id: 'asc' },
         },
       },
@@ -31,9 +36,10 @@ export async function GET(request: Request) {
     const groups = topics.map((topic) => ({
       topicId: topic.id,
       topicName: lang === "en" && topic.name_en ? topic.name_en : topic.name_ko,
-      concepts: topic.concepts.map((c) =>
-        lang === "en" && c.name_en ? c.name_en : c.name_ko
-      ),
+      concepts: topic.concepts.map((c) => ({
+        name: lang === "en" && c.name_en ? c.name_en : c.name_ko,
+        questionCount: c._count.questions,
+      })),
     }));
 
     return NextResponse.json({

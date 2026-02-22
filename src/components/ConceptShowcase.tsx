@@ -3,10 +3,15 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+interface ConceptItem {
+  name: string;
+  questionCount: number;
+}
+
 interface ConceptGroup {
   topicId: string;
   topicName: string;
-  concepts: string[];
+  concepts: ConceptItem[];
 }
 
 interface ConceptsResponse {
@@ -36,6 +41,7 @@ export default function ConceptShowcase() {
     setLoading(true);
 
     const currentOffset = reset ? 0 : offsetRef.current;
+    let moreAvailable = false;
 
     try {
       const res = await fetch(
@@ -54,12 +60,27 @@ export default function ConceptShowcase() {
       setTotalConcepts(data.totalConcepts);
       setHasMore(data.hasMore);
       offsetRef.current = currentOffset + BATCH_SIZE;
+      moreAvailable = data.hasMore;
     } catch (err) {
       console.error('Failed to load concepts:', err);
     } finally {
       setLoading(false);
       setInitialLoading(false);
       isFetchingRef.current = false;
+
+      // Re-check: sentinel이 여전히 뷰포트에 보이면 다음 배치도 로드
+      if (moreAvailable) {
+        requestAnimationFrame(() => {
+          const sentinel = sentinelRef.current;
+          if (sentinel) {
+            const rect = sentinel.getBoundingClientRect();
+            const inView = rect.top < window.innerHeight + 200;
+            if (inView && !isFetchingRef.current) {
+              fetchConcepts();
+            }
+          }
+        });
+      }
     }
   }, [language]);
 
@@ -74,6 +95,7 @@ export default function ConceptShowcase() {
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
+    if (initialLoading) return; // sentinel이 DOM에 없는 skeleton 상태에선 스킵
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
 
@@ -88,7 +110,7 @@ export default function ConceptShowcase() {
 
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [hasMore, fetchConcepts]);
+  }, [hasMore, fetchConcepts, initialLoading]);
 
   if (initialLoading) {
     return (
@@ -146,11 +168,14 @@ export default function ConceptShowcase() {
             <div className="flex flex-wrap gap-2">
               {group.concepts.map((concept, i) => (
                 <span
-                  key={concept}
-                  className="inline-block px-3 py-1.5 text-sm bg-gradient-to-br from-orange-50 to-amber-50 text-gray-700 rounded-full border border-orange-100 hover:border-orange-300 hover:shadow-sm transition-all duration-200 animate-fadeSlideUp"
+                  key={concept.name}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gradient-to-br from-orange-50 to-amber-50 text-gray-700 rounded-full border border-orange-100 hover:border-orange-300 hover:shadow-sm transition-all duration-200 animate-fadeSlideUp"
                   style={{ animationDelay: `${(groupIndex % BATCH_SIZE) * 100 + i * 30}ms` }}
                 >
-                  {concept}
+                  {concept.name}
+                  <span className="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 text-xs font-medium text-orange-600 bg-orange-100 rounded-full">
+                    {concept.questionCount}
+                  </span>
                 </span>
               ))}
             </div>
