@@ -30,7 +30,8 @@ Thumbs.db
 
 # Claude
 Context_Notes.md
-**/ai-regenerate/
+**/ai-regenerate/generated/
+**/ai-regenerate/agent-prompts/
 
 # database
 *.db

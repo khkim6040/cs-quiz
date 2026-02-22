@@ -19,13 +19,15 @@ model Topic {
 }
 
 model Concept {
-  id        String  @id @default(cuid())
+  id        String     @id @default(cuid())
   topicId   String
   name_ko   String
   name_en   String
-  topic     Topic   @relation(fields: [topicId], references: [id])
+  topic     Topic      @relation(fields: [topicId], references: [id])
+  questions Question[]
 
   @@index([topicId])
+  @@unique([topicId, name_en])
 }
 
 model Question {
@@ -38,6 +40,7 @@ model Question {
   topic         Topic          @relation(fields: [topicId], references: [id])
   answerOptions AnswerOption[]
   feedbacks     Feedback[]
+  concepts      Concept[]
 }
 
 model AnswerOption {
