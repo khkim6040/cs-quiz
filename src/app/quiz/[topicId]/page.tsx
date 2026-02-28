@@ -30,19 +30,31 @@ export default function QuizPage({ params }: QuizPageProps) {
   const [solvedCount, setSolvedCount] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [showStatTooltip, setShowStatTooltip] = useState(false);
+  const seenIdsRef = useRef<Set<string>>(new Set());
+  const noMoreQuestionsRef = useRef(false);
 
   const fetchBatch = useCallback(async () => {
-    if (isFetchingRef.current) return;
+    if (isFetchingRef.current || noMoreQuestionsRef.current) return;
     isFetchingRef.current = true;
 
     try {
+      const excludeParam = seenIdsRef.current.size > 0
+        ? `&exclude=${Array.from(seenIdsRef.current).join(',')}`
+        : '';
       const res = await fetch(
-        `/api/questions/${params.topicId}?count=${BATCH_SIZE}`
+        `/api/questions/${params.topicId}?count=${BATCH_SIZE}${excludeParam}`
       );
       if (!res.ok) {
         throw new Error(t('quiz.errorLoad'));
       }
       const data: QuestionData[] = await res.json();
+      if (data.length === 0) {
+        noMoreQuestionsRef.current = true;
+        return;
+      }
+      for (const q of data) {
+        seenIdsRef.current.add(q.id);
+      }
       setQuestionQueue((prev) => [...prev, ...data]);
     } catch (err: any) {
       setError((prevError) => {

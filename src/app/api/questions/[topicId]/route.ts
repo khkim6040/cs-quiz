@@ -42,12 +42,18 @@ export async function GET(
       }
     }
 
+    // 이미 푼 문제 제외
+    const excludeParam = searchParams.get("exclude");
+    const excludeIds = excludeParam
+      ? excludeParam.split(",").filter(Boolean)
+      : [];
+    if (excludeIds.length > 0) {
+      (where as any).id = { notIn: excludeIds };
+    }
+
     const totalCount = await prisma.question.count({ where });
     if (totalCount === 0) {
-      return NextResponse.json(
-        { error: "No questions found" },
-        { status: 404 }
-      );
+      return NextResponse.json([], { status: 200 });
     }
 
     // 랜덤 오프셋으로 batch 크기만큼 가져오기
