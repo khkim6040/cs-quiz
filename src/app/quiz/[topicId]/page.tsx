@@ -26,12 +26,16 @@ export default function QuizPage({ params }: QuizPageProps) {
   const [error, setError] = useState<string | null>(null);
   const isFetchingRef = useRef(false);
   const startTimeRef = useRef(Date.now());
+  const queueSnapshotRef = useRef({ queueLen: 0, idx: 0 });
 
   const [solvedCount, setSolvedCount] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [showStatTooltip, setShowStatTooltip] = useState(false);
   const seenIdsRef = useRef<Set<string>>(new Set());
   const noMoreQuestionsRef = useRef(false);
+
+  // 에러 핸들러용 스냅샷 동기화
+  queueSnapshotRef.current = { queueLen: questionQueue.length, idx: currentIndex };
 
   const fetchBatch = useCallback(async () => {
     if (isFetchingRef.current || noMoreQuestionsRef.current) return;
@@ -58,14 +62,15 @@ export default function QuizPage({ params }: QuizPageProps) {
       setQuestionQueue((prev) => [...prev, ...data]);
     } catch (err: any) {
       setError((prevError) => {
-        if (questionQueue.length > currentIndex) return prevError;
+        const { queueLen, idx } = queueSnapshotRef.current;
+        if (queueLen > idx) return prevError;
         return err.message;
       });
     } finally {
       isFetchingRef.current = false;
       setLoading(false);
     }
-  }, [params.topicId, questionQueue.length, currentIndex, t]);
+  }, [params.topicId, t]);
 
   useEffect(() => {
     fetchBatch();
