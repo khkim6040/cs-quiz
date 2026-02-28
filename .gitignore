@@ -30,6 +30,7 @@ Thumbs.db
 
 # Claude
 Context_Notes.md
+.omc/
 **/ai-regenerate/generated/
 **/ai-regenerate/agent-prompts/
 
