@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import QuestionComponent from '@/components/QuestionComponent';
 import LoginModal from '@/components/LoginModal';
@@ -45,6 +45,7 @@ export default function DailyQuizPage() {
   const [scoreSubmitError, setScoreSubmitError] = useState<string | null>(null);
   const [pendingScoreSubmit, setPendingScoreSubmit] = useState(false);
   const [isSubmittingScore, setIsSubmittingScore] = useState(false);
+  const isTransitioning = useRef(false);
 
   useEffect(() => {
     async function fetchDailyQuestions() {
@@ -137,6 +138,9 @@ export default function DailyQuizPage() {
   }, [user, pendingScoreSubmit, isCompleted, submitScore]);
 
   const handleNextQuestion = useCallback(async () => {
+    if (isTransitioning.current) return;
+    isTransitioning.current = true;
+
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
@@ -147,6 +151,9 @@ export default function DailyQuizPage() {
         setPendingScoreSubmit(true);
       }
     }
+
+    // 다음 문제 렌더링 후 가드 해제
+    requestAnimationFrame(() => { isTransitioning.current = false; });
   }, [currentIndex, questions.length, user, submitScore]);
 
   const handleLoginSuccess = () => {

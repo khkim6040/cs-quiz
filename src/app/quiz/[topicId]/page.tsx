@@ -83,8 +83,12 @@ export default function QuizPage({ params }: QuizPageProps) {
     }
   }, [currentIndex, questionQueue.length, fetchBatch]);
 
+  const isTransitioning = useRef(false);
   const handleNextQuestion = () => {
+    if (isTransitioning.current) return;
+    isTransitioning.current = true;
     setCurrentIndex((prev) => prev + 1);
+    requestAnimationFrame(() => { isTransitioning.current = false; });
   };
 
   const handleAnswer = (isCorrect: boolean) => {
