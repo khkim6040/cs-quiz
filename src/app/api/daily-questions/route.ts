@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     // 오늘의 세트가 없으면 에러 반환
     if (!dailySet) {
       return NextResponse.json(
-        { error: "Daily question set not found. Please run the daily generation batch script." },
+        { error: "Today's quiz is not ready yet. Please try again later." },
         { status: 404 }
       );
     }
