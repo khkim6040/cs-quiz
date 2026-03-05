@@ -10,28 +10,25 @@ export async function GET(request: Request) {
     const offset = parseInt(searchParams.get("offset") || "0", 10);
     const limit = parseInt(searchParams.get("limit") || "3", 10);
 
-    // 문제가 연결된 concept이 있는 토픽만 카운트
-    const totalTopics = await prisma.topic.count({
-      where: { concepts: { some: { questions: { some: {} } } } },
-    });
+    const topicWhere = { concepts: { some: { questions: { some: {} } } } };
 
-    const totalConcepts = await prisma.concept.count({
-      where: { questions: { some: {} } },
-    });
-
-    const topics = await prisma.topic.findMany({
-      where: { concepts: { some: { questions: { some: {} } } } },
-      include: {
-        concepts: {
-          where: { questions: { some: {} } },
-          include: { _count: { select: { questions: true } } },
-          orderBy: { id: 'asc' },
+    const [totalTopics, totalConcepts, topics] = await Promise.all([
+      prisma.topic.count({ where: topicWhere }),
+      prisma.concept.count({ where: { questions: { some: {} } } }),
+      prisma.topic.findMany({
+        where: topicWhere,
+        include: {
+          concepts: {
+            where: { questions: { some: {} } },
+            include: { _count: { select: { questions: true } } },
+            orderBy: { id: 'asc' },
+          },
         },
-      },
-      orderBy: { id: 'asc' },
-      skip: offset,
-      take: limit,
-    });
+        orderBy: { id: 'asc' },
+        skip: offset,
+        take: limit,
+      }),
+    ]);
 
     const groups = topics.map((topic) => ({
       topicId: topic.id,
