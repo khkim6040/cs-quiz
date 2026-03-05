@@ -91,7 +91,7 @@ export default function DailyQuizPage() {
           correctCount: correctAnswers,
           timeSpent,
         }),
-      }).catch(() => { });
+      }).catch((err) => { console.warn('Failed to save quiz session:', err); });
 
       const res = await fetch('/api/submit-score', {
         method: 'POST',
