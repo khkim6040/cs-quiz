@@ -54,7 +54,7 @@ export default function HomePage() {
 
   return (
     <main className="container mx-auto px-4 py-8 min-h-screen flex flex-col items-center justify-center">
-      <header className="mb-12 text-center">
+      <header className="mb-12 text-center min-h-[5rem]">
         {!authLoading && user ? (
           <div className="mb-4">
             <p className="text-xl text-gray-600 mb-2">{t('home.welcome')}</p>
