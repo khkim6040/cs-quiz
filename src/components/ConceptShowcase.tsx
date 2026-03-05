@@ -31,6 +31,7 @@ export default function ConceptShowcase() {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [error, setError] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
   const isFetchingRef = useRef(false);
@@ -63,6 +64,7 @@ export default function ConceptShowcase() {
       moreAvailable = data.hasMore;
     } catch (err) {
       console.error('Failed to load concepts:', err);
+      setError(true);
     } finally {
       setLoading(false);
       setInitialLoading(false);
@@ -111,6 +113,10 @@ export default function ConceptShowcase() {
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, [hasMore, fetchConcepts, initialLoading]);
+
+  if (error && groups.length === 0) {
+    return null; // 데이터 없이 에러면 섹션 자체를 숨김
+  }
 
   if (initialLoading) {
     return (
