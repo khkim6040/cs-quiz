@@ -173,12 +173,34 @@ export default function DailyQuizPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-xl text-red-600 mb-4">{t('common.error')}: {error}</p>
-          <button
-            onClick={() => router.push('/')}
-            className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
-          >
-            {t('common.goHome')}
-          </button>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => {
+                setError(null);
+                setLoading(true);
+                fetch('/api/daily-questions')
+                  .then(res => {
+                    if (!res.ok) throw new Error('Failed to load');
+                    return res.json();
+                  })
+                  .then(data => {
+                    setQuestions(data.questions);
+                    setDailySetId(data.dailySetId);
+                  })
+                  .catch(err => setError(err.message))
+                  .finally(() => setLoading(false));
+              }}
+              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
+            >
+              {t('common.retry')}
+            </button>
+            <button
+              onClick={() => router.push('/')}
+              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
+            >
+              {t('common.goHome')}
+            </button>
+          </div>
         </div>
       </div>
     );
