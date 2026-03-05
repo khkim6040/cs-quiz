@@ -21,9 +21,9 @@ export default function HomePage() {
       setLoading(true);
       setError(null);
       try {
-        const topicsRes = await fetch(`/api/topics?lang=${language}`);
+        const topicsRes = await fetch('/api/topics');
         if (!topicsRes.ok) {
-          throw new Error(t('home.errorLoadTopics'));
+          throw new Error('Failed to load topics');
         }
         const topicsData: Topic[] = await topicsRes.json();
         setTopics(topicsData);
@@ -41,7 +41,8 @@ export default function HomePage() {
       }
     }
     fetchData();
-  }, [language, t]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return <p className="text-center mt-20 text-xl text-gray-600 animate-pulse">{t('home.loadingTopics')}</p>;
@@ -115,7 +116,7 @@ export default function HomePage() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-800 group-hover:text-orange-600 transition-colors">{topic.name}</h2>
+                <h2 className="text-xl font-bold text-gray-800 group-hover:text-orange-600 transition-colors">{language === 'en' ? topic.name_en : topic.name_ko}</h2>
                 {topic.questionCount != null && (
                   <p className="text-sm text-gray-500">{t('common.questions', { count: topic.questionCount })}</p>
                 )}

@@ -30,7 +30,8 @@ export interface QuestionData {
 
 export interface Topic {
   id: TopicId;
-  name: string;
+  name_ko: string;
+  name_en: string;
   questionCount?: number;
 }
 
