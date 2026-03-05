@@ -37,3 +37,6 @@ Context_Notes.md
 # database
 *.db
 *.db-journal
+
+# Handoff
+**/HANDOFF.md
