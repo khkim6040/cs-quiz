@@ -155,7 +155,6 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
           <div key={opt.id} className={getCardClass(opt)}>
             <button
               onClick={() => isAnswered ? toggleExpand(opt.id) : handleAnswerSelect(opt)}
-              disabled={!isAnswered && isAnswered}
               className={getHeaderClass(opt)}
             >
               <div className="flex items-start justify-between">
