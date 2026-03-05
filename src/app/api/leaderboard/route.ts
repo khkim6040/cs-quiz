@@ -37,35 +37,25 @@ export async function GET(request: Request) {
     
     console.log("[Leaderboard API] Where clause:", whereClause);
 
-    const allScores = await prisma.userScore.findMany({
-      where: whereClause,
-      orderBy: [
-        { score: "desc" },
-        { completedAt: "asc" }, // 동점이면 먼저 완료한 사람 우선
-      ],
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-          },
+    const orderBy = [
+      { score: "desc" as const },
+      { completedAt: "asc" as const },
+    ];
+    const takeCount = limit ? parseInt(limit) : undefined;
+
+    const [topScores, totalParticipants] = await Promise.all([
+      prisma.userScore.findMany({
+        where: whereClause,
+        orderBy,
+        take: takeCount,
+        include: {
+          user: { select: { id: true, username: true } },
         },
-      },
-    });
+      }),
+      prisma.userScore.count({ where: whereClause }),
+    ]);
 
-    // 디버깅: 조회된 스코어 수 로깅
-    console.log(`[Leaderboard API] Found ${allScores.length} scores`);
-    if (allScores.length > 0) {
-      console.log("[Leaderboard API] Sample score:", {
-        userId: allScores[0].userId,
-        dailySetId: allScores[0].dailySetId,
-        topicId: allScores[0].topicId,
-        score: allScores[0].score,
-      });
-    }
-
-    // 순위 매기기
-    const formattedLeaderboard = allScores.map((entry, index) => ({
+    const topUsers = topScores.map((entry, index) => ({
       rank: index + 1,
       userId: entry.user.id,
       username: entry.user.username,
@@ -76,35 +66,50 @@ export async function GET(request: Request) {
       completedAt: entry.completedAt,
     }));
 
-    // limit이 있으면 상위 N명만 반환
-    const limitNum = limit ? parseInt(limit) : formattedLeaderboard.length;
-    const topUsers = formattedLeaderboard.slice(0, limitNum);
-
     // 현재 사용자 순위 찾기
     let currentUserRank = null;
     if (userId) {
-      const userEntry = formattedLeaderboard.find(entry => entry.userId === userId);
-      if (userEntry) {
+      // topUsers 안에 있으면 바로 사용
+      const inTop = topUsers.find(entry => entry.userId === userId);
+      if (inTop) {
         currentUserRank = {
-          rank: userEntry.rank,
-          username: userEntry.username,
-          score: userEntry.score,
-          correctAnswers: userEntry.correctAnswers,
-          totalQuestions: userEntry.totalQuestions,
+          rank: inTop.rank,
+          username: inTop.username,
+          score: inTop.score,
+          correctAnswers: inTop.correctAnswers,
+          totalQuestions: inTop.totalQuestions,
         };
+      } else {
+        // topUsers 밖이면 별도 조회
+        const userScore = await prisma.userScore.findFirst({
+          where: { ...whereClause, userId },
+          include: { user: { select: { username: true } } },
+        });
+        if (userScore) {
+          const higherCount = await prisma.userScore.count({
+            where: {
+              ...whereClause,
+              OR: [
+                { score: { gt: userScore.score } },
+                { score: userScore.score, completedAt: { lt: userScore.completedAt } },
+              ],
+            },
+          });
+          currentUserRank = {
+            rank: higherCount + 1,
+            username: userScore.user.username,
+            score: userScore.score,
+            correctAnswers: userScore.correctAnswers,
+            totalQuestions: userScore.totalQuestions,
+          };
+        }
       }
     }
-
-    console.log("[Leaderboard API] Response:", {
-      topUsersCount: topUsers.length,
-      currentUserRank: currentUserRank?.rank,
-      totalParticipants: formattedLeaderboard.length,
-    });
 
     return NextResponse.json({
       topUsers,
       currentUserRank,
-      totalParticipants: formattedLeaderboard.length,
+      totalParticipants,
     });
   } catch (error) {
     console.error("Failed to get leaderboard:", error);
