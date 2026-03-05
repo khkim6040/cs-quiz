@@ -83,6 +83,12 @@ async function generateDailySet(date: Date, questionCount: number = 15) {
     selected.push(q.id);
   }
 
+  if (selected.length < questionCount) {
+    console.warn(
+      `[Daily Set] Only ${selected.length}/${questionCount} questions selected for ${date.toISOString()}`
+    );
+  }
+
   const finalShuffled = selected;
 
   // 데이터베이스에 저장 (동시 요청 시 unique constraint 충돌 처리)
