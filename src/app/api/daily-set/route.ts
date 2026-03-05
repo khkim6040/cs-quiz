@@ -1,5 +1,6 @@
 // src/app/api/daily-set/route.ts
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { getTodayInKST } from "@/lib/timezone";
 
@@ -84,13 +85,26 @@ async function generateDailySet(date: Date, questionCount: number = 15) {
 
   const finalShuffled = selected;
 
-  // 데이터베이스에 저장
-  const dailySet = await prisma.dailyQuestionSet.create({
-    data: {
-      date,
-      questionIds: finalShuffled,
-    },
-  });
-
-  return dailySet;
+  // 데이터베이스에 저장 (동시 요청 시 unique constraint 충돌 처리)
+  try {
+    const dailySet = await prisma.dailyQuestionSet.create({
+      data: {
+        date,
+        questionIds: finalShuffled,
+      },
+    });
+    return dailySet;
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      // 다른 요청이 먼저 생성한 경우, 기존 레코드 반환
+      const existing = await prisma.dailyQuestionSet.findUnique({
+        where: { date },
+      });
+      if (existing) return existing;
+    }
+    throw error;
+  }
 }
