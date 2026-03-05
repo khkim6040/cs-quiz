@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { Language, Translations, getTranslations, t as tHelper } from '@/lib/translations';
 
 interface LanguageContextType {
@@ -36,15 +36,20 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   }, [language, mounted]);
 
-  const translations = getTranslations(language);
+  const translations = useMemo(() => getTranslations(language), [language]);
 
   const t = useCallback(
     (key: string, params?: Record<string, string | number>) => tHelper(translations, key, params),
     [translations]
   );
 
+  const value = useMemo(
+    () => ({ language, setLanguage, t, translations }),
+    [language, setLanguage, t, translations]
+  );
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, translations }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );
