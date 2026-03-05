@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
+import { getTodayInKST } from "@/lib/timezone";
 
 export const dynamic = "force-dynamic";
 
@@ -10,11 +11,9 @@ export async function GET(request: Request) {
     const limit = searchParams.get("limit");
     const userId = cookies().get("userId")?.value;
 
-    // 오늘 날짜 범위 (UTC 기준)
-    const now = new Date();
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const todayEnd = new Date(todayStart);
-    todayEnd.setDate(todayEnd.getDate() + 1);
+    // 오늘 날짜 범위 (KST 기준)
+    const todayStart = getTodayInKST();
+    const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
 
     // 유저별 오늘 총 풀이 수 집계
     const aggregated = await prisma.quizSession.groupBy({
