@@ -48,6 +48,7 @@ const en = {
     quit: 'Quit',
     hint: '💡 Show Hint',
     next: 'Next Question',
+    swipeHint: '← Swipe for next',
   },
   leaderboard: {
     title: 'Leaderboard',

@@ -48,6 +48,7 @@ const ko = {
     quit: '그만하기',
     hint: '💡 힌트 보기',
     next: '다음 문제',
+    swipeHint: '← 스와이프하여 다음 문제',
   },
   leaderboard: {
     title: '리더보드',

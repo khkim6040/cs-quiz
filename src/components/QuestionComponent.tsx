@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { QuestionData, AnswerOption as AnswerOptionType } from '@/types/quizTypes';
@@ -79,6 +79,36 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
   const [userAnswerId, setUserAnswerId] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [expandedOptions, setExpandedOptions] = useState<Set<string>>(new Set());
+  const [swipeHint, setSwipeHint] = useState(false);
+
+  // Swipe gesture handling
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (!touchStartRef.current || !isAnswered) return;
+    const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
+    const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+    touchStartRef.current = null;
+
+    // Swipe left: dx < -60px, horizontal movement dominates vertical
+    if (dx < -60 && Math.abs(dy) < Math.abs(dx)) {
+      onNextQuestion();
+    }
+  }, [isAnswered, onNextQuestion]);
+
+  // Show swipe hint briefly after answering
+  useEffect(() => {
+    if (isAnswered) {
+      setSwipeHint(true);
+      const timer = setTimeout(() => setSwipeHint(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isAnswered]);
 
   useEffect(() => {
     setShowHint(false);
@@ -140,7 +170,12 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
   };
 
   return (
-    <div className="my-6 md:my-8">
+    <div
+      ref={containerRef}
+      className="my-6 md:my-8"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 leading-relaxed">
         <ReactMarkdown
           remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
@@ -237,6 +272,11 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
           >
             {t('quiz.next')}
           </button>
+          {swipeHint && (
+            <p className="text-xs text-gray-400 animate-pulse md:hidden">
+              {t('quiz.swipeHint')}
+            </p>
+          )}
           <QuestionReportButton questionId={questionData.id} />
         </div>
       )}
