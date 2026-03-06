@@ -229,19 +229,13 @@ export default function DailyQuizPage() {
                 </p>
               </div>
 
-              {/* 점수 제출 중 로딩 */}
-              {isSubmittingScore && (
-                <div className="p-5 bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-300 rounded-xl">
-                  <div className="flex items-center justify-center gap-3">
-                    <div className="w-6 h-6 border-3 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-orange-700 font-semibold">{t('daily.submittingScore')}</p>
-                  </div>
-                  <p className="text-xs text-orange-600 mt-2 text-center">{t('daily.pleaseWait')}</p>
-                </div>
-              )}
-
               {/* 점수 */}
-              {score !== null ? (
+              {isSubmittingScore && score === null ? (
+                <div className="p-5 bg-gradient-to-br from-gray-50 to-slate-50 border border-gray-200 rounded-xl animate-pulse">
+                  <div className="h-4 w-12 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-10 w-24 bg-gray-200 rounded"></div>
+                </div>
+              ) : score !== null ? (
                 <div className="p-5 bg-gradient-to-br from-gray-50 to-slate-50 border border-gray-200 rounded-xl">
                   <p className="text-gray-700 text-sm font-semibold">{t('common.score')}</p>
                   <p className="text-4xl font-bold text-gray-800">{score}</p>
@@ -249,7 +243,17 @@ export default function DailyQuizPage() {
               ) : null}
 
               {/* 순위 */}
-              {rank !== null ? (
+              {isSubmittingScore && rank === null ? (
+                <div className="p-5 bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl animate-pulse">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="h-4 w-12 bg-green-200 rounded mb-2"></div>
+                      <div className="h-10 w-20 bg-green-200 rounded"></div>
+                    </div>
+                    <div className="w-12 h-12 bg-green-200 rounded-xl"></div>
+                  </div>
+                </div>
+              ) : rank !== null ? (
                 <div className="p-5 bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl">
                   <div className="flex items-center justify-between">
                     <div>
