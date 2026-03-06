@@ -79,8 +79,8 @@ function LeaderboardContent() {
     <main className="container mx-auto px-4 py-8 min-h-screen">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
-            <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-2xl flex items-center justify-center shadow-lg">
+          <h1 className="text-2xl md:text-4xl font-bold text-gray-900 flex items-center gap-2 md:gap-3">
+            <div className="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
@@ -102,7 +102,68 @@ function LeaderboardContent() {
           </div>
         ) : (
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-orange-100">
-            <div className="overflow-x-auto">
+            {/* Mobile: Card layout */}
+            <div className="md:hidden divide-y divide-gray-200">
+              {leaderboard.map((entry, index) => {
+                const isCurrent = isCurrentUser(entry.username);
+                return (
+                  <div
+                    key={index}
+                    className={`p-4 ${isCurrent
+                      ? 'bg-orange-50 border-l-4 border-orange-500'
+                      : entry.rank === 1
+                        ? 'bg-amber-50'
+                        : entry.rank === 2
+                          ? 'bg-gray-50'
+                          : entry.rank === 3
+                            ? 'bg-orange-50/50'
+                            : ''
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        {entry.rank <= 3 && (
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-md ${
+                            entry.rank === 1 ? 'bg-gradient-to-br from-amber-400 to-yellow-500'
+                              : entry.rank === 2 ? 'bg-gradient-to-br from-gray-300 to-gray-400'
+                                : 'bg-gradient-to-br from-orange-300 to-amber-400'
+                          }`}>
+                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            </svg>
+                          </div>
+                        )}
+                        <span className={`font-bold text-lg ${isCurrent ? 'text-orange-700' : entry.rank <= 3 ? 'text-gray-800' : 'text-gray-600'}`}>
+                          #{entry.rank}
+                        </span>
+                        <span className={`font-medium ${isCurrent ? 'text-orange-900 font-bold' : 'text-gray-900'}`}>
+                          {entry.username}
+                        </span>
+                        {isCurrent && (
+                          <span className="px-2 py-0.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs rounded-full font-bold shadow-sm">
+                            {t('common.me')}
+                          </span>
+                        )}
+                      </div>
+                      <span className={`font-bold text-xl ${isCurrent ? 'text-orange-600' : 'text-gray-800'}`}>
+                        {entry.score}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm">
+                      <span className={isCurrent ? 'text-orange-900' : 'text-gray-600'}>
+                        {t('leaderboard.correctHeader')}: {entry.correctAnswers}/{entry.totalQuestions}
+                      </span>
+                      <span className={isCurrent ? 'text-orange-900' : 'text-gray-500'}>
+                        {entry.timeSpent ? t('common.timeFormat', { min: Math.floor(entry.timeSpent / 60), sec: entry.timeSpent % 60 }) : '-'}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop: Table layout */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-orange-500 to-amber-500 text-white">
                   <tr>
