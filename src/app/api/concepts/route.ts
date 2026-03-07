@@ -6,7 +6,6 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const lang = searchParams.get("lang") || "ko";
     const offset = parseInt(searchParams.get("offset") || "0", 10);
     const limit = parseInt(searchParams.get("limit") || "3", 10);
 
@@ -32,9 +31,11 @@ export async function GET(request: Request) {
 
     const groups = topics.map((topic) => ({
       topicId: topic.id,
-      topicName: lang === "en" && topic.name_en ? topic.name_en : topic.name_ko,
+      topicName_ko: topic.name_ko,
+      topicName_en: topic.name_en,
       concepts: topic.concepts.map((c) => ({
-        name: lang === "en" && c.name_en ? c.name_en : c.name_ko,
+        name_ko: c.name_ko,
+        name_en: c.name_en,
         questionCount: c._count.questions,
       })),
     }));
