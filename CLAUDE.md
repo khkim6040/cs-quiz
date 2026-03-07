@@ -14,6 +14,8 @@ npm run dev              # Next.js dev server (http://localhost:3000)
 npm run build            # Production build
 npm run check            # Lint + type-check (run before commits)
 npm run lint             # ESLint only
+npm run lint:fix         # ESLint with auto-fix
+npm run lint:strict      # ESLint with zero warnings tolerance
 npm run type-check       # tsc --noEmit only
 
 # Database
@@ -33,6 +35,12 @@ npm run generate-daily        # Generate tomorrow's daily set
 npm run generate-daily:week   # Generate next 7 days
 npm run generate-daily:month  # Generate next 30 days
 ```
+
+**No test framework is configured.** There are no unit/integration tests in this project.
+
+## Commit Convention
+
+`feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`
 
 ## Environment Variables
 
@@ -56,13 +64,13 @@ DB columns use `_ko`/`_en` suffixes (e.g., `text_ko`, `text_en`, `hint_ko`, `hin
 - `Question` ↔ `Concept` (M:N implicit relation, concepts are per-topic with `@@unique([topicId, name_en])`)
 - `DailyQuestionSet` stores question IDs as PostgreSQL `String[]` array, one set per date
 - `UserScore` has unique constraint on `[userId, dailySetId, topicId]`
-- Topic IDs are string slugs (e.g., `computerSecurity`, `database`, `algorithm`, `dataStructure`, `computerNetworking`, `operatingSystem`)
+- All 9 topic IDs: `computerSecurity`, `database`, `algorithm`, `dataStructure`, `computerNetworking`, `operatingSystem`, `computerArchitecture`, `softwareEngineering`, `springBoot`
 
 ### Key patterns
 
 - **Prisma client**: Singleton at `src/lib/prisma.ts` — all server-side DB access uses this
 - **Auth**: Cookie-based with simple username login, no password. `AuthContext` auto-restores sessions from localStorage
-- **API routes**: Next.js Route Handlers in `src/app/api/`. The questions endpoint (`/api/questions/[topicId]`) renames DB field `text_ko` → `question_ko` in its response to match the frontend `QuestionData` type
+- **API field rename gotcha**: The questions endpoint (`/api/questions/[topicId]`) renames DB field `text_ko` → `question_ko` in its response to match the frontend `QuestionData` type. The DB schema uses `text_ko`/`text_en` but all frontend code expects `question_ko`/`question_en`
 - **Client state**: React Context for auth (`useAuth()`) and language (`useLanguage()`), both wrap the entire app in `layout.tsx`
 
 ### Scripts
