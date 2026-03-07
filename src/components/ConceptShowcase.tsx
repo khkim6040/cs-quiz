@@ -4,13 +4,15 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ConceptItem {
-  name: string;
+  name_ko: string;
+  name_en: string | null;
   questionCount: number;
 }
 
 interface ConceptGroup {
   topicId: string;
-  topicName: string;
+  topicName_ko: string;
+  topicName_en: string | null;
   concepts: ConceptItem[];
 }
 
@@ -46,7 +48,7 @@ export default function ConceptShowcase() {
 
     try {
       const res = await fetch(
-        `/api/concepts?lang=${language}&offset=${currentOffset}&limit=${BATCH_SIZE}`
+        `/api/concepts?offset=${currentOffset}&limit=${BATCH_SIZE}`
       );
       if (!res.ok) throw new Error('Failed to fetch');
       const data: ConceptsResponse = await res.json();
@@ -84,16 +86,12 @@ export default function ConceptShowcase() {
         });
       }
     }
-  }, [language]);
+  }, []);
 
-  // Reset on language change
+  // Initial fetch
   useEffect(() => {
-    offsetRef.current = 0;
-    setGroups([]);
-    setInitialLoading(true);
-    setHasMore(true);
     fetchConcepts(true);
-  }, [language, fetchConcepts]);
+  }, [fetchConcepts]);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -166,7 +164,7 @@ export default function ConceptShowcase() {
           >
             <h3 className="text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-gradient-to-br from-orange-400 to-amber-500" />
-              {group.topicName}
+              {language === 'en' && group.topicName_en ? group.topicName_en : group.topicName_ko}
               <span className="text-sm font-normal text-gray-400 ml-1">
                 {group.concepts.length}
               </span>
@@ -174,11 +172,11 @@ export default function ConceptShowcase() {
             <div className="flex flex-wrap gap-2">
               {group.concepts.map((concept, i) => (
                 <span
-                  key={concept.name}
+                  key={concept.name_ko}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gradient-to-br from-orange-50 to-amber-50 text-gray-700 rounded-full border border-orange-100 hover:border-orange-300 hover:shadow-sm transition-all duration-200 animate-fadeSlideUp"
                   style={{ animationDelay: `${(groupIndex % BATCH_SIZE) * 100 + i * 30}ms` }}
                 >
-                  {concept.name}
+                  {language === 'en' && concept.name_en ? concept.name_en : concept.name_ko}
                   <span className="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 text-xs font-medium text-orange-600 bg-orange-100 rounded-full">
                     {concept.questionCount}
                   </span>
