@@ -54,7 +54,7 @@ export default function DailyQuizPage() {
       try {
         const res = await fetch('/api/daily-questions');
         if (!res.ok) {
-          throw new Error(t('daily.errorLoad'));
+          throw new Error('daily.errorLoad');
         }
         const data = await res.json();
         setQuestions(data.questions);
@@ -67,7 +67,7 @@ export default function DailyQuizPage() {
       }
     }
     fetchDailyQuestions();
-  }, [t]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAnswer = useCallback((isCorrect: boolean) => {
     if (isCorrect) {
@@ -112,7 +112,7 @@ export default function DailyQuizPage() {
         setPendingScoreSubmit(false);
       } else if (res.status === 401) {
         const errorData = await res.json();
-        const errorMsg = errorData.error || t('daily.loginRequired');
+        const errorMsg = errorData.error || 'daily.loginRequired';
         setScoreSubmitError(errorMsg);
         setPendingScoreSubmit(true);
 
@@ -121,15 +121,15 @@ export default function DailyQuizPage() {
           setShowLoginModal(true);
         }
       } else {
-        setScoreSubmitError(t('daily.submitFailed'));
+        setScoreSubmitError('daily.submitFailed');
       }
     } catch (error) {
       console.error('Failed to submit score:', error);
-      setScoreSubmitError(t('daily.networkError'));
+      setScoreSubmitError('daily.networkError');
     } finally {
       setIsSubmittingScore(false);
     }
-  }, [startTime, dailySetId, correctAnswers, questions.length, t]);
+  }, [startTime, dailySetId, correctAnswers, questions.length]);
 
   useEffect(() => {
     if (user && pendingScoreSubmit && isCompleted) {
@@ -172,7 +172,7 @@ export default function DailyQuizPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-xl text-red-600 mb-4">{t('common.error')}: {error}</p>
+          <p className="text-xl text-red-600 mb-4">{t('common.error')}: {t(error) !== error ? t(error) : error}</p>
           <div className="flex gap-3 justify-center">
             <button
               onClick={() => {
@@ -297,7 +297,7 @@ export default function DailyQuizPage() {
               {/* 에러 메시지 */}
               {scoreSubmitError && user && !isSubmittingScore && (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-700">{scoreSubmitError}</p>
+                  <p className="text-sm text-red-700">{t(scoreSubmitError) !== scoreSubmitError ? t(scoreSubmitError) : scoreSubmitError}</p>
                 </div>
               )}
             </div>

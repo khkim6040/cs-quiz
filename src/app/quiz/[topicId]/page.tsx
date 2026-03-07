@@ -49,7 +49,7 @@ export default function QuizPage({ params }: QuizPageProps) {
         `/api/questions/${params.topicId}?count=${BATCH_SIZE}${excludeParam}`
       );
       if (!res.ok) {
-        throw new Error(t('quiz.errorLoad'));
+        throw new Error('quiz.errorLoad');
       }
       const data: QuestionData[] = await res.json();
       if (data.length === 0) {
@@ -70,7 +70,7 @@ export default function QuizPage({ params }: QuizPageProps) {
       isFetchingRef.current = false;
       setLoading(false);
     }
-  }, [params.topicId, t]);
+  }, [params.topicId]);
 
   useEffect(() => {
     fetchBatch();
@@ -134,7 +134,7 @@ export default function QuizPage({ params }: QuizPageProps) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-xl text-red-600 mb-4">{t('common.error')}: {error}</p>
+          <p className="text-xl text-red-600 mb-4">{t('common.error')}: {t(error) !== error ? t(error) : error}</p>
           <div className="flex gap-3 justify-center">
             <button
               onClick={() => {
