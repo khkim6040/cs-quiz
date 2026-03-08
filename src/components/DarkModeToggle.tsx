@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function DarkModeToggle() {
+  const { t } = useLanguage();
   const [dark, setDark] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -11,7 +13,7 @@ export default function DarkModeToggle() {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const isDark = stored ? stored === 'true' : prefersDark;
     setDark(isDark);
-    if (isDark) document.documentElement.classList.add('dark');
+    document.documentElement.classList.toggle('dark', isDark);
     setMounted(true);
   }, []);
 
@@ -27,7 +29,7 @@ export default function DarkModeToggle() {
   return (
     <button
       onClick={toggle}
-      aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label={dark ? t('darkMode.switchToLight') : t('darkMode.switchToDark')}
       className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
     >
       {dark ? (

@@ -126,6 +126,10 @@ const en = {
     thanks: 'Thank you!',
     sent: 'Your error report has been submitted',
   },
+  darkMode: {
+    switchToLight: 'Switch to light mode',
+    switchToDark: 'Switch to dark mode',
+  },
   showcase: {
     title: 'Topics We Cover',
     subtitle: '{topics} fields, {concepts} concepts',
