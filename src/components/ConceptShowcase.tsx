@@ -120,14 +120,14 @@ export default function ConceptShowcase() {
     return (
       <section className="w-full max-w-4xl mt-12">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-200 rounded w-48 mx-auto" />
-          <div className="h-5 bg-gray-100 rounded w-32 mx-auto" />
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 mx-auto" />
+          <div className="h-5 bg-gray-100 dark:bg-gray-700 rounded w-32 mx-auto" />
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-gray-50 rounded-xl p-6 space-y-3">
-              <div className="h-6 bg-gray-200 rounded w-36" />
+            <div key={i} className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 space-y-3">
+              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-36" />
               <div className="flex flex-wrap gap-2">
                 {[1, 2, 3, 4, 5].map((j) => (
-                  <div key={j} className="h-8 bg-gray-200 rounded-full w-20" />
+                  <div key={j} className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full w-20" />
                 ))}
               </div>
             </div>
@@ -143,10 +143,10 @@ export default function ConceptShowcase() {
     <section className="w-full max-w-4xl mt-12">
       {/* Header */}
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
           {t('showcase.title')}
         </h2>
-        <p className="text-gray-500">
+        <p className="text-gray-500 dark:text-gray-400">
           {t('showcase.subtitle', {
             topics: totalTopics,
             concepts: totalConcepts,
@@ -159,13 +159,13 @@ export default function ConceptShowcase() {
         {groups.map((group, groupIndex) => (
           <div
             key={group.topicId}
-            className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 animate-fadeSlideUp"
+            className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5 animate-fadeSlideUp"
             style={{ animationDelay: `${(groupIndex % BATCH_SIZE) * 100}ms` }}
           >
-            <h3 className="text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-gradient-to-br from-orange-400 to-amber-500" />
               {language === 'en' && group.topicName_en ? group.topicName_en : group.topicName_ko}
-              <span className="text-sm font-normal text-gray-400 ml-1">
+              <span className="text-sm font-normal text-gray-400 dark:text-gray-500 ml-1">
                 {group.concepts.length}
               </span>
             </h3>
@@ -173,11 +173,11 @@ export default function ConceptShowcase() {
               {group.concepts.map((concept, i) => (
                 <span
                   key={concept.name_ko}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gradient-to-br from-orange-50 to-amber-50 text-gray-700 rounded-full border border-orange-100 hover:border-orange-300 hover:shadow-sm transition-all duration-200 animate-fadeSlideUp"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 text-gray-700 dark:text-gray-300 rounded-full border border-orange-100 dark:border-orange-800/50 hover:border-orange-300 dark:hover:border-orange-700 hover:shadow-sm transition-all duration-200 animate-fadeSlideUp"
                   style={{ animationDelay: `${(groupIndex % BATCH_SIZE) * 100 + i * 30}ms` }}
                 >
                   {language === 'en' && concept.name_en ? concept.name_en : concept.name_ko}
-                  <span className="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 text-xs font-medium text-orange-600 bg-orange-100 rounded-full">
+                  <span className="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 text-xs font-medium text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/40 rounded-full">
                     {concept.questionCount}
                   </span>
                 </span>
@@ -189,7 +189,7 @@ export default function ConceptShowcase() {
 
       {/* Loading indicator */}
       {loading && !initialLoading && (
-        <div className="text-center py-6 text-gray-400 text-sm animate-pulse">
+        <div className="text-center py-6 text-gray-400 dark:text-gray-500 text-sm animate-pulse">
           {t('showcase.loading')}
         </div>
       )}

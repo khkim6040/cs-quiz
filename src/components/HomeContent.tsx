@@ -21,8 +21,8 @@ export default function HomeContent({ topics, dailySetId }: HomeContentProps) {
       <header className="mb-12 text-center min-h-[5rem]">
         {!authLoading && user ? (
           <div className="mb-4">
-            <p className="text-xl text-gray-600 mb-2">{t('home.welcome')}</p>
-            <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 flex items-center justify-center gap-3">
+            <p className="text-xl text-gray-600 dark:text-gray-400 mb-2">{t('home.welcome')}</p>
+            <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100 flex items-center justify-center gap-3">
               <span>{t('home.userGreeting', { username: user.username })}</span>
               <div className="inline-flex w-12 h-12 bg-gradient-to-br from-orange-400 to-amber-500 rounded-2xl items-center justify-center shadow-lg">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,7 +32,7 @@ export default function HomeContent({ topics, dailySetId }: HomeContentProps) {
             </h1>
           </div>
         ) : (
-          <h1 className="text-5xl font-extrabold text-gray-900 flex items-center justify-center gap-3">
+          <h1 className="text-5xl font-extrabold text-gray-900 dark:text-gray-100 flex items-center justify-center gap-3">
             <span>{t('home.title')}</span>
             <div className="inline-flex w-12 h-12 bg-gradient-to-br from-orange-400 to-amber-500 rounded-2xl items-center justify-center shadow-lg">
               <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,18 +71,18 @@ export default function HomeContent({ topics, dailySetId }: HomeContentProps) {
           <Link
             href={`/quiz/${topic.id}`}
             key={topic.id}
-            className="block p-6 bg-white rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out border-2 border-gray-100 hover:border-orange-300 group"
+            className="block p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out border-2 border-gray-100 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-600 group"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-orange-100 to-amber-100 rounded-lg flex items-center justify-center group-hover:from-orange-200 group-hover:to-amber-200 transition-colors">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 rounded-lg flex items-center justify-center group-hover:from-orange-200 group-hover:to-amber-200 transition-colors">
                 <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-800 group-hover:text-orange-600 transition-colors">{language === 'en' ? topic.name_en : topic.name_ko}</h2>
+                <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200 group-hover:text-orange-600 transition-colors">{language === 'en' ? topic.name_en : topic.name_ko}</h2>
                 {topic.questionCount != null && (
-                  <p className="text-sm text-gray-500">{t('common.questions', { count: topic.questionCount })}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{t('common.questions', { count: topic.questionCount })}</p>
                 )}
               </div>
             </div>
@@ -90,7 +90,7 @@ export default function HomeContent({ topics, dailySetId }: HomeContentProps) {
         ))}
         <Link
           href={`/quiz/random`}
-          className="block p-6 bg-gray-800 text-white rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out sm:col-span-1 lg:col-span-1 hover:bg-gray-900 group"
+          className="block p-6 bg-gray-800 dark:bg-gray-700 text-white rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out sm:col-span-1 lg:col-span-1 hover:bg-gray-900 group"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">

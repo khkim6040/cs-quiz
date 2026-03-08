@@ -122,17 +122,17 @@ export default function LoginModal({
       role="dialog"
       aria-modal="true"
     >
-      <div ref={dialogRef} className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-[slideIn_0.2s_ease-out]">
+      <div ref={dialogRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 animate-[slideIn_0.2s_ease-out]">
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-amber-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
             <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
             {requireLogin ? t('auth.loginRequired') : t('auth.whatToCall')}
           </h2>
-          <p className="text-gray-600 mt-2 text-sm">
+          <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm">
             {message || t('auth.leaderboardNeedLogin')}
           </p>
         </div>
@@ -147,16 +147,16 @@ export default function LoginModal({
               placeholder={t('auth.nicknamePlaceholder')}
               aria-label={t('auth.nicknamePlaceholder')}
               maxLength={15}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors text-center text-lg"
+              className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:border-orange-500 focus:outline-none transition-colors text-center text-lg"
               disabled={isLoading}
             />
-            <p className="text-xs text-gray-500 mt-1 text-center">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
               {t('auth.maxChars')}
             </p>
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -174,7 +174,7 @@ export default function LoginModal({
                 type="button"
                 onClick={onClose}
                 disabled={isLoading}
-                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+                className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
               >
                 {t('auth.later')}
               </button>
@@ -183,7 +183,7 @@ export default function LoginModal({
         </form>
 
         {!requireLogin && (
-          <p className="text-xs text-gray-500 text-center mt-4">
+          <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
             {t('auth.autoSave')}
           </p>
         )}
