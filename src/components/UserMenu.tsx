@@ -68,7 +68,7 @@ export default function UserMenu() {
         >
           <span className="font-medium text-gray-800 dark:text-gray-200">{t('auth.usernameDisplay', { username: user.username })}</span>
           <svg
-            className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+            className={`w-4 h-4 transition-transform text-gray-600 dark:text-gray-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

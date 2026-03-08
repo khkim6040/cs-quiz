@@ -14,6 +14,7 @@ const ko = {
     questions: '{count}문제',
     correct: '정답률',
     timeFormat: '{min}분 {sec}초',
+    toggleLanguage: '언어 전환',
   },
   home: {
     title: 'CS 지식 퀴즈',

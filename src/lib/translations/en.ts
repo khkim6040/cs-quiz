@@ -14,6 +14,7 @@ const en = {
     questions: '{count} questions',
     correct: 'Correct',
     timeFormat: '{min}m {sec}s',
+    toggleLanguage: 'Toggle language',
   },
   home: {
     title: 'CS Quiz',
