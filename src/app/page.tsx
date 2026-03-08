@@ -15,6 +15,7 @@ export default function HomePage() {
   const [dailySetId, setDailySetId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
@@ -42,14 +43,48 @@ export default function HomePage() {
     }
     fetchData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [retryCount]);
 
   if (loading) {
-    return <p className="text-center mt-20 text-xl text-gray-600 animate-pulse">{t('home.loadingTopics')}</p>;
+    return (
+      <main className="container mx-auto px-4 py-8 min-h-screen flex flex-col items-center justify-center">
+        <header className="mb-12 text-center min-h-[5rem]">
+          <div className="h-12 w-64 bg-gray-200 rounded-lg animate-pulse mx-auto" />
+        </header>
+        <div className="w-full max-w-4xl space-y-3">
+          <div className="h-[88px] bg-gradient-to-br from-orange-200 to-amber-200 rounded-2xl animate-pulse" />
+          <div className="h-[72px] bg-gray-200 rounded-xl animate-pulse" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl mt-8">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <div key={i} className="h-[72px] bg-gray-200 rounded-xl animate-pulse" style={{ animationDelay: `${i * 50}ms` }} />
+          ))}
+          <div className="h-[72px] bg-gray-700 rounded-xl animate-pulse" />
+        </div>
+      </main>
+    );
   }
 
   if (error) {
-    return <p className="text-center mt-20 text-xl text-red-600">{t('common.error')}: {error}</p>;
+    return (
+      <main className="container mx-auto px-4 py-8 min-h-screen flex flex-col items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <p className="text-xl font-bold text-gray-800 mb-2">{t('common.error')}</p>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={() => setRetryCount(c => c + 1)}
+            className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+          >
+            {t('common.retry')}
+          </button>
+        </div>
+      </main>
+    );
   }
 
   return (
@@ -58,7 +93,7 @@ export default function HomePage() {
         {!authLoading && user ? (
           <div className="mb-4">
             <p className="text-xl text-gray-600 mb-2">{t('home.welcome')}</p>
-            <h1 className="text-5xl font-extrabold text-gray-900 flex items-center justify-center gap-3">
+            <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 flex items-center justify-center gap-3">
               <span>{t('home.userGreeting', { username: user.username })}</span>
               <div className="inline-flex w-12 h-12 bg-gradient-to-br from-orange-400 to-amber-500 rounded-2xl items-center justify-center shadow-lg">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,7 +103,7 @@ export default function HomePage() {
             </h1>
           </div>
         ) : (
-          <h1 className="text-5xl font-extrabold text-gray-900 flex items-center justify-center gap-3">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 flex items-center justify-center gap-3">
             <span>{t('home.title')}</span>
             <div className="inline-flex w-12 h-12 bg-gradient-to-br from-orange-400 to-amber-500 rounded-2xl items-center justify-center shadow-lg">
               <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
