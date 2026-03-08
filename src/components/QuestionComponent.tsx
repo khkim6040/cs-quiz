@@ -30,7 +30,7 @@ const markdownComponents: Components = {
   code({ children, ...props }: any) {
     // 인라인 코드 (코드 블럭의 code는 pre가 재구성)
     return (
-      <code className="px-1.5 py-0.5 bg-gray-900/10 text-[0.9em] rounded font-mono" {...props}>
+      <code className="px-1.5 py-0.5 bg-gray-900/10 dark:bg-gray-100/10 text-[0.9em] rounded font-mono" {...props}>
         {children}
       </code>
     );
@@ -64,7 +64,7 @@ const markdownComponents: Components = {
   },
   blockquote({ children }) {
     return (
-      <blockquote className="border-l-4 border-gray-300 pl-4 italic my-3">
+      <blockquote className="border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic my-3">
         {children}
       </blockquote>
     );
@@ -144,29 +144,29 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
   const getCardClass = (option: AnswerOptionType): string => {
     const baseClasses = "w-full rounded-lg border-2 transition-all duration-200 ease-in-out overflow-hidden ";
     if (!isAnswered) {
-      return baseClasses + "bg-white hover:bg-gray-50 border-gray-300 hover:border-orange-500";
+      return baseClasses + "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600 hover:border-orange-500";
     }
     if (option.isCorrect) {
-      return baseClasses + "bg-green-50 border-green-500";
+      return baseClasses + "bg-green-50 dark:bg-green-900/20 border-green-500 dark:border-green-600";
     }
     if (option.id === userAnswerId && !option.isCorrect) {
-      return baseClasses + "bg-red-50 border-red-500";
+      return baseClasses + "bg-red-50 dark:bg-red-900/20 border-red-500 dark:border-red-600";
     }
-    return baseClasses + "bg-gray-50 border-gray-300";
+    return baseClasses + "bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600";
   };
 
   const getHeaderClass = (option: AnswerOptionType): string => {
     const baseClasses = "w-full text-left font-medium py-3 px-5 transition-all duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 ";
     if (!isAnswered) {
-      return baseClasses + "text-gray-700 hover:text-orange-600 cursor-pointer";
+      return baseClasses + "text-gray-700 dark:text-gray-300 hover:text-orange-600 cursor-pointer";
     }
     if (option.isCorrect) {
-      return baseClasses + "text-green-700 cursor-pointer";
+      return baseClasses + "text-green-700 dark:text-green-400 cursor-pointer";
     }
     if (option.id === userAnswerId && !option.isCorrect) {
-      return baseClasses + "text-red-700 cursor-pointer";
+      return baseClasses + "text-red-700 dark:text-red-400 cursor-pointer";
     }
-    return baseClasses + "text-gray-600 cursor-pointer";
+    return baseClasses + "text-gray-600 dark:text-gray-400 cursor-pointer";
   };
 
   return (
@@ -176,7 +176,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 leading-relaxed">
+      <div className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100 leading-relaxed">
         <ReactMarkdown
           remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
           components={markdownComponents}
@@ -219,10 +219,10 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
             </button>
 
             {isAnswered && expandedOptions.has(opt.id) && (
-              <div className="px-5 pb-4 pt-2 border-t border-gray-200">
-                <div className={`text-sm leading-relaxed ${opt.isCorrect ? 'text-green-800' :
-                  opt.id === userAnswerId ? 'text-red-800' :
-                    'text-gray-700'
+              <div className="px-5 pb-4 pt-2 border-t border-gray-200 dark:border-gray-600">
+                <div className={`text-sm leading-relaxed ${opt.isCorrect ? 'text-green-800 dark:text-green-400' :
+                  opt.id === userAnswerId ? 'text-red-800 dark:text-red-400' :
+                    'text-gray-700 dark:text-gray-300'
                   }`}>
                   <ReactMarkdown
                     remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
@@ -243,7 +243,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
           {!isAnswered && !showHint && (
             <button
               onClick={() => setShowHint(true)}
-              className="px-4 py-2 text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors font-medium focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+              className="px-4 py-2 text-sm bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 rounded-lg transition-colors font-medium focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
             >
               {t('quiz.hint')}
             </button>
@@ -252,7 +252,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
         {footerRight && <div>{footerRight}</div>}
       </div>
       {showHint && (
-        <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md text-yellow-700">
+        <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 dark:border-yellow-700 rounded-md text-yellow-700 dark:text-yellow-400">
           <div className="text-sm">
             <ReactMarkdown
               remarkPlugins={[[remarkGfm, { singleTilde: false }]]}

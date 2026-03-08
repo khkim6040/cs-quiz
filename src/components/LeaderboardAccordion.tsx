@@ -108,7 +108,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
         onClick={handleToggle}
         aria-expanded={isExpanded}
         aria-label={t('leaderboard.todayLeaderboard')}
-        className="w-full p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border-2 border-gray-100 hover:border-orange-300 group focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+        className="w-full p-5 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border-2 border-gray-100 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-600 group focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 flex-1">
@@ -119,37 +119,37 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
             </div>
 
             <div className="flex-1 text-left">
-              <h3 className="text-xl font-bold text-gray-800 mb-1 group-hover:text-orange-600 transition-colors">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-1 group-hover:text-orange-600 transition-colors">
                 {t('leaderboard.todayLeaderboard')}
               </h3>
 
               {!previewData && !isLoading && (
-                <p className="text-sm text-gray-500">{t('leaderboard.clickToCheck')}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{t('leaderboard.clickToCheck')}</p>
               )}
               {isLoading && (
-                <p className="text-sm text-gray-500 animate-pulse">{t('common.loading')}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 animate-pulse">{t('common.loading')}</p>
               )}
 
               {activeTab === 'daily' && dailyData && dailyData.topUsers.length > 0 && (
                 <div className="flex items-center gap-4 mt-1 flex-wrap overflow-hidden min-w-0">
                   <div className="flex items-center gap-2">
                     <svg className="w-4 h-4 text-amber-500 inline-block flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    <span className="text-sm font-semibold text-gray-700 truncate">{dailyData.topUsers[0].username}</span>
+                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 truncate">{dailyData.topUsers[0].username}</span>
                     <span className="text-sm font-bold text-amber-600 flex-shrink-0">{t('common.points', { score: dailyData.topUsers[0].score })}</span>
                   </div>
                   {user && dailyData.currentUserRank && (
                     <>
-                      <span className="text-gray-300">|</span>
+                      <span className="text-gray-300 dark:text-gray-500">|</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-orange-600 font-bold">{t('common.me')}:</span>
-                        <span className="text-sm font-semibold text-orange-700">{t('common.rankNumber', { rank: dailyData.currentUserRank.rank })}</span>
+                        <span className="text-sm text-orange-600 dark:text-orange-400 font-bold">{t('common.me')}:</span>
+                        <span className="text-sm font-semibold text-orange-700 dark:text-orange-400">{t('common.rankNumber', { rank: dailyData.currentUserRank.rank })}</span>
                       </div>
                     </>
                   )}
                   {!user && (
                     <>
-                      <span className="text-gray-300">|</span>
-                      <span className="text-sm text-gray-500">{t('leaderboard.loginForRank')}</span>
+                      <span className="text-gray-300 dark:text-gray-500">|</span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">{t('leaderboard.loginForRank')}</span>
                     </>
                   )}
                 </div>
@@ -159,15 +159,15 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                 <div className="flex items-center gap-4 mt-1 flex-wrap overflow-hidden min-w-0">
                   <div className="flex items-center gap-2">
                     <svg className="w-4 h-4 text-amber-500 inline-block flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    <span className="text-sm font-semibold text-gray-700 truncate">{todayData.topUsers[0].username}</span>
+                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 truncate">{todayData.topUsers[0].username}</span>
                     <span className="text-sm font-bold text-amber-600 flex-shrink-0">{t('leaderboard.correctAnswerPreview', { count: todayData.topUsers[0].correctCount })}</span>
                   </div>
                   {user && todayData.currentUserRank && (
                     <>
-                      <span className="text-gray-300">|</span>
+                      <span className="text-gray-300 dark:text-gray-500">|</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-orange-600 font-bold">{t('common.me')}:</span>
-                        <span className="text-sm font-semibold text-orange-700">{t('common.rankNumber', { rank: todayData.currentUserRank.rank })}</span>
+                        <span className="text-sm text-orange-600 dark:text-orange-400 font-bold">{t('common.me')}:</span>
+                        <span className="text-sm font-semibold text-orange-700 dark:text-orange-400">{t('common.rankNumber', { rank: todayData.currentUserRank.rank })}</span>
                       </div>
                     </>
                   )}
@@ -175,13 +175,13 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
               )}
 
               {previewData && previewData.totalParticipants > 0 && (
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-gray-400 dark:text-gray-400 mt-1">
                   {t('leaderboard.totalParticipants', { count: previewData.totalParticipants })}
                 </p>
               )}
 
               {previewData && previewData.topUsers.length === 0 && (
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   {t('leaderboard.noParticipantsInline')}
                 </p>
               )}
@@ -198,13 +198,13 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
       </button>
 
       {isExpanded && (
-        <div className="mt-2 bg-white rounded-xl shadow-lg border-2 border-orange-100 overflow-hidden animate-in slide-in-from-top-2 fade-in duration-300">
-          <div className="flex border-b border-gray-200">
+        <div className="mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg border-2 border-orange-100 dark:border-orange-900/50 overflow-hidden animate-in slide-in-from-top-2 fade-in duration-300">
+          <div className="flex border-b border-gray-200 dark:border-gray-700">
             <button
               onClick={() => handleTabChange('daily')}
               className={`flex-1 py-3 text-sm font-bold transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-orange-500 ${activeTab === 'daily'
-                  ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'text-orange-600 dark:text-orange-400 border-b-2 border-orange-500 bg-orange-50 dark:bg-orange-900/20'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                 }`}
             >
               {t('leaderboard.dailyQuizTab')}
@@ -212,8 +212,8 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
             <button
               onClick={() => handleTabChange('today')}
               className={`flex-1 py-3 text-sm font-bold transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-orange-500 ${activeTab === 'today'
-                  ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'text-orange-600 dark:text-orange-400 border-b-2 border-orange-500 bg-orange-50 dark:bg-orange-900/20'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                 }`}
             >
               {t('leaderboard.correctCountTab')}
@@ -266,8 +266,8 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
-                    <p className="text-xl font-bold text-gray-800 mb-2">{t('leaderboard.firstChallenger')}</p>
-                    <p className="text-sm text-gray-500">{t('leaderboard.autoRecord')}</p>
+                    <p className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">{t('leaderboard.firstChallenger')}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('leaderboard.autoRecord')}</p>
                   </div>
                 )}
                 {todayData && todayData.topUsers.length > 0 && (
@@ -315,14 +315,14 @@ function RankRow({ rank, username, value, subValue, isCurrentUser, index }: {
         flex items-center justify-between p-4 rounded-xl transition-all duration-200
         animate-in slide-in-from-left-4 fade-in
         ${isCurrentUser
-          ? 'bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-400 shadow-md'
+          ? 'bg-gradient-to-r from-orange-100 to-amber-100 dark:from-orange-900/40 dark:to-amber-900/40 border-2 border-orange-400 dark:border-orange-600 shadow-md'
           : rank === 1
-            ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-300'
+            ? 'bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 border-2 border-amber-300 dark:border-amber-700'
             : rank === 2
-              ? 'bg-gradient-to-r from-gray-50 to-slate-50 border-2 border-gray-300'
+              ? 'bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-700/50 dark:to-slate-700/50 border-2 border-gray-300 dark:border-gray-600'
               : rank === 3
-                ? 'bg-gradient-to-r from-orange-50 to-amber-50 border-2 border-orange-200'
-                : 'bg-gray-50 border border-gray-200 hover:bg-gray-100'
+                ? 'bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border-2 border-orange-200 dark:border-orange-800'
+                : 'bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
         }
       `}
     >
@@ -338,14 +338,14 @@ function RankRow({ rank, username, value, subValue, isCurrentUser, index }: {
               </svg>
             </div>
           ) : (
-            <span className={`font-bold text-lg ${isCurrentUser ? 'text-orange-700' : 'text-gray-600'}`}>
+            <span className={`font-bold text-lg ${isCurrentUser ? 'text-orange-700 dark:text-orange-400' : 'text-gray-600 dark:text-gray-400'}`}>
               #{rank}
             </span>
           )}
         </div>
 
         <div className="flex items-center gap-2 flex-1">
-          <span className={`font-semibold ${isCurrentUser ? 'text-orange-900' : isTopThree ? 'text-gray-800' : 'text-gray-700'}`}>
+          <span className={`font-semibold ${isCurrentUser ? 'text-orange-900 dark:text-orange-300' : isTopThree ? 'text-gray-800 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300'}`}>
             {username}
           </span>
           {isCurrentUser && (
@@ -358,10 +358,10 @@ function RankRow({ rank, username, value, subValue, isCurrentUser, index }: {
 
       <div className="flex items-center gap-4">
         <div className="text-right">
-          <div className={`font-bold text-lg ${isCurrentUser ? 'text-orange-600' : isTopThree ? 'text-gray-800' : 'text-gray-700'}`}>
+          <div className={`font-bold text-lg ${isCurrentUser ? 'text-orange-600 dark:text-orange-400' : isTopThree ? 'text-gray-800 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300'}`}>
             {value}
           </div>
-          <div className="text-xs text-gray-500">{subValue}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">{subValue}</div>
         </div>
       </div>
     </div>
@@ -372,8 +372,8 @@ function LoadingState() {
   const { t } = useLanguage();
   return (
     <div className="text-center py-12 animate-in fade-in duration-500">
-      <div className="inline-block w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mb-3"></div>
-      <p className="text-gray-600 animate-pulse">{t('leaderboard.loadingRanks')}</p>
+      <div className="inline-block w-12 h-12 border-4 border-orange-200 dark:border-orange-800 border-t-orange-500 rounded-full animate-spin mb-3"></div>
+      <p className="text-gray-600 dark:text-gray-400 animate-pulse">{t('leaderboard.loadingRanks')}</p>
     </div>
   );
 }
@@ -382,12 +382,12 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
   const { t } = useLanguage();
   return (
     <div className="text-center py-12">
-      <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+      <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
         <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       </div>
-      <p className="text-red-600 font-medium">{message}</p>
+      <p className="text-red-600 dark:text-red-400 font-medium">{message}</p>
       <button
         onClick={onRetry}
         className="mt-4 px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
@@ -407,8 +407,8 @@ function EmptyState() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
         </svg>
       </div>
-      <p className="text-xl font-bold text-gray-800 mb-2">{t('leaderboard.firstChallengerDaily')}</p>
-      <p className="text-sm text-gray-500">{t('leaderboard.noDailyComplete')}</p>
+      <p className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">{t('leaderboard.firstChallengerDaily')}</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400">{t('leaderboard.noDailyComplete')}</p>
     </div>
   );
 }

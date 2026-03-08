@@ -87,7 +87,7 @@ export default function QuestionReportButton({ questionId }: QuestionReportButto
     <>
       <button
         onClick={handleOpen}
-        className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+        className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
         title={t('report.button')}
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,23 +101,23 @@ export default function QuestionReportButton({ questionId }: QuestionReportButto
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
           onClick={handleBackgroundClick}
         >
-          <div ref={modalRef} className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-[slideIn_0.2s_ease-out]">
+          <div ref={modalRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6 animate-[slideIn_0.2s_ease-out]">
             {status === 'success' ? (
               <div className="text-center py-4">
                 <div className="text-5xl mb-3">🙏</div>
-                <p className="text-xl font-bold text-gray-800">{t('report.thanks')}</p>
-                <p className="text-gray-600 mt-1 text-sm">{t('report.sent')}</p>
+                <p className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('report.thanks')}</p>
+                <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm">{t('report.sent')}</p>
               </div>
             ) : (
               <>
                 <div className="text-center mb-5">
                   <div className="text-4xl mb-2">🚩</div>
-                  <h2 className="text-xl font-bold text-gray-800">{t('report.title')}</h2>
-                  <p className="text-gray-500 mt-1 text-sm">{t('report.description')}</p>
+                  <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('report.title')}</h2>
+                  <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">{t('report.description')}</p>
                 </div>
 
                 <div className="mb-4">
-                  <p className="text-sm font-medium text-gray-700 mb-2">{t('report.categoryLabel')}</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('report.categoryLabel')}</p>
                   <div className="flex flex-wrap gap-2">
                     {REPORT_CATEGORIES.map((cat) => (
                       <button
@@ -125,8 +125,8 @@ export default function QuestionReportButton({ questionId }: QuestionReportButto
                         onClick={() => { setCategory(cat); setShowCategoryError(false); }}
                         className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
                           category === cat
-                            ? 'bg-red-50 border-red-400 text-red-700 font-medium'
-                            : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-400'
+                            ? 'bg-red-50 dark:bg-red-900/20 border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 font-medium'
+                            : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-400'
                         }`}
                       >
                         {t(`report.${cat}`)}
@@ -144,12 +144,12 @@ export default function QuestionReportButton({ questionId }: QuestionReportButto
                   placeholder={t('report.placeholder')}
                   maxLength={500}
                   rows={3}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-red-400 focus:outline-none transition-colors resize-none text-sm"
+                  className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:border-red-400 focus:outline-none transition-colors resize-none text-sm"
                   disabled={status === 'submitting'}
                 />
 
                 {status === 'error' && (
-                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mt-2">
+                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm mt-2">
                     {t('feedback.sendFailed')}
                   </div>
                 )}
@@ -165,7 +165,7 @@ export default function QuestionReportButton({ questionId }: QuestionReportButto
                   <button
                     onClick={() => setIsOpen(false)}
                     disabled={status === 'submitting'}
-                    className="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50 text-sm"
+                    className="px-5 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 text-sm"
                   >
                     {t('feedback.close')}
                   </button>
