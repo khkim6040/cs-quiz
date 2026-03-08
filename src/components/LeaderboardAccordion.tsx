@@ -131,11 +131,11 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
               )}
 
               {activeTab === 'daily' && dailyData && dailyData.topUsers.length > 0 && (
-                <div className="flex items-center gap-4 mt-1">
+                <div className="flex items-center gap-4 mt-1 flex-wrap overflow-hidden">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-amber-600 font-bold">🥇</span>
-                    <span className="text-sm font-semibold text-gray-700">{dailyData.topUsers[0].username}</span>
-                    <span className="text-sm font-bold text-amber-600">{t('common.points', { score: dailyData.topUsers[0].score })}</span>
+                    <svg className="w-4 h-4 text-amber-500 inline-block flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <span className="text-sm font-semibold text-gray-700 truncate">{dailyData.topUsers[0].username}</span>
+                    <span className="text-sm font-bold text-amber-600 flex-shrink-0">{t('common.points', { score: dailyData.topUsers[0].score })}</span>
                   </div>
                   {user && dailyData.currentUserRank && (
                     <>
@@ -156,11 +156,11 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
               )}
 
               {activeTab === 'today' && todayData && todayData.topUsers.length > 0 && (
-                <div className="flex items-center gap-4 mt-1">
+                <div className="flex items-center gap-4 mt-1 flex-wrap overflow-hidden">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-amber-600 font-bold">🥇</span>
-                    <span className="text-sm font-semibold text-gray-700">{todayData.topUsers[0].username}</span>
-                    <span className="text-sm font-bold text-amber-600">{t('leaderboard.correctAnswerPreview', { count: todayData.topUsers[0].correctCount })}</span>
+                    <svg className="w-4 h-4 text-amber-500 inline-block flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <span className="text-sm font-semibold text-gray-700 truncate">{todayData.topUsers[0].username}</span>
+                    <span className="text-sm font-bold text-amber-600 flex-shrink-0">{t('leaderboard.correctAnswerPreview', { count: todayData.topUsers[0].correctCount })}</span>
                   </div>
                   {user && todayData.currentUserRank && (
                     <>
@@ -202,7 +202,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
           <div className="flex border-b border-gray-200">
             <button
               onClick={() => handleTabChange('daily')}
-              className={`flex-1 py-3 text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:ring-orange-500 ${activeTab === 'daily'
+              className={`flex-1 py-3 text-sm font-bold transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-orange-500 ${activeTab === 'daily'
                   ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
                   : 'text-gray-500 hover:text-gray-700'
                 }`}
@@ -211,7 +211,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
             </button>
             <button
               onClick={() => handleTabChange('today')}
-              className={`flex-1 py-3 text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:ring-orange-500 ${activeTab === 'today'
+              className={`flex-1 py-3 text-sm font-bold transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-orange-500 ${activeTab === 'today'
                   ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
                   : 'text-gray-500 hover:text-gray-700'
                 }`}
