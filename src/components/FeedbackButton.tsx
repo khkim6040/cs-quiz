@@ -93,7 +93,7 @@ export default function FeedbackButton() {
       <button
         onClick={() => { setIsOpen(true); setStatus('idle'); }}
         disabled={cooldown}
-        className="fixed bottom-4 right-4 z-50 w-12 h-12 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full shadow-lg hover:shadow-xl hover:from-orange-600 hover:to-amber-600 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+        className="fixed bottom-20 sm:bottom-4 right-4 z-50 w-12 h-12 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full shadow-lg hover:shadow-xl hover:from-orange-600 hover:to-amber-600 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
         title={t('feedback.buttonTitle')}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,14 +111,22 @@ export default function FeedbackButton() {
           <div ref={modalRef} className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-[slideIn_0.2s_ease-out]">
             {status === 'success' ? (
               <div className="text-center py-4">
-                <div className="text-5xl mb-3">🙏</div>
+                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                  <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
                 <p className="text-xl font-bold text-gray-800">{t('feedback.thanks')}</p>
                 <p className="text-gray-600 mt-1 text-sm">{t('feedback.sent')}</p>
               </div>
             ) : (
               <>
                 <div className="text-center mb-6">
-                  <div className="text-5xl mb-3">💬</div>
+                  <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-amber-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                    <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                    </svg>
+                  </div>
                   <h2 className="text-2xl font-bold text-gray-800">{t('feedback.title')}</h2>
                   <p className="text-gray-600 mt-2 text-sm">
                     {t('feedback.description')}

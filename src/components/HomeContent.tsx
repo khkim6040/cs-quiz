@@ -22,7 +22,7 @@ export default function HomeContent({ topics, dailySetId }: HomeContentProps) {
         {!authLoading && user ? (
           <div className="mb-4">
             <p className="text-xl text-gray-600 mb-2">{t('home.welcome')}</p>
-            <h1 className="text-5xl font-extrabold text-gray-900 flex items-center justify-center gap-3">
+            <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 flex items-center justify-center gap-3">
               <span>{t('home.userGreeting', { username: user.username })}</span>
               <div className="inline-flex w-12 h-12 bg-gradient-to-br from-orange-400 to-amber-500 rounded-2xl items-center justify-center shadow-lg">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

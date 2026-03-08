@@ -4,7 +4,7 @@
 
 /* 필요하다면 여기에 추가적인 전역 스타일이나 커스텀 클래스를 정의할 수 있습니다. */
 body {
-  @apply bg-gray-50 text-gray-800; /* 기본 배경색 및 글자색 설정 예시 */
+  @apply bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100;
 }
 
 /* 모달 애니메이션 */
@@ -16,5 +16,17 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* prefers-reduced-motion: 모션 민감 사용자를 위해 애니메이션/전환 비활성화 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
