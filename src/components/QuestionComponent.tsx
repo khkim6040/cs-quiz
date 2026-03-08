@@ -156,7 +156,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
   };
 
   const getHeaderClass = (option: AnswerOptionType): string => {
-    const baseClasses = "w-full text-left font-medium py-3 px-5 transition-all duration-200 ease-in-out focus:outline-none ";
+    const baseClasses = "w-full text-left font-medium py-3 px-5 transition-all duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 ";
     if (!isAnswered) {
       return baseClasses + "text-gray-700 hover:text-orange-600 cursor-pointer";
     }
@@ -191,6 +191,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
             <button
               onClick={() => isAnswered ? toggleExpand(opt.id) : handleAnswerSelect(opt)}
               className={getHeaderClass(opt)}
+              aria-label={l(opt.text_ko, opt.text_en)}
             >
               <div className="flex items-start justify-between">
                 <span className="flex-1">
@@ -242,7 +243,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
           {!isAnswered && !showHint && (
             <button
               onClick={() => setShowHint(true)}
-              className="px-4 py-2 text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors font-medium"
+              className="px-4 py-2 text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors font-medium focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
             >
               {t('quiz.hint')}
             </button>
@@ -268,7 +269,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
         <div className="mt-6 flex flex-col items-center gap-3">
           <button
             onClick={onNextQuestion}
-            className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
+            className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
           >
             {t('quiz.next')}
           </button>

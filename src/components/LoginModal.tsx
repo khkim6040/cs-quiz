@@ -25,6 +25,7 @@ export default function LoginModal({
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -44,6 +45,47 @@ export default function LoginModal({
       return () => document.removeEventListener('keydown', handleEscape);
     }
   }, [isOpen, requireLogin, onClose]);
+
+  // Body scroll lock
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }
+  }, [isOpen]);
+
+  // Focus trap
+  useEffect(() => {
+    if (!isOpen || !dialogRef.current) return;
+
+    const dialog = dialogRef.current;
+    const focusableSelectors =
+      'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(focusableSelectors));
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleTab);
+    return () => document.removeEventListener('keydown', handleTab);
+  }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,8 +119,10 @@ export default function LoginModal({
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       onClick={handleBackgroundClick}
+      role="dialog"
+      aria-modal="true"
     >
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-[slideIn_0.2s_ease-out]">
+      <div ref={dialogRef} className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-[slideIn_0.2s_ease-out]">
         <div className="text-center mb-6">
           <div className="text-5xl mb-3">👋</div>
           <h2 className="text-2xl font-bold text-gray-800">
@@ -97,6 +141,7 @@ export default function LoginModal({
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder={t('auth.nicknamePlaceholder')}
+              aria-label={t('auth.nicknamePlaceholder')}
               maxLength={15}
               className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors text-center text-lg"
               disabled={isLoading}
@@ -116,7 +161,7 @@ export default function LoginModal({
             <button
               type="submit"
               disabled={isLoading || !username.trim()}
-              className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-amber-600 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-amber-600 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
             >
               {isLoading ? t('auth.loggingIn') : t('auth.start')}
             </button>
@@ -125,7 +170,7 @@ export default function LoginModal({
                 type="button"
                 onClick={onClose}
                 disabled={isLoading}
-                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50"
+                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
               >
                 {t('auth.later')}
               </button>

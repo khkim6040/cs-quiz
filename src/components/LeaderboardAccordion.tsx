@@ -106,7 +106,9 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
     <div className="w-full">
       <button
         onClick={handleToggle}
-        className="w-full p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border-2 border-gray-100 hover:border-orange-300 group"
+        aria-expanded={isExpanded}
+        aria-label={t('leaderboard.todayLeaderboard')}
+        className="w-full p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border-2 border-gray-100 hover:border-orange-300 group focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 flex-1">
@@ -200,7 +202,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
           <div className="flex border-b border-gray-200">
             <button
               onClick={() => handleTabChange('daily')}
-              className={`flex-1 py-3 text-sm font-bold transition-colors ${activeTab === 'daily'
+              className={`flex-1 py-3 text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:ring-orange-500 ${activeTab === 'daily'
                   ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
                   : 'text-gray-500 hover:text-gray-700'
                 }`}
@@ -209,7 +211,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
             </button>
             <button
               onClick={() => handleTabChange('today')}
-              className={`flex-1 py-3 text-sm font-bold transition-colors ${activeTab === 'today'
+              className={`flex-1 py-3 text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:ring-orange-500 ${activeTab === 'today'
                   ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
                   : 'text-gray-500 hover:text-gray-700'
                 }`}
@@ -244,7 +246,7 @@ export default function LeaderboardAccordion({ dailySetId }: LeaderboardAccordio
                     </div>
                     <button
                       onClick={handleViewAll}
-                      className="mt-6 w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                      className="mt-6 w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                     >
                       {t('leaderboard.viewAll')}
                     </button>
@@ -388,7 +390,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
       <p className="text-red-600 font-medium">{message}</p>
       <button
         onClick={onRetry}
-        className="mt-4 px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg"
+        className="mt-4 px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
       >
         {t('common.retry')}
       </button>

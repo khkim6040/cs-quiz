@@ -10,6 +10,7 @@ export default function FeedbackButton() {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [cooldown, setCooldown] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen && textareaRef.current) {
@@ -25,6 +26,35 @@ export default function FeedbackButton() {
       document.addEventListener('keydown', handleEscape);
       return () => document.removeEventListener('keydown', handleEscape);
     }
+  }, [isOpen]);
+
+  // Body scroll lock
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = ''; };
+    }
+  }, [isOpen]);
+
+  // Focus trap
+  useEffect(() => {
+    if (!isOpen || !modalRef.current) return;
+    const modal = modalRef.current;
+    const focusable = modal.querySelectorAll<HTMLElement>(
+      'button, textarea, input, select, a[href], [tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    };
+    document.addEventListener('keydown', handleTab);
+    return () => document.removeEventListener('keydown', handleTab);
   }, [isOpen]);
 
   const handleSubmit = async () => {
@@ -63,7 +93,7 @@ export default function FeedbackButton() {
       <button
         onClick={() => { setIsOpen(true); setStatus('idle'); }}
         disabled={cooldown}
-        className="fixed bottom-4 right-4 z-50 w-12 h-12 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full shadow-lg hover:shadow-xl hover:from-orange-600 hover:to-amber-600 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+        className="fixed bottom-4 right-4 z-50 w-12 h-12 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full shadow-lg hover:shadow-xl hover:from-orange-600 hover:to-amber-600 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
         title={t('feedback.buttonTitle')}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,10 +103,12 @@ export default function FeedbackButton() {
 
       {isOpen && (
         <div
+          role="dialog"
+          aria-modal="true"
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
           onClick={handleBackgroundClick}
         >
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-[slideIn_0.2s_ease-out]">
+          <div ref={modalRef} className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-[slideIn_0.2s_ease-out]">
             {status === 'success' ? (
               <div className="text-center py-4">
                 <div className="text-5xl mb-3">🙏</div>
@@ -97,6 +129,7 @@ export default function FeedbackButton() {
                   ref={textareaRef}
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
+                  aria-label={t('feedback.placeholder')}
                   placeholder={t('feedback.placeholder')}
                   maxLength={1000}
                   rows={4}
@@ -115,14 +148,14 @@ export default function FeedbackButton() {
                   <button
                     onClick={handleSubmit}
                     disabled={status === 'submitting' || !content.trim()}
-                    className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-amber-600 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-amber-600 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                   >
                     {status === 'submitting' ? t('feedback.submitting') : t('feedback.send')}
                   </button>
                   <button
                     onClick={() => setIsOpen(false)}
                     disabled={status === 'submitting'}
-                    className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50"
+                    className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                   >
                     {t('feedback.close')}
                   </button>
