@@ -1,12 +1,17 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import ReactMarkdown from 'react-markdown';
+import dynamic from 'next/dynamic';
 import remarkGfm from 'remark-gfm';
 import { QuestionData, AnswerOption as AnswerOptionType } from '@/types/quizTypes';
 import { useLanguage } from '@/contexts/LanguageContext';
 import QuestionReportButton from './QuestionReportButton';
 import type { Components } from 'react-markdown';
+
+const ReactMarkdown = dynamic(() => import('react-markdown'), {
+  ssr: false,
+  loading: () => <span className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded h-4 w-32 inline-block" />,
+});
 
 interface QuestionComponentProps {
   questionData: QuestionData;
