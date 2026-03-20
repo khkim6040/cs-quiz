@@ -1,15 +1,15 @@
+import { unstable_cache } from 'next/cache';
 import prisma from '@/lib/prisma';
 import { getTodayInKST } from '@/lib/timezone';
 import { Topic } from '@/types/quizTypes';
 import HomeContent from '@/components/HomeContent';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
-export default async function HomePage() {
-  let topics: Topic[] = [];
-  let dailySetId: string | null = null;
+const todayKey = getTodayInKST().toISOString().slice(0, 10);
 
-  try {
+const getHomepageData = unstable_cache(
+  async () => {
     const [dbTopics, dailySet] = await Promise.all([
       prisma.topic.findMany({
         include: { _count: { select: { questions: true } } },
@@ -19,6 +19,18 @@ export default async function HomePage() {
         select: { id: true },
       }),
     ]);
+    return { dbTopics, dailySet };
+  },
+  [`homepage-data-${todayKey}`],
+  { revalidate: 3600 }
+);
+
+export default async function HomePage() {
+  let topics: Topic[] = [];
+  let dailySetId: string | null = null;
+
+  try {
+    const { dbTopics, dailySet } = await getHomepageData();
 
     topics = dbTopics.map((topic) => ({
       id: topic.id as Topic['id'],
