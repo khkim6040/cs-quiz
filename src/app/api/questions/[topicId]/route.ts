@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { isTrueFalseQuestion, clampBatchSize } from "@/lib/question";
 
 const MAX_BATCH_SIZE = 20;
 
@@ -9,10 +10,7 @@ export async function GET(
 ) {
   const topicId = params.topicId;
   const { searchParams } = new URL(request.url);
-  const count = Math.min(
-    Math.max(parseInt(searchParams.get("count") || "1", 10) || 1, 1),
-    MAX_BATCH_SIZE
-  );
+  const count = clampBatchSize(searchParams.get("count"), MAX_BATCH_SIZE);
 
   try {
     const commonInclude = {
@@ -92,10 +90,7 @@ export async function GET(
       }));
 
       // T/F 문제 판별: 보기가 2개이고 True/False 텍스트인 경우
-      const isTrueFalse =
-        options.length === 2 &&
-        options.some((o) => /^true$/i.test(o.text_en.trim())) &&
-        options.some((o) => /^false$/i.test(o.text_en.trim()));
+      const isTrueFalse = isTrueFalseQuestion(options);
 
       if (isTrueFalse) {
         // True가 항상 첫 번째

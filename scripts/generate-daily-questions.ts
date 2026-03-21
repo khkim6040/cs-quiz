@@ -5,48 +5,14 @@
  */
 
 import { PrismaClient } from '@prisma/client';
+import { getTodayInKST } from '../src/lib/timezone';
+import { seededShuffle, dateToSeed } from '../src/lib/shuffle';
 
 const prisma = new PrismaClient();
 
-/**
- * 한국 시간(KST, UTC+9) 기준으로 오늘 날짜를 계산합니다.
- */
-function getTodayInKST(): Date {
-  const now = new Date();
-  const kstOffset = 9 * 60; // 9시간을 분으로
-  const kstTime = new Date(now.getTime() + kstOffset * 60 * 1000);
-  
-  // UTC 기준으로 한국 시간의 날짜만 추출하여 00:00:00으로 설정
-  return new Date(Date.UTC(
-    kstTime.getUTCFullYear(),
-    kstTime.getUTCMonth(),
-    kstTime.getUTCDate(),
-    0, 0, 0, 0
-  ));
-}
-
-// Fisher-Yates 셔플 알고리즘 (날짜 기반 시드)
-function seededShuffle<T>(array: T[], seed: number): T[] {
-  const arr = [...array];
-  let random = seed;
-  
-  // 간단한 선형 합동 생성기 (LCG)
-  const lcg = () => {
-    random = (random * 1103515245 + 12345) % 2147483648;
-    return random / 2147483648;
-  };
-
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(lcg() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  
-  return arr;
-}
-
 async function generateDailySet(date: Date, questionCount: number = 15) {
   // 날짜를 시드로 사용 (YYYYMMDD 형식)
-  const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
+  const seed = dateToSeed(date);
   
   const MAX_PER_TOPIC = 3;
 
