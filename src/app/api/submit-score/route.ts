@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
+import { calculateScore } from "@/lib/score";
 
 export async function POST(request: Request) {
   try {
@@ -41,9 +42,7 @@ export async function POST(request: Request) {
     }
 
     // 점수 계산
-    const accuracy = correctAnswers / totalQuestions;
-    const timeBonus = Math.max(0, 1000 - timeSpent);
-    const score = Math.round(accuracy * 1000 + timeBonus * 0.1);
+    const score = calculateScore(correctAnswers, totalQuestions, timeSpent);
 
     // topicId가 null인 경우 명시적으로 null 사용
     const topicIdValue = topicId ? topicId : null;
