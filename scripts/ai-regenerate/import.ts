@@ -63,6 +63,7 @@ import { PrismaClient } from "@prisma/client";
 import * as fs from "fs";
 import * as path from "path";
 import { loadSeedConcepts, matchConcept } from "./concept-matcher";
+import { validateQuestion, VALID_TOPIC_IDS } from "./validate";
 
 const prisma = new PrismaClient();
 
@@ -104,85 +105,6 @@ interface ImportStats {
   conceptsMatched: number;
   conceptsUnmatched: number;
   validationErrors: ValidationError[];
-}
-
-// ─── Validation ──────────────────────────────────────────
-
-const VALID_TOPIC_IDS = [
-  "computerSecurity",
-  "database",
-  "algorithm",
-  "dataStructure",
-  "computerNetworking",
-  "operatingSystem",
-  "computerArchitecture",
-  "softwareEngineering",
-  "springBoot",
-];
-
-function validateQuestion(
-  q: any,
-  file: string,
-  index: number
-): string[] {
-  const errors: string[] = [];
-
-  // Required string fields
-  const requiredFields = [
-    "question_ko",
-    "question_en",
-    "hint_ko",
-    "hint_en",
-    "topic",
-  ];
-  for (const field of requiredFields) {
-    if (!q[field] || typeof q[field] !== "string" || q[field].trim() === "") {
-      errors.push(`Missing or empty field: ${field}`);
-    }
-  }
-
-  // Topic ID validation
-  if (q.topic && !VALID_TOPIC_IDS.includes(q.topic)) {
-    errors.push(
-      `Invalid topic "${q.topic}". Must be one of: ${VALID_TOPIC_IDS.join(", ")}`
-    );
-  }
-
-  // Answer options validation
-  if (!Array.isArray(q.answerOptions)) {
-    errors.push("answerOptions must be an array");
-    return errors;
-  }
-
-  if (q.answerOptions.length < 2) {
-    errors.push(`Need at least 2 answer options, got ${q.answerOptions.length}`);
-  }
-
-  const correctCount = q.answerOptions.filter(
-    (o: any) => o.isCorrect === true
-  ).length;
-  if (correctCount === 0) {
-    errors.push("No correct answer marked (isCorrect: true)");
-  }
-  if (correctCount > 1) {
-    errors.push(`Multiple correct answers marked (${correctCount})`);
-  }
-
-  // Validate each answer option
-  for (let i = 0; i < q.answerOptions.length; i++) {
-    const opt = q.answerOptions[i];
-    const optFields = ["text_ko", "text_en", "rationale_ko", "rationale_en"];
-    for (const field of optFields) {
-      if (!opt[field] || typeof opt[field] !== "string" || opt[field].trim() === "") {
-        errors.push(`answerOptions[${i}].${field} is missing or empty`);
-      }
-    }
-    if (typeof opt.isCorrect !== "boolean") {
-      errors.push(`answerOptions[${i}].isCorrect must be a boolean`);
-    }
-  }
-
-  return errors;
 }
 
 // ─── File Reading ────────────────────────────────────────
@@ -374,11 +296,11 @@ async function main() {
       const q = data[i];
 
       // Validate
-      const errors = validateQuestion(q, file, i);
-      if (errors.length > 0) {
+      const validation = validateQuestion(q);
+      if (!validation.valid) {
         stats.questionsInvalid++;
-        stats.validationErrors.push({ file, index: i, errors });
-        console.log(`  [${i}] INVALID: ${errors[0]}`);
+        stats.validationErrors.push({ file, index: i, errors: validation.errors.map((e) => `${e.field}: ${e.message}`) });
+        console.log(`  [${i}] INVALID: ${validation.errors[0].field}: ${validation.errors[0].message}`);
         continue;
       }
 
