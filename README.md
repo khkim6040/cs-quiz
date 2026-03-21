@@ -16,7 +16,7 @@ AI로 재가공한 양질의 Computer Science 문제로 실력을 키우세요!
 - 피드백 기능: 사용자 의견 수집
 - 간편 인증: 사용자명 기반 로그인
 - 다크 모드: 어두운 테마 지원
-- 접근성: WCAG 준수 개선사항 포함
+- 접근성: WCAG 가이드라인을 참고한 개선사항 포함
 
 ## 빠른 시작
 
@@ -236,7 +236,7 @@ cs-quiz/
 
 ### 퀴즈
 - `GET /api/topics?lang={ko|en}` - 주제 목록
-- `GET /api/questions/:topicId?count={number}` - 주제별 랜덤 문제 (topicId=`random`으로 전체 랜덤)
+- `GET /api/questions/[topicId]?count={number}` - 주제별 랜덤 문제 (topicId=`random`으로 전체 랜덤)
 - `GET /api/daily-questions?lang={ko|en}` - 오늘의 퀴즈
 - `GET /api/daily-set` - 오늘의 문제 세트 조회/생성
 
