@@ -218,7 +218,7 @@ async function main() {
 
     if (successCount > 0 && !dryRun) {
         console.log("\n  ✨ Next steps:");
-        console.log("     1. Add topic ID to VALID_TOPIC_IDS in scripts/ai-regenerate/import.ts");
+        console.log("     1. Add topic ID to VALID_TOPIC_IDS in scripts/ai-regenerate/validate.ts");
         console.log("     2. Add TopicId type in src/types/quizTypes.ts");
         console.log("     3. Add translations in src/lib/translations/ko.ts and en.ts");
     }

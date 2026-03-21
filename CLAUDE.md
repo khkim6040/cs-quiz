@@ -86,7 +86,7 @@ All scripts under `scripts/` use a separate tsconfig at `scripts/tsconfig.script
 
 ### Adding a new topic
 
-1. Add topic ID to `VALID_TOPIC_IDS` in `scripts/ai-regenerate/import.ts`
+1. Add topic ID to `VALID_TOPIC_IDS` in `scripts/ai-regenerate/validate.ts`
 2. Add to DB: `npm run add-topic -- --id <slug> --name-ko "한글" --name-en "English"`
 3. Add to `TopicId` union type in `src/types/quizTypes.ts`
 4. Add translations in `src/lib/translations/ko.ts` and `en.ts`

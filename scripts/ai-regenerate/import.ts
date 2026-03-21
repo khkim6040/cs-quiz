@@ -41,7 +41,7 @@
 //
 // 새로운 토픽의 문제를 import하려면 다음 작업이 필요합니다:
 //
-// 1. 이 파일의 VALID_TOPIC_IDS 배열에 토픽 ID 추가 (약 85번째 줄)
+// 1. scripts/ai-regenerate/validate.ts의 VALID_TOPIC_IDS 배열에 토픽 ID 추가
 //    예: "softwareEngineering"
 //
 // 2. DB에 토픽 데이터 추가
@@ -56,14 +56,14 @@
 // 4. 검증
 //    npm run import-questions:dry -- --file [새-토픽-파일].json
 //
-// ⚠️  주의: VALID_TOPIC_IDS에만 추가하고 DB에 토픽을 추가하지 않으면
+// ⚠️  주의: validate.ts의 VALID_TOPIC_IDS에만 추가하고 DB에 토픽을 추가하지 않으면
 //          "Invalid topic" 에러는 사라지지만 DB 투입 시 foreign key 에러 발생!
 
 import { PrismaClient } from "@prisma/client";
 import * as fs from "fs";
 import * as path from "path";
 import { loadSeedConcepts, matchConcept } from "./concept-matcher";
-import { validateQuestion, VALID_TOPIC_IDS } from "./validate";
+import { validateQuestion } from "./validate";
 
 const prisma = new PrismaClient();
 

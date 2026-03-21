@@ -97,8 +97,10 @@ const questions = require('./scripts/ai-regenerate/generated/questions/${TOPIC_I
 async function checkDupes() {
   const existing = await prisma.question.findMany({ where: { topicId: '${TOPIC_ID}' }, select: { text_en: true } });
   const existingSet = new Set(existing.map(q => q.text_en.trim().toLowerCase().replace(/\s+/g, ' ')));
-  const dupes = questions.filter((q, i) => existingSet.has(q.question_en.trim().toLowerCase().replace(/\s+/g, ' ')));
-  console.log(JSON.stringify({ duplicates: dupes.length, indices: dupes.map((_, i) => i) }));
+  const dupes = questions
+    .map((q, index) => ({ q, index }))
+    .filter(({ q }) => existingSet.has(q.question_en.trim().toLowerCase().replace(/\s+/g, ' ')));
+  console.log(JSON.stringify({ duplicates: dupes.length, indices: dupes.map(d => d.index) }));
   await prisma.$disconnect();
 }
 checkDupes();
