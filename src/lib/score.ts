@@ -14,7 +14,9 @@ export function calculateScore(
   timeSpent: number
 ): number {
   if (totalQuestions <= 0) return 0;
-  const accuracy = correctAnswers / totalQuestions;
-  const timeBonus = Math.max(0, 1000 - timeSpent);
+  const clampedCorrectAnswers = Math.min(Math.max(0, correctAnswers), totalQuestions);
+  const safeTimeSpent = Math.max(0, timeSpent);
+  const accuracy = clampedCorrectAnswers / totalQuestions;
+  const timeBonus = Math.max(0, 1000 - safeTimeSpent);
   return Math.round(accuracy * 1000 + timeBonus * 0.1);
 }

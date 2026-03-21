@@ -4,12 +4,13 @@
  */
 export function seededShuffle<T>(array: T[], seed: number): T[] {
   const arr = [...array];
-  let random = seed;
+  let state = (seed | 0) & 0x7fffffff;
 
-  // 간단한 선형 합동 생성기 (LCG)
+  // 31비트 정수 상태로 고정된 선형 합동 생성기 (LCG)
   const lcg = () => {
-    random = (random * 1103515245 + 12345) % 2147483648;
-    return random / 2147483648;
+    state = (Math.imul(state, 1103515245) + 12345) | 0;
+    state &= 0x7fffffff;
+    return state / 2147483648;
   };
 
   for (let i = arr.length - 1; i > 0; i--) {
@@ -25,8 +26,8 @@ export function seededShuffle<T>(array: T[], seed: number): T[] {
  */
 export function dateToSeed(date: Date): number {
   return (
-    date.getFullYear() * 10000 +
-    (date.getMonth() + 1) * 100 +
-    date.getDate()
+    date.getUTCFullYear() * 10000 +
+    (date.getUTCMonth() + 1) * 100 +
+    date.getUTCDate()
   );
 }

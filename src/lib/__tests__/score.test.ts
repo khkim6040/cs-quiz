@@ -49,4 +49,19 @@ describe('calculateScore', () => {
   it('totalQuestions가 음수이면 0을 반환한다', () => {
     expect(calculateScore(5, -1, 100)).toBe(0);
   });
+
+  it('correctAnswers가 totalQuestions를 초과하면 클램핑한다', () => {
+    // 15/10은 10/10으로 클램핑 → 1000 + 100 = 1100
+    expect(calculateScore(15, 10, 0)).toBe(1100);
+  });
+
+  it('correctAnswers가 음수이면 0으로 클램핑한다', () => {
+    // -5/10은 0/10으로 클램핑 → 0 + 100 = 100
+    expect(calculateScore(-5, 10, 0)).toBe(100);
+  });
+
+  it('timeSpent가 음수이면 0으로 보정한다', () => {
+    // 10/10 정답, -100초 → 1000 + max(0, 1000-0)*0.1 = 1000 + 100 = 1100
+    expect(calculateScore(10, 10, -100)).toBe(1100);
+  });
 });
