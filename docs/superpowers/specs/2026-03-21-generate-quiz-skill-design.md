@@ -10,14 +10,18 @@
 
 ### import.ts 리팩토링
 
-현재 `scripts/ai-regenerate/import.ts`의 validation 로직이 inline으로 작성되어 있을 수 있다. 스킬 구현 전에:
+현재 `scripts/ai-regenerate/import.ts`에 `validateQuestion(q, file, index)` 함수가 이미 존재한다 (line 123-186). 다만 `file`, `index` 파라미터가 import 컨텍스트에 종속되어 있어 재사용이 어렵다. 스킬 구현 전에:
 
-1. `import.ts`에서 validation 로직을 `validateQuestion()` 함수로 추출
+1. `validateQuestion()`에서 `file`, `index` 파라미터를 제거하고 순수 validation 함수로 리팩토링
 2. `scripts/ai-regenerate/validate.ts`로 분리하여 export
-3. `import.ts`가 이 유틸을 import하여 사용하도록 리팩토링
+3. `import.ts`가 이 유틸을 import하여 사용하도록 변경
 4. 스킬의 Step 4(Evaluator)에서도 동일 함수를 재사용
 
 이를 통해 validation 규칙이 한 곳에서 관리되고, dry-run 실패를 사전에 방지할 수 있다.
+
+### DB 스키마 참고사항
+
+현재 Prisma 스키마의 `Question` 모델에는 `difficulty`, `questionType` 컬럼이 없다. 이 필드들은 생성 JSON 파일에만 기록되며, import 시 DB에 저장되지 않는다. 향후 난이도별 필터링 등이 필요하면 별도 스키마 마이그레이션으로 추가할 수 있으나, 이 스킬의 초기 버전에서는 기존 import 동작을 그대로 유지한다.
 
 ## 스킬 인터페이스
 
@@ -87,7 +91,7 @@ models: {
                         │
                         ▼
 ┌─────────────────────────────────────────────────────────┐
-│  Step 4-5 통합 루프 (totalRetryBudget = 5)              │
+│  Step 4-5 통합 루프 (totalRetryBudget = 10)              │
 │                                                         │
 │  4a. validateQuestion() 사전 검증                        │
 │      import.ts와 동일한 validation 로직 재사용            │
@@ -203,6 +207,15 @@ models: {
 }
 ```
 
+**True/False 문제 형식**:
+- `answerOptions` 배열에 정확히 2개 항목: `text_ko: "참"` / `text_en: "True"`, `text_ko: "거짓"` / `text_en: "False"`
+- `question_ko`/`question_en`은 하나의 주장(statement) 형태로 작성
+- 각 선택지의 rationale은 내용이 중복되지 않아야 함 (정답은 핵심 원리, 오답은 논리적 어긋남)
+
+**Multiple Choice 문제 형식**:
+- `answerOptions` 배열에 4개 항목 (1 정답 + 3 오답)
+- `question_ko`/`question_en`은 질문 형태로 작성
+
 **문제 스타일 규칙**:
 - True/False와 Multiple Choice를 약 50:50으로 배분
 - easy: 학부 2~3학년이 교과서를 읽고 바로 풀 수 있는 수준
@@ -227,6 +240,8 @@ import.ts에서 추출한 동일 로직:
 실패 시 즉시 REJECT, budget 소비 없음.
 
 ### LLM 3차원 평가
+
+기존 workflow의 7차원 루브릭(answer_correctness, distractor_quality, educational_value, difficulty_accuracy, rationale_quality, bilingual_quality, hint_quality)에서 핵심 품질 게이트 3차원으로 축소한다. 나머지 4차원(educational_value, rationale_quality, bilingual_quality, hint_quality)은 Question Generator의 프롬프트 지시사항에서 커버하며, 평가 단계에서 별도 점수를 매기지 않는다.
 
 | 차원 | 설명 | 점수 범위 |
 |---|---|---|
@@ -291,12 +306,12 @@ Evaluator → Question Generator로 전달되는 구조화 피드백:
 ### 에러 처리 원칙
 
 - **인프라 오류** (DB 연결 실패 등) → 즉시 파이프라인 중단 + 에러 리포트
-- **생성/평가 오류** → totalRetryBudget(5회) 내에서 자동 재시도
+- **생성/평가 오류** → totalRetryBudget(10회) 내에서 자동 재시도
 - **budget 소진** → 가능한 만큼만 import + 리포트에 미달 사유 기재
 
-### totalRetryBudget (= 5)
+### totalRetryBudget (기본값: 10, 설정 가능)
 
-Step 4~5를 합쳐서 총 재시도 횟수를 관리한다.
+Step 4~5를 합쳐서 총 재시도 횟수를 파이프라인 레벨에서 관리한다. 30문제 기준 REVISE율 20% (6문제)를 감안하여 기본값은 10으로 설정하며, 보충 루프와 dry-run 대체 생성까지 커버할 수 있는 여유를 둔다. 30개 미만으로 끝나는 것은 허용 가능한 결과이며, 리포트에 미달 사유가 기재된다.
 
 | 상황 | budget 소비 |
 |---|---|
@@ -497,7 +512,7 @@ Step 4~5를 합쳐서 총 재시도 횟수를 관리한다.
   Target: 30 questions    Generated: 34    Imported: 30
   PASS: 30    REVISE: 3 (→ 2 recovered)    REJECT: 4
   Supplement rounds: 1
-  Retry budget used: 3/5
+  Retry budget used: 3/10
 
 📂 Files
   Concept map:  generated/concepts/algorithm-20260321.json
