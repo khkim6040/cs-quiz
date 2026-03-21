@@ -80,7 +80,7 @@ export function validateQuestion(q: any): ValidationResult {
 
   // Answer options: exactly 1 correct
   const correctCount = q.answerOptions.filter(
-    (o: any) => o.isCorrect === true
+    (o: any) => o && o.isCorrect === true
   ).length;
   if (correctCount === 0) {
     errors.push({
@@ -99,6 +99,13 @@ export function validateQuestion(q: any): ValidationResult {
   const optFields = ["text_ko", "text_en", "rationale_ko", "rationale_en"];
   for (let i = 0; i < q.answerOptions.length; i++) {
     const opt = q.answerOptions[i];
+    if (!opt || typeof opt !== "object") {
+      errors.push({
+        field: `answerOptions[${i}]`,
+        message: "Answer option must be a non-null object",
+      });
+      continue;
+    }
     for (const field of optFields) {
       if (
         !opt[field] ||
@@ -124,6 +131,7 @@ export function validateQuestion(q: any): ValidationResult {
   // Rationale minimum length
   for (let i = 0; i < q.answerOptions.length; i++) {
     const opt = q.answerOptions[i];
+    if (!opt || typeof opt !== "object") continue;
     if (
       opt.rationale_ko &&
       typeof opt.rationale_ko === "string" &&
@@ -148,7 +156,7 @@ export function validateQuestion(q: any): ValidationResult {
 
   // Hint must not contain correct answer text (both languages)
   if (Array.isArray(q.answerOptions)) {
-    const correctOption = q.answerOptions.find((o: any) => o.isCorrect);
+    const correctOption = q.answerOptions.find((o: any) => o && o.isCorrect);
     if (correctOption) {
       // Check hint_en vs text_en
       if (q.hint_en && correctOption.text_en) {
@@ -187,9 +195,22 @@ export function validateQuestion(q: any): ValidationResult {
     const conceptWords = conceptLower
       .split(/[\s/,\-()]+/)
       .filter((w: string) => w.length > 7);
-    const hasConceptKeyword =
-      conceptWords.length === 0 ||
-      conceptWords.some((w: string) => questionLower.includes(w));
+    // For short single-word concepts (e.g., "Heap", "SQL", "BFS"),
+    // use word boundary matching to avoid false positives from substrings
+    const allWords = conceptLower.split(/[\s/,\-()]+/).filter((w: string) => w.length > 0);
+    const isSingleShortConcept = conceptWords.length === 0 && allWords.length <= 2;
+    let hasConceptKeyword: boolean;
+    if (isSingleShortConcept && allWords.length > 0) {
+      // Match any word from the concept as a whole word in the question
+      hasConceptKeyword = allWords.some((w: string) => {
+        const wordBoundary = new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i");
+        return wordBoundary.test(q.question_en);
+      });
+    } else {
+      hasConceptKeyword =
+        conceptWords.length === 0 ||
+        conceptWords.some((w: string) => questionLower.includes(w));
+    }
     if (!hasConceptKeyword) {
       errors.push({
         field: "question_en",

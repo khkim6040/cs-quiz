@@ -5,7 +5,7 @@ import { validateQuestion } from "../validate";
 describe("validateQuestion", () => {
   const validQuestion = {
     question_ko: "테스트 질문입니다.",
-    question_en: "This is a test question.",
+    question_en: "This is a test sorting question.",
     hint_ko: "힌트입니다.",
     hint_en: "This is a hint.",
     topic: "algorithm",
@@ -155,6 +155,51 @@ describe("validateQuestion", () => {
     };
     const result = validateQuestion(q);
     expect(result.valid).toBe(true);
+  });
+
+  it("handles null/non-object entries in answerOptions", () => {
+    const q = {
+      ...validQuestion,
+      answerOptions: [null, validQuestion.answerOptions[0], validQuestion.answerOptions[1]],
+    };
+    const result = validateQuestion(q);
+    expect(result.valid).toBe(false);
+    expect(
+      result.errors.some((e) => e.field === "answerOptions[0]" && e.message.includes("non-null object"))
+    ).toBe(true);
+  });
+
+  it("detects short single-word concept missing from question_en", () => {
+    const q = {
+      ...validQuestion,
+      concept: "Heap",
+      question_en: "What is the time complexity of this operation?",
+    };
+    const result = validateQuestion(q);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.field === "question_en")).toBe(true);
+  });
+
+  it("passes when short concept appears as whole word in question_en", () => {
+    const q = {
+      ...validQuestion,
+      concept: "Heap",
+      question_en: "What is the time complexity of inserting into a Heap?",
+    };
+    const result = validateQuestion(q);
+    expect(result.valid).toBe(true);
+  });
+
+  it("does not false-positive match short concept as substring", () => {
+    const q = {
+      ...validQuestion,
+      concept: "BFS",
+      question_en: "What algorithm uses a queue for traversal? (not about BFSI sector)",
+    };
+    // "BFS" is not present as a whole word (only "BFSI"), so should fail
+    const result = validateQuestion(q);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.field === "question_en")).toBe(true);
   });
 
   it("detects trivial distractor (short rationale on incorrect option)", () => {
