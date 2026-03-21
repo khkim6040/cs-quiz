@@ -26,11 +26,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `(function(){try{var s=localStorage.getItem('darkMode');var dark=s==='true'||(s===null&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(dark)document.documentElement.classList.add('dark');}catch(e){}})();`,
-        }}
-      />
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('darkMode');var dark=s==='true'||(s===null&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(dark)document.documentElement.classList.add('dark');}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className={`${inter.className} antialiased`}>
         <LanguageProvider>
           <AuthProvider>
