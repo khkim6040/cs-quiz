@@ -31,7 +31,7 @@ npm run add-topic -- --id softwareEngineering --name-ko "소프트웨어 공학"
 # 2단계: 실제 추가
 npm run add-topic -- --id softwareEngineering --name-ko "소프트웨어 공학" --name-en "Software Engineering"
 
-# 3단계: import.ts의 VALID_TOPIC_IDS에 추가 (스크립트가 자동으로 안내)
+# 3단계: validate.ts의 VALID_TOPIC_IDS에 추가 (스크립트가 자동으로 안내)
 # 4단계: src/types/quizTypes.ts의 TopicId 타입에 추가
 ```
 
@@ -85,7 +85,7 @@ npm run add-topic -- \
 - 이미 존재하는 ID는 건너뜀
 
 **실행 후 안내되는 다음 단계:**
-1. `scripts/ai-regenerate/import.ts`의 `VALID_TOPIC_IDS`에 추가
+1. `scripts/ai-regenerate/validate.ts`의 `VALID_TOPIC_IDS`에 추가
 2. `src/types/quizTypes.ts`의 `TopicId` 타입에 추가
 3. 번역 파일 확인 (필요시)
 
@@ -169,7 +169,7 @@ npm run add-topic -- \
   --name-ko "소프트웨어 공학" \
   --name-en "Software Engineering"
 
-# 3. import.ts 수정
+# 3. validate.ts 수정
 # VALID_TOPIC_IDS 배열에 "softwareEngineering" 추가
 
 # 4. 타입 정의 수정
@@ -189,7 +189,7 @@ npm run import-questions -- --file software_engineering-1.json
 
 ## ⚠️ 주의사항
 
-1. **토픽 추가 순서 중요**: `add-topic.ts`로 DB에 토픽을 먼저 추가한 후, `import.ts`의 `VALID_TOPIC_IDS`에도 추가해야 합니다.
+1. **토픽 추가 순서 중요**: `add-topic.ts`로 DB에 토픽을 먼저 추가한 후, `validate.ts`의 `VALID_TOPIC_IDS`에도 추가해야 합니다.
 
 2. **중복 검사**: 영문 질문 텍스트를 기준으로 중복을 검사합니다. 같은 문제를 여러 번 import하면 자동으로 건너뜁니다.
 
@@ -197,7 +197,7 @@ npm run import-questions -- --file software_engineering-1.json
 
 4. **Clear 옵션**: `--clear` 옵션은 모든 문제를 삭제합니다. 매우 주의해서 사용하세요!
 
-5. **Foreign Key**: `VALID_TOPIC_IDS`에만 추가하고 DB에 토픽을 추가하지 않으면, import 시 foreign key 에러가 발생합니다.
+5. **Foreign Key**: `validate.ts`의 `VALID_TOPIC_IDS`에만 추가하고 DB에 토픽을 추가하지 않으면, import 시 foreign key 에러가 발생합니다.
 
 ## 🐛 트러블슈팅
 
@@ -207,7 +207,7 @@ npm run import-questions -- --file software_engineering-1.json
 
 **해결**:
 1. `add-topic.ts`로 DB에 토픽 추가
-2. `import.ts`의 `VALID_TOPIC_IDS`에 토픽 추가
+2. `validate.ts`의 `VALID_TOPIC_IDS`에 토픽 추가
 
 ### Foreign key constraint 에러
 

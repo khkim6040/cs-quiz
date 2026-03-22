@@ -1,0 +1,171 @@
+{
+  "algorithm": {
+    "sources": [
+      "MIT 6.006 Introduction to Algorithms",
+      "CLRS (Introduction to Algorithms, Cormen et al.)",
+      "Khan Academy — Algorithms"
+    ],
+    "syllabus": [
+      "Asymptotic Analysis (Big-O, Omega, Theta)",
+      "Sorting: Insertion, Merge, Quick, Heap, Counting, Radix",
+      "Searching: Binary Search, Hash Tables",
+      "Graph Algorithms: BFS, DFS, Topological Sort",
+      "Shortest Paths: Dijkstra, Bellman-Ford, Floyd-Warshall",
+      "Minimum Spanning Trees: Prim, Kruskal",
+      "Dynamic Programming: LCS, Knapsack, Edit Distance",
+      "Greedy Algorithms: Activity Selection, Huffman Coding",
+      "Divide and Conquer: Master Theorem, Strassen's",
+      "String Matching: KMP, Rabin-Karp",
+      "Network Flow: Ford-Fulkerson, Max-Flow Min-Cut",
+      "NP-Completeness: Reductions, Approximation Algorithms",
+      "Amortized Analysis, Randomized Algorithms"
+    ]
+  },
+  "dataStructure": {
+    "sources": [
+      "Open Data Structures (Pat Morin)",
+      "MIT 6.851 Advanced Data Structures"
+    ],
+    "syllabus": [
+      "Arrays, Linked Lists (Singly, Doubly, Circular)",
+      "Stacks, Queues, Deques",
+      "Hash Tables: Chaining, Open Addressing, Load Factor",
+      "Trees: Binary Tree, BST, AVL, Red-Black Tree",
+      "Heaps: Binary Heap, Priority Queue",
+      "Tries, Suffix Trees",
+      "Graphs: Adjacency List, Adjacency Matrix",
+      "Disjoint Set (Union-Find)",
+      "B-Trees, B+ Trees",
+      "Skip Lists, Bloom Filters"
+    ]
+  },
+  "database": {
+    "sources": [
+      "CMU 15-445/645 Intro to Database Systems",
+      "Stanford DB Course (Jennifer Widom)"
+    ],
+    "syllabus": [
+      "Relational Model, Relational Algebra",
+      "SQL: DDL, DML, Joins, Subqueries, Aggregation",
+      "Normalization: 1NF, 2NF, 3NF, BCNF",
+      "Indexing: B+ Tree, Hash Index, Composite Index",
+      "Query Processing and Optimization",
+      "Transactions: ACID, Serializability",
+      "Concurrency Control: 2PL, MVCC, Deadlock",
+      "Recovery: WAL, Checkpointing, ARIES",
+      "Distributed Databases: CAP Theorem, Replication",
+      "NoSQL: Key-Value, Document, Column-Family, Graph DB"
+    ]
+  },
+  "operatingSystem": {
+    "sources": [
+      "OSTEP (Remzi Arpaci-Dusseau)",
+      "MIT 6.1810 Operating System Engineering"
+    ],
+    "syllabus": [
+      "Process Management: PCB, Context Switching, Fork/Exec",
+      "CPU Scheduling: FCFS, SJF, Round Robin, MLFQ, CFS",
+      "Threads: User vs Kernel, POSIX Threads",
+      "Synchronization: Mutex, Semaphore, Monitor, Condition Variable",
+      "Deadlock: Detection, Prevention, Avoidance (Banker's)",
+      "Memory Management: Paging, Segmentation, TLB",
+      "Virtual Memory: Page Replacement (LRU, Clock), Thrashing",
+      "File Systems: Inode, FAT, Journaling, Log-Structured",
+      "I/O Management: DMA, Interrupt Handling",
+      "Inter-Process Communication: Pipe, Shared Memory, Message Queue"
+    ]
+  },
+  "computerNetworking": {
+    "sources": [
+      "Computer Networking: A Top-Down Approach (Kurose/Ross)",
+      "MIT 6.033 Computer System Engineering"
+    ],
+    "syllabus": [
+      "OSI 7-Layer & TCP/IP 4-Layer Models",
+      "Application Layer: HTTP, DNS, SMTP, FTP, WebSocket",
+      "Transport Layer: TCP (3-way handshake, Flow/Congestion Control), UDP",
+      "Network Layer: IP, CIDR, NAT, ICMP, Routing (RIP, OSPF, BGP)",
+      "Data Link Layer: Ethernet, ARP, MAC Addressing, VLAN",
+      "Physical Layer: Encoding, Multiplexing",
+      "Network Security: TLS/SSL, Firewall, VPN, IPSec",
+      "Wireless: Wi-Fi (802.11), Cellular",
+      "SDN, Multicast, CDN",
+      "Socket Programming, REST API Design"
+    ]
+  },
+  "computerArchitecture": {
+    "sources": [
+      "Nand2Tetris",
+      "Computer Organization and Design (Patterson/Hennessy)",
+      "MIT 6.823 Computer System Architecture"
+    ],
+    "syllabus": [
+      "Number Systems, Boolean Algebra, Logic Gates",
+      "Combinational Circuits: MUX, Decoder, ALU",
+      "Sequential Circuits: Flip-Flops, Registers, Counters",
+      "Instruction Set Architecture: RISC vs CISC",
+      "CPU Datapath and Control Unit",
+      "Pipelining: Hazards (Data, Control, Structural), Forwarding",
+      "Cache Memory: Direct-Mapped, Set-Associative, Write Policies",
+      "Virtual Memory: Page Table, TLB, Multi-Level Paging",
+      "I/O: Polling, Interrupt, DMA",
+      "Parallelism: ILP, SIMD, Multicore, GPU Architecture"
+    ]
+  },
+  "computerSecurity": {
+    "sources": [
+      "UC Berkeley CS161 Textbook",
+      "MIT 6.857 Network and Computer Security",
+      "NIST SP 800 Series"
+    ],
+    "syllabus": [
+      "Memory Safety: Buffer Overflow, Stack Smashing, ROP",
+      "Defense Mechanisms: ASLR, DEP/NX, Stack Canaries",
+      "Symmetric Cryptography: AES, DES, Block Cipher Modes",
+      "Asymmetric Cryptography: RSA, Diffie-Hellman, ECC",
+      "Hash Functions: SHA, HMAC, Digital Signatures",
+      "PKI: Certificates, Certificate Authorities, TLS Handshake",
+      "Web Security: SQL Injection, XSS, CSRF, CORS",
+      "Authentication: Password Hashing, MFA, OAuth/OIDC",
+      "Network Security: Firewall, IDS/IPS, VPN",
+      "Access Control: DAC, MAC, RBAC, Bell-LaPadula"
+    ]
+  },
+  "softwareEngineering": {
+    "sources": [
+      "SWEBOK v4 (IEEE Computer Society)",
+      "MIT 6.033 Computer System Engineering"
+    ],
+    "syllabus": [
+      "SDLC Models: Waterfall, Agile (Scrum, Kanban), Spiral",
+      "Requirements Engineering: Elicitation, Specification, Validation",
+      "Software Design: Modularity, Coupling, Cohesion",
+      "Design Patterns: Creational, Structural, Behavioral (GoF)",
+      "Software Architecture: Layered, Microservices, Event-Driven",
+      "Testing: Unit, Integration, System, Acceptance, TDD",
+      "Version Control: Git, Branching Strategies",
+      "CI/CD: Build Automation, Deployment Pipelines",
+      "Software Quality: Code Review, Static Analysis, Metrics",
+      "Project Management: Estimation, Risk Management"
+    ]
+  },
+  "springBoot": {
+    "sources": [
+      "Spring Boot Official Documentation",
+      "Spring.io Guides",
+      "Baeldung — Spring Boot Series"
+    ],
+    "syllabus": [
+      "Spring Core: IoC Container, DI, Bean Lifecycle, AOP",
+      "Auto-Configuration, @SpringBootApplication, Starter Dependencies",
+      "Spring MVC: @Controller, @RestController, Request Mapping",
+      "Data Access: Spring Data JPA, Repository Pattern, Transactions",
+      "Security: Spring Security, Authentication, Authorization, JWT",
+      "Testing: @SpringBootTest, MockMvc, @DataJpaTest",
+      "Configuration: application.yml, Profiles, @Value, @ConfigurationProperties",
+      "Exception Handling: @ControllerAdvice, @ExceptionHandler",
+      "Actuator: Health Checks, Metrics, Custom Endpoints",
+      "Deployment: Embedded Server, Docker, Cloud Deployment"
+    ]
+  }
+}
