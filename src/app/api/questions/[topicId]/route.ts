@@ -112,6 +112,7 @@ export async function GET(
         question_en: q.text_en || q.text_ko,
         hint_ko: q.hint_ko,
         hint_en: q.hint_en || q.hint_ko,
+        difficulty: q.difficulty,
         answerOptions: options,
       };
     };
