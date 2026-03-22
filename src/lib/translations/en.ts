@@ -50,6 +50,9 @@ const en = {
     hint: '💡 Show Hint',
     next: 'Next Question',
     swipeHint: '← Swipe for next',
+    difficultyEasy: 'Easy',
+    difficultyMedium: 'Medium',
+    difficultyHard: 'Hard',
   },
   leaderboard: {
     title: 'Leaderboard',

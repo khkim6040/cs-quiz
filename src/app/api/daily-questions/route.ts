@@ -80,6 +80,7 @@ export async function GET(request: Request) {
         question_en: question.text_en || question.text_ko,
         hint_ko: question.hint_ko,
         hint_en: question.hint_en || question.hint_ko,
+        difficulty: question.difficulty,
         answerOptions: options,
       };
     });

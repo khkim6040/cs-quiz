@@ -30,6 +30,12 @@ model Concept {
   @@unique([topicId, name_en])
 }
 
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
 model Question {
   id            String         @id @default(cuid())
   topicId       String
@@ -37,6 +43,7 @@ model Question {
   text_en       String
   hint_ko       String
   hint_en       String
+  difficulty    Difficulty     @default(MEDIUM)
   topic         Topic          @relation(fields: [topicId], references: [id])
   answerOptions AnswerOption[]
   feedbacks     Feedback[]

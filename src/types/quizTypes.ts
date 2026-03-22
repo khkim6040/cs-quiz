@@ -25,6 +25,7 @@ export interface QuestionData {
   question_en: string;
   hint_ko: string;
   hint_en: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
   answerOptions: AnswerOption[];
 }
 

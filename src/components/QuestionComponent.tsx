@@ -174,6 +174,22 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
     return baseClasses + "text-gray-600 dark:text-gray-400 cursor-pointer";
   };
 
+  const difficultyConfig = {
+    EASY: {
+      tKey: 'quiz.difficultyEasy',
+      classes: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    },
+    MEDIUM: {
+      tKey: 'quiz.difficultyMedium',
+      classes: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+    },
+    HARD: {
+      tKey: 'quiz.difficultyHard',
+      classes: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    },
+  };
+  const diffCfg = difficultyConfig[questionData.difficulty] ?? difficultyConfig.MEDIUM;
+
   return (
     <div
       ref={containerRef}
@@ -181,6 +197,10 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
+      {/* Difficulty badge */}
+      <span className={`inline-block mb-3 px-2 py-0.5 text-xs font-medium rounded-full ${diffCfg.classes}`}>
+        {t(diffCfg.tKey)}
+      </span>
       <div className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100 leading-relaxed">
         <ReactMarkdown
           remarkPlugins={[[remarkGfm, { singleTilde: false }]]}

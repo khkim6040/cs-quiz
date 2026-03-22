@@ -6,7 +6,7 @@ import QuestionComponent from '@/components/QuestionComponent';
 import LoginModal from '@/components/LoginModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { TopicId } from '@/types/quizTypes';
+import { TopicId, QuestionData } from '@/types/quizTypes';
 
 interface Question {
   id: string;
@@ -17,6 +17,7 @@ interface Question {
   question_en: string;
   hint_ko: string;
   hint_en: string;
+  difficulty: QuestionData['difficulty'];
   answerOptions: Array<{
     id: string;
     text_ko: string;
@@ -386,6 +387,7 @@ export default function DailyQuizPage() {
                 question_en: currentQuestion.question_en,
                 hint_ko: currentQuestion.hint_ko,
                 hint_en: currentQuestion.hint_en,
+                difficulty: currentQuestion.difficulty,
                 answerOptions: currentQuestion.answerOptions,
               }}
               onNextQuestion={handleNextQuestion}

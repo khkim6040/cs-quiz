@@ -59,7 +59,7 @@
 // ⚠️  주의: validate.ts의 VALID_TOPIC_IDS에만 추가하고 DB에 토픽을 추가하지 않으면
 //          "Invalid topic" 에러는 사라지지만 DB 투입 시 foreign key 에러 발생!
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Difficulty } from "@prisma/client";
 import * as fs from "fs";
 import * as path from "path";
 import { loadSeedConcepts, matchConcept } from "./concept-matcher";
@@ -83,11 +83,17 @@ interface GeneratedQuestion {
   hint_ko: string;
   hint_en: string;
   topic: string;
-  difficulty?: string;
+  difficulty: 'easy' | 'medium' | 'hard';
   concept?: string;
   questionType?: string;
   answerOptions: GeneratedAnswerOption[];
 }
+
+const DIFFICULTY_MAP: Record<string, Difficulty> = {
+  easy: "EASY",
+  medium: "MEDIUM",
+  hard: "HARD",
+};
 
 interface ValidationError {
   file: string;
@@ -193,6 +199,7 @@ async function importQuestion(
       text_en: q.question_en,
       hint_ko: q.hint_ko,
       hint_en: q.hint_en,
+      difficulty: DIFFICULTY_MAP[q.difficulty] ?? "MEDIUM",
       answerOptions: {
         create: q.answerOptions.map((opt) => ({
           text_ko: opt.text_ko,
