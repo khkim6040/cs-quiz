@@ -1,0 +1,31 @@
+name: Generate Daily Quiz
+
+on:
+  schedule:
+    # 매일 UTC 21:00 (KST 06:00)에 실행
+    - cron: '0 21 * * *'
+  workflow_dispatch: # 수동 실행 지원
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Generate daily question set
+        run: npm run generate-daily
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
