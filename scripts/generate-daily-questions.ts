@@ -58,6 +58,11 @@ async function main() {
     process.exit(1);
   }
 
+  if (isNaN(questionCount) || questionCount <= 0) {
+    console.error('Invalid question count parameter. Must be a positive integer. Usage: npm run generate-daily [daysAhead] [questionCount] [startOffset]');
+    process.exit(1);
+  }
+
   if (isNaN(startOffset) || startOffset < 0) {
     console.error('Invalid start offset parameter. Must be a non-negative integer.');
     process.exit(1);
@@ -66,10 +71,10 @@ async function main() {
   console.log(`Generating daily question sets for ${daysAhead} day(s) starting from +${startOffset} day(s) with ${questionCount} questions each...`);
 
   const results: Array<{ date: Date; status: string; id?: string; error?: unknown }> = [];
+  const today = getTodayInKST();
 
   for (let i = 0; i < daysAhead; i++) {
     // 한국 시간 기준으로 날짜 계산
-    const today = getTodayInKST();
     const targetDate = new Date(today);
     targetDate.setUTCDate(targetDate.getUTCDate() + startOffset + i);
 
