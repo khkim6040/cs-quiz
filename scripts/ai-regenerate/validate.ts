@@ -31,6 +31,15 @@ export function validateQuestion(q: any): ValidationResult {
 
   // ── Structural validation ──
 
+  // Basic type validation for the question object itself
+  if (!q || typeof q !== "object" || Array.isArray(q)) {
+    errors.push({
+      field: "question",
+      message: "Invalid question entry; expected a non-null object.",
+    });
+    return { valid: false, errors };
+  }
+
   // Required string fields
   const requiredFields = [
     "question_ko",
@@ -53,8 +62,13 @@ export function validateQuestion(q: any): ValidationResult {
     });
   }
 
-  // Difficulty validation
-  if (q.difficulty && !VALID_DIFFICULTIES.includes(q.difficulty)) {
+  // Difficulty validation (required field)
+  if (!q.difficulty || typeof q.difficulty !== "string" || q.difficulty.trim() === "") {
+    errors.push({
+      field: "difficulty",
+      message: "Missing or empty field: difficulty",
+    });
+  } else if (!VALID_DIFFICULTIES.includes(q.difficulty)) {
     errors.push({
       field: "difficulty",
       message: `Invalid difficulty "${q.difficulty}". Must be one of: ${VALID_DIFFICULTIES.join(", ")}`,
@@ -161,12 +175,25 @@ export function validateQuestion(q: any): ValidationResult {
       // Check hint_en vs text_en
       if (q.hint_en && correctOption.text_en) {
         const hintLower = q.hint_en.toLowerCase();
-        const answerLower = correctOption.text_en.toLowerCase();
-        if (answerLower.length > 5 && hintLower.includes(answerLower)) {
-          errors.push({
-            field: "hint_en",
-            message: "Hint contains the correct answer text",
-          });
+        const answerLower = correctOption.text_en.toLowerCase().trim();
+        if (answerLower.length > 0) {
+          if (answerLower.length <= 5) {
+            // Short answers (e.g., "O(1)", "True"): use token-level matching
+            const hintTokens = hintLower
+              .split(/[\s,;:.!?()[\]{}"']+/)
+              .filter((t: string) => t.length > 0);
+            if (hintTokens.includes(answerLower)) {
+              errors.push({
+                field: "hint_en",
+                message: "Hint contains the correct answer text",
+              });
+            }
+          } else if (hintLower.includes(answerLower)) {
+            errors.push({
+              field: "hint_en",
+              message: "Hint contains the correct answer text",
+            });
+          }
         }
       }
       // Check hint_ko vs text_ko
@@ -192,24 +219,21 @@ export function validateQuestion(q: any): ValidationResult {
     const conceptLower = q.concept.toLowerCase();
     const questionLower = q.question_en.toLowerCase();
     // Split multi-word concepts and check if any significant word appears
-    const conceptWords = conceptLower
-      .split(/[\s/,\-()]+/)
-      .filter((w: string) => w.length > 7);
-    // For short single-word concepts (e.g., "Heap", "SQL", "BFS"),
-    // use word boundary matching to avoid false positives from substrings
     const allWords = conceptLower.split(/[\s/,\-()]+/).filter((w: string) => w.length > 0);
-    const isSingleShortConcept = conceptWords.length === 0 && allWords.length <= 2;
+    const longWords = allWords.filter((w: string) => w.length > 7);
     let hasConceptKeyword: boolean;
-    if (isSingleShortConcept && allWords.length > 0) {
-      // Match any word from the concept as a whole word in the question
+    if (longWords.length > 0) {
+      // Has long words: substring match is sufficient
+      hasConceptKeyword = longWords.some((w: string) => questionLower.includes(w));
+    } else if (allWords.length > 0) {
+      // All words are short (e.g., "Heap", "SQL", "Red Black Tree"):
+      // use word boundary matching to avoid false positives from substrings
       hasConceptKeyword = allWords.some((w: string) => {
         const wordBoundary = new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i");
         return wordBoundary.test(q.question_en);
       });
     } else {
-      hasConceptKeyword =
-        conceptWords.length === 0 ||
-        conceptWords.some((w: string) => questionLower.includes(w));
+      hasConceptKeyword = true; // empty concept string, nothing to check
     }
     if (!hasConceptKeyword) {
       errors.push({
