@@ -83,7 +83,7 @@ interface GeneratedQuestion {
   hint_ko: string;
   hint_en: string;
   topic: string;
-  difficulty: string;
+  difficulty: 'easy' | 'medium' | 'hard';
   concept?: string;
   questionType?: string;
   answerOptions: GeneratedAnswerOption[];

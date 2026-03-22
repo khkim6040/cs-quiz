@@ -6,7 +6,7 @@ import QuestionComponent from '@/components/QuestionComponent';
 import LoginModal from '@/components/LoginModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { TopicId } from '@/types/quizTypes';
+import { TopicId, QuestionData } from '@/types/quizTypes';
 
 interface Question {
   id: string;
@@ -17,7 +17,7 @@ interface Question {
   question_en: string;
   hint_ko: string;
   hint_en: string;
-  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+  difficulty: QuestionData['difficulty'];
   answerOptions: Array<{
     id: string;
     text_ko: string;
