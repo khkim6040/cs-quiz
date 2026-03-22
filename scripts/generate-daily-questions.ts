@@ -51,21 +51,27 @@ async function main() {
   const args = process.argv.slice(2);
   const daysAhead = args.length > 0 ? parseInt(args[0], 10) : 1;
   const questionCount = args.length > 1 ? parseInt(args[1], 10) : 15;
+  const startOffset = args.length > 2 ? parseInt(args[2], 10) : 0;
 
   if (isNaN(daysAhead) || daysAhead < 0) {
-    console.error('Invalid days ahead parameter. Usage: npm run generate-daily [daysAhead] [questionCount]');
+    console.error('Invalid days ahead parameter. Usage: npm run generate-daily [daysAhead] [questionCount] [startOffset]');
     process.exit(1);
   }
 
-  console.log(`Generating daily question sets for ${daysAhead} day(s) ahead with ${questionCount} questions each...`);
+  if (isNaN(startOffset) || startOffset < 0) {
+    console.error('Invalid start offset parameter. Must be a non-negative integer.');
+    process.exit(1);
+  }
+
+  console.log(`Generating daily question sets for ${daysAhead} day(s) starting from +${startOffset} day(s) with ${questionCount} questions each...`);
 
   const results: Array<{ date: Date; status: string; id?: string; error?: unknown }> = [];
-  
+
   for (let i = 0; i < daysAhead; i++) {
     // 한국 시간 기준으로 날짜 계산
     const today = getTodayInKST();
     const targetDate = new Date(today);
-    targetDate.setUTCDate(targetDate.getUTCDate() + i);
+    targetDate.setUTCDate(targetDate.getUTCDate() + startOffset + i);
 
     console.log(`Processing date: ${targetDate.toISOString().split('T')[0]} (KST-based)`);
 
