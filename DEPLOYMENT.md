@@ -1,240 +1,107 @@
-# CS Quiz 배포 가이드 (Cloudflare Pages)
+# CS Quiz 배포 가이드 (Vercel + Neon PostgreSQL)
 
-이 문서는 CS Quiz 애플리케이션을 Cloudflare Pages에 배포하는 방법을 안내합니다.
+이 문서는 CS Quiz 애플리케이션을 Vercel에 배포하고 Neon PostgreSQL을 데이터베이스로 사용하는 방법을 안내합니다.
 
-## 🚀 빠른 시작
+## 빠른 시작
 
-### 1. Cloudflare 계정 준비
+### 1. Neon 데이터베이스 생성
 
-1. [Cloudflare](https://dash.cloudflare.com/) 계정 생성 (무료)
-2. Cloudflare Pages 대시보드 접속
+1. [Neon Console](https://console.neon.tech/)에서 계정 생성
+2. 새 프로젝트 생성
+3. Connection string 복사 (형식: `postgresql://user:password@ep-xxx.region.aws.neon.tech/dbname?sslmode=require`)
 
-### 2. D1 데이터베이스 생성
-
-Cloudflare D1은 SQLite 기반 데이터베이스입니다.
-
-```bash
-# Wrangler CLI 설치 (Cloudflare CLI 도구)
-npm install -g wrangler
-
-# Cloudflare 로그인
-wrangler login
-
-# D1 데이터베이스 생성
-wrangler d1 create cs-quiz-db
-```
-
-생성 후 출력되는 `database_id`를 복사하여 `wrangler.toml` 파일에 입력합니다:
-
-```toml
-[[d1_databases]]
-binding = "DB"
-database_name = "cs-quiz-db"
-database_id = "여기에-database-id-입력"
-```
-
-### 3. D1에 스키마 마이그레이션
-
-Prisma 마이그레이션을 D1에 적용합니다:
+### 2. Prisma 마이그레이션 적용
 
 ```bash
-# Prisma 마이그레이션 SQL 파일 확인
-cat prisma/migrations/*/migration.sql
+# .env 파일에 Neon connection string 설정
+echo 'DATABASE_URL="postgresql://user:password@ep-xxx.region.aws.neon.tech/dbname?sslmode=require"' > .env
 
-# D1에 직접 실행 (모든 마이그레이션 파일 병합)
-wrangler d1 execute cs-quiz-db --file=./prisma/migrations/20250530054736_init_sqlite/migration.sql
-wrangler d1 execute cs-quiz-db --file=./prisma/migrations/20260205132336_add_user_daily_leaderboard/migration.sql
+# 마이그레이션 실행
+npx prisma migrate deploy
+
+# Seed 데이터 삽입 (선택)
+npx prisma db seed
 ```
 
-또는 수동으로 SQL 실행:
+### 3. Vercel 배포
 
-```bash
-wrangler d1 execute cs-quiz-db --command="SQL 명령어"
-```
-
-### 4. Seed 데이터 삽입 (선택사항)
-
-초기 문제 데이터를 D1에 삽입:
-
-```bash
-# 로컬에서 seed 실행 후 생성된 데이터를 export
-# 또는 D1 콘솔에서 직접 INSERT 문 실행
-
-# 예시: SQL로 변환하여 실행
-wrangler d1 execute cs-quiz-db --file=./seed.sql
-```
-
-### 5. GitHub 레포지토리 연동
-
-1. GitHub에 코드 푸시:
-   ```bash
-   git push origin main
+1. [Vercel](https://vercel.com)에 GitHub 계정으로 로그인
+2. **Add New Project** > GitHub 레포지토리 선택
+3. 프레임워크가 Next.js로 자동 감지되는지 확인
+4. 환경 변수 설정:
    ```
+   DATABASE_URL=postgresql://user:password@ep-xxx.region.aws.neon.tech/dbname?sslmode=require
+   ```
+5. **Deploy** 클릭
 
-2. Cloudflare Pages 대시보드에서:
-   - **Create a project** 클릭
-   - **Connect to Git** 선택
-   - GitHub 레포지토리 선택
-   - 빌드 설정:
-     ```
-     Framework preset: Next.js
-     Build command: npm run build
-     Build output directory: .next
-     Root directory: /
-     Node version: 20
-     ```
+이후 `main` 브랜치에 푸시하면 자동 배포됩니다.
 
-### 6. 환경 변수 설정
+### 4. 일일 퀴즈 생성 (Cron)
 
-Cloudflare Pages 대시보드의 Settings > Environment variables에서:
-
-```
-DATABASE_URL=file:./dev.db  # 로컬 개발용 (프로덕션에서는 D1 자동 바인딩)
-ANTHROPIC_API_KEY=your-claude-api-key-here
-NODE_ENV=production
-```
-
-### 7. D1 바인딩 설정
-
-Cloudflare Pages 프로젝트 설정:
-1. **Settings** > **Functions** > **D1 database bindings**
-2. **Add binding** 클릭
-3. Variable name: `DB`
-4. D1 database: `cs-quiz-db` 선택
-
-### 8. 배포 완료!
-
-커밋을 푸시하면 자동으로 배포됩니다:
+Vercel Cron 또는 GitHub Actions로 매일 퀴즈 세트를 생성할 수 있습니다.
 
 ```bash
-git add .
-git commit -m "feat: 배포 준비 완료"
-git push origin main
+# 로컬에서 수동 실행
+npm run generate-daily        # 내일 퀴즈 세트 생성
+npm run generate-daily:week   # 7일치 생성
+npm run generate-daily:month  # 30일치 생성
 ```
-
-배포 URL: `https://cs-quiz.pages.dev` (자동 생성)
 
 ---
 
-## 🔧 추가 설정
+## 환경 변수
 
-### Prisma와 D1 연동 (프로덕션)
+| 변수 | 필수 | 용도 |
+|------|------|------|
+| `DATABASE_URL` | O | Neon PostgreSQL connection string |
+| `ANTHROPIC_API_KEY` | X | AI 문제 생성 스크립트용 (dev server에는 불필요) |
 
-D1을 사용하려면 Prisma Client를 D1 어댑터로 초기화해야 합니다.
+---
 
-`src/lib/prisma.ts` 수정:
+## 트러블슈팅
 
-```typescript
-import { PrismaClient } from '@prisma/client';
+### Prisma Client 빌드 에러
 
-declare global {
-  var prisma: PrismaClient | undefined;
+Vercel 빌드 시 `@prisma/client`를 찾을 수 없는 경우:
+
+```bash
+# postinstall 스크립트가 없다면 package.json에 추가
+"scripts": {
+  "postinstall": "prisma generate"
 }
-
-// Cloudflare Pages에서는 env.DB를 통해 D1에 접근
-// @ts-ignore - Cloudflare binding
-const db = typeof process !== 'undefined' && process.env.DB
-  ? process.env.DB
-  : undefined;
-
-const prisma = global.prisma || new PrismaClient({
-  // D1 사용 시 추가 설정 필요
-});
-
-if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
-
-export default prisma;
 ```
 
-**참고**: Next.js와 D1의 완전한 통합은 추가 작업이 필요할 수 있습니다. 대안으로 다음을 고려하세요:
+### Neon 연결 타임아웃
 
-1. **Turso** (Cloudflare와 유사한 SQLite 기반 DB): Prisma 공식 지원
-2. **Cloudflare Workers** 직접 사용: D1 네이티브 지원
-3. **PostgreSQL on Neon/Supabase**: Cloudflare Pages와 함께 사용
+Neon은 비활성 시 컴퓨트를 일시 중지합니다 (Free 티어). 첫 요청이 느릴 수 있으며, 이는 정상 동작입니다.
 
-### Cron Jobs 설정 (일일 퀴즈 생성)
+### 빌드 실패
 
-Cloudflare Workers Cron Triggers 사용:
-
-1. `functions/scheduled.ts` 생성:
-```typescript
-export const onRequest: PagesFunction = async (context) => {
-  // 일일 퀴즈 생성 로직
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  // D1 쿼리 실행
-  await context.env.DB.prepare("...").run();
-
-  return new Response("OK");
-};
-```
-
-2. `wrangler.toml`에 추가:
-```toml
-[triggers]
-crons = ["0 0 * * *"] # 매일 자정
-```
+1. Node 버전 확인 — `.node-version` 파일에 `20`이 지정되어 있음
+2. `package-lock.json`이 커밋되어 있는지 확인
+3. `npm run check`로 로컬에서 lint + type-check 통과 확인
 
 ---
 
-## 🐛 트러블슈팅
+## 비용
 
-### 문제: "Module not found: Can't resolve '@prisma/client'"
-**해결**:
-```bash
-npm install
-npx prisma generate
-```
+**Vercel Hobby (무료)**:
+- 100GB 대역폭/월
+- Serverless Function 실행 100GB-Hours/월
+- 자동 HTTPS, Preview Deployments
 
-### 문제: D1 연결 실패
-**해결**:
-1. `wrangler.toml`의 `database_id` 확인
-2. D1 바인딩이 올바르게 설정되었는지 확인
-3. 마이그레이션이 실행되었는지 확인
-
-### 문제: 빌드 실패
-**해결**:
-1. Node 버전 확인 (20 필요)
-2. `.node-version` 파일 확인
-3. `package-lock.json` 커밋 확인
-
----
-
-## 📊 비용
-
-Cloudflare Pages 무료 티어:
-- ✅ 무제한 요청
-- ✅ 500 빌드/월
-- ✅ 동시 빌드 1개
-- ✅ D1: 5GB 스토리지, 5백만 행 읽기/일
-- ✅ Workers: 100,000 요청/일
+**Neon Free Tier**:
+- 0.5 GiB 스토리지
+- 컴퓨트 190시간/월 (비활성 시 자동 일시 중지)
+- 1개 프로젝트, 10개 브랜치
 
 **예상 비용: $0/월** (무료 티어 내)
 
 ---
 
-## 🔗 유용한 링크
+## 유용한 링크
 
-- [Cloudflare Pages 문서](https://developers.cloudflare.com/pages/)
-- [D1 문서](https://developers.cloudflare.com/d1/)
-- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)
-- [Next.js on Cloudflare](https://developers.cloudflare.com/pages/framework-guides/nextjs/)
-
----
-
-## 대안: Vercel 배포 (더 쉬운 방법)
-
-D1 설정이 복잡하다면 Vercel을 추천합니다:
-
-1. [Vercel](https://vercel.com) 가입
-2. GitHub 연동
-3. Import project
-4. 환경 변수 설정:
-   ```
-   DATABASE_URL=file:./prisma/dev.db
-   ANTHROPIC_API_KEY=your-key
-   ```
-5. Deploy!
-
-**비용**: $0/월 (Hobby), PostgreSQL 필요 시 Vercel Postgres 사용 ($0.25/10만 행)
+- [Vercel 문서](https://vercel.com/docs)
+- [Neon 문서](https://neon.tech/docs)
+- [Prisma + Neon 가이드](https://www.prisma.io/docs/orm/overview/databases/neon)
+- [Vercel + Neon 통합](https://vercel.com/integrations/neon)
