@@ -9,6 +9,9 @@ on:
 jobs:
   generate:
     runs-on: ubuntu-latest
+    concurrency:
+      group: daily-question-generator
+      cancel-in-progress: false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,8 +27,10 @@ jobs:
 
       - name: Generate Prisma client
         run: npx prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      - name: Generate daily question set
-        run: npm run generate-daily
+      - name: Generate daily question set for tomorrow
+        run: npm run generate-daily -- 1 15 1
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
