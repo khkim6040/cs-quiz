@@ -36,6 +36,7 @@ Context_Notes.md
 !.claude/commands
 **/ai-regenerate/generated/
 **/ai-regenerate/agent-prompts/
+docs/superpowers/
 
 # database
 *.db
