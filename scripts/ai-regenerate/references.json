@@ -167,5 +167,25 @@
       "Actuator: Health Checks, Metrics, Custom Endpoints",
       "Deployment: Embedded Server, Docker, Cloud Deployment"
     ]
+  },
+  "distributedSystem": {
+    "sources": [
+      "Designing Data-Intensive Applications (Martin Kleppmann)",
+      "Distributed Systems: Principles and Paradigms (Tanenbaum & Van Steen)",
+      "MIT 6.824: Distributed Systems",
+      "CMU 15-440: Distributed Systems"
+    ],
+    "syllabus": [
+      "Fundamentals: CAP Theorem, PACELC, Consistency Models (Strong, Eventual, Causal)",
+      "Consensus Protocols: Paxos, Raft, Zab, PBFT",
+      "Replication: Leader-Follower, Multi-Leader, Leaderless, Quorum",
+      "Partitioning: Hash Partitioning, Range Partitioning, Consistent Hashing",
+      "Clocks & Ordering: Lamport Clocks, Vector Clocks, Hybrid Logical Clocks",
+      "Fault Tolerance: Byzantine Faults, Crash-Recovery, Failure Detectors",
+      "Distributed Transactions: 2PC, 3PC, Saga Pattern, TCC",
+      "Distributed Storage: DHT, LSM-Tree, B-Tree Replication, Object Storage",
+      "Messaging & Coordination: Message Queues, Pub/Sub, ZooKeeper, etcd",
+      "Microservices Patterns: Service Discovery, Circuit Breaker, Load Balancing, API Gateway"
+    ]
   }
 }

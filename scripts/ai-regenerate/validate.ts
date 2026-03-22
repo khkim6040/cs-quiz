@@ -10,6 +10,7 @@ export const VALID_TOPIC_IDS = [
   "computerArchitecture",
   "softwareEngineering",
   "springBoot",
+  "distributedSystem",
 ];
 
 const VALID_DIFFICULTIES = ["easy", "medium", "hard"];
