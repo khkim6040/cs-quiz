@@ -50,6 +50,9 @@ const ko = {
     hint: '💡 힌트 보기',
     next: '다음 문제',
     swipeHint: '← 스와이프하여 다음 문제',
+    difficultyEasy: '쉬움',
+    difficultyMedium: '보통',
+    difficultyHard: '어려움',
   },
   leaderboard: {
     title: '리더보드',
