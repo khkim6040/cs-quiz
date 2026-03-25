@@ -606,8 +606,9 @@ export function matchConcept(
   // 4. Keyword alias table lookup
   const aliases = KEYWORD_ALIASES[topicId];
   if (aliases) {
+    const genNormalized = genLower.replace(/[-']/g, ' ');
     for (const [keyword, seedName] of Object.entries(aliases)) {
-      if (genLower.includes(keyword)) {
+      if (genNormalized.includes(keyword.replace(/[-']/g, ' '))) {
         const found = seedConcepts.find(
           (s) => s.name_en.toLowerCase() === seedName.toLowerCase()
         );
