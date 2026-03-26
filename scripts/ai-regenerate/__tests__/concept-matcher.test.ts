@@ -92,6 +92,45 @@ describe('matchConcept', () => {
       expect(result).not.toBeNull();
       expect(result!.name_en).toBe('Hash Functions');
     });
+
+    it('computerArchitecture 토픽의 새 개념 별칭으로 매칭한다', () => {
+      populateCache('computerArchitecture', [
+        { id: '1', name_en: 'Boolean Algebra' },
+        { id: '2', name_en: 'Sequential Circuits' },
+        { id: '3', name_en: 'CPU Performance' },
+      ]);
+      expect(matchConcept('karnaugh map simplification', 'computerArchitecture')!.name_en)
+        .toBe('Boolean Algebra');
+      expect(matchConcept('metastability in digital circuits', 'computerArchitecture')!.name_en)
+        .toBe('Sequential Circuits');
+      expect(matchConcept('iron law of processor performance', 'computerArchitecture')!.name_en)
+        .toBe('CPU Performance');
+    });
+
+    it('하이픈이 포함된 키워드가 공백 변형과도 매칭한다', () => {
+      populateCache('computerArchitecture', [
+        { id: '1', name_en: 'Sequential Circuits' },
+        { id: '2', name_en: 'Boolean Algebra' },
+      ]);
+      // "flip-flop" 키워드가 "flip flop"(공백)으로도 매칭
+      expect(matchConcept('Flip Flop Types', 'computerArchitecture')!.name_en)
+        .toBe('Sequential Circuits');
+      // "flip-flop" 키워드가 "flip-flop"(하이픈)으로도 매칭
+      expect(matchConcept('Flip-Flop Types', 'computerArchitecture')!.name_en)
+        .toBe('Sequential Circuits');
+      // "quine-mccluskey" 키워드가 "quine mccluskey"(공백)으로도 매칭
+      expect(matchConcept('Quine Mccluskey Method', 'computerArchitecture')!.name_en)
+        .toBe('Boolean Algebra');
+    });
+
+    it('아포스트로피가 포함된 변형과도 매칭한다', () => {
+      populateCache('computerArchitecture', [
+        { id: '1', name_en: 'Boolean Algebra' },
+      ]);
+      // "de morgan" 키워드가 "de morgan's"(아포스트로피)로도 매칭
+      expect(matchConcept("De Morgan's Theorem", 'computerArchitecture')!.name_en)
+        .toBe('Boolean Algebra');
+    });
   });
 
   describe('토큰 오버랩 (Level 5)', () => {

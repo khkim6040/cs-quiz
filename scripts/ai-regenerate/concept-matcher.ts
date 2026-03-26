@@ -361,6 +361,36 @@ const KEYWORD_ALIASES: Record<string, Record<string, string>> = {
     "division": "Floating Point Arithmetic",
     "power consumption": "Interrupts",
     "energy efficiency": "Interrupts",
+    "de morgan": "Boolean Algebra",
+    "karnaugh": "Boolean Algebra",
+    "quine-mccluskey": "Boolean Algebra",
+    "boolean simplification": "Boolean Algebra",
+    "logic gate": "Boolean Algebra",
+    "overflow detection": "Floating Point Arithmetic",
+    "signed and unsigned": "Floating Point Arithmetic",
+    "multiplexer": "Combinational Circuits",
+    "mux": "Combinational Circuits",
+    "decoder": "Combinational Circuits",
+    "shannon expansion": "Combinational Circuits",
+    "flip-flop": "Sequential Circuits",
+    "metastability": "Sequential Circuits",
+    "setup time": "Sequential Circuits",
+    "clock frequency": "Sequential Circuits",
+    "clock domain": "Sequential Circuits",
+    "microprogrammed": "Control Unit",
+    "hardwired control": "Control Unit",
+    "microcode": "Control Unit",
+    "control store": "Control Unit",
+    "delayed branch": "Branch Prediction",
+    "branch penalty": "CPU Pipeline",
+    "branch target buffer": "Branch Prediction",
+    "dirty bit": "Memory Hierarchy",
+    "page replacement": "Memory Hierarchy",
+    "mips metric": "CPU Performance",
+    "iron law": "CPU Performance",
+    "cpi": "CPU Performance",
+    "execution time": "CPU Performance",
+    "clock period": "CPU Performance",
   },
   computerNetworking: {
     "osi": "OSI 7 Layers",
@@ -576,8 +606,9 @@ export function matchConcept(
   // 4. Keyword alias table lookup
   const aliases = KEYWORD_ALIASES[topicId];
   if (aliases) {
+    const genNormalized = genLower.replace(/[-']/g, ' ');
     for (const [keyword, seedName] of Object.entries(aliases)) {
-      if (genLower.includes(keyword)) {
+      if (genNormalized.includes(keyword.replace(/[-']/g, ' '))) {
         const found = seedConcepts.find(
           (s) => s.name_en.toLowerCase() === seedName.toLowerCase()
         );

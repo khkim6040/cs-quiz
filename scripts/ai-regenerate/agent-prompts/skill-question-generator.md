@@ -135,6 +135,20 @@ All questions must be **knowledge-based** — no language-specific syntax quirks
 - Technical terms may use English in parentheses within Korean text when helpful: "정규화(Normalization)는...", "분할 상환(Amortized) 시간 복잡도는..."
 - For code snippets, use the **same code** in both languages. Only translate the surrounding natural language text.
 
+### Korean Speech Level Rules
+
+Korean text must follow these speech level conventions strictly:
+
+| Field | Speech Level | Style | Example |
+|---|---|---|---|
+| `question_ko` | 반말 (informal) | 해라체/명사형 종결 | "~는?", "~인가?", "~을 고르시오." (NOT "~나요?", "~입니까?") |
+| `text_ko` (answer options) | 반말 (informal) | 해라체/명사형 종결 | "~이다", "~한다", "~없다" |
+| `hint_ko` | 경어체 (formal) | 합쇼체/해요체 | "~하세요.", "~해 보세요.", "~입니다." |
+| `rationale_ko` | 경어체 (formal) | 합쇼체 | "~합니다.", "~입니다.", "~않습니다." |
+
+- **반말 fields** (`question_ko`, `text_ko`): NEVER use "~합니다", "~입니다", "~하세요", "~나요?" endings. Use 해라체 ("~는?", "~인가?") or 명사형 종결 only.
+- **경어체 fields** (`hint_ko`, `rationale_ko`): NEVER use "~이다", "~한다", "~않는다", "~된다", "~없다" endings. Always use 합쇼체 ("~입니다", "~합니다", "~않습니다").
+
 ---
 
 ## Rationale Quality

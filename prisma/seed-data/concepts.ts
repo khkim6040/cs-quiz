@@ -107,6 +107,11 @@ export const conceptsSeedData: ConceptSeedData[] = [
   { topicId: 'computerArchitecture', name_ko: '버스 구조', name_en: 'Bus Architecture' },
   { topicId: 'computerArchitecture', name_ko: 'RISC vs CISC', name_en: 'RISC vs CISC' },
   { topicId: 'computerArchitecture', name_ko: '부동소수점 연산', name_en: 'Floating Point Arithmetic' },
+  { topicId: 'computerArchitecture', name_ko: '부울 대수', name_en: 'Boolean Algebra' },
+  { topicId: 'computerArchitecture', name_ko: '조합 회로', name_en: 'Combinational Circuits' },
+  { topicId: 'computerArchitecture', name_ko: '순차 회로', name_en: 'Sequential Circuits' },
+  { topicId: 'computerArchitecture', name_ko: '제어 장치', name_en: 'Control Unit' },
+  { topicId: 'computerArchitecture', name_ko: 'CPU 성능', name_en: 'CPU Performance' },
 
   // === Software Engineering ===
   { topicId: 'softwareEngineering', name_ko: '디자인 패턴', name_en: 'Design Patterns' },
