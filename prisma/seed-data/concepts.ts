@@ -38,6 +38,7 @@ export const conceptsSeedData: ConceptSeedData[] = [
   { topicId: 'algorithm', name_ko: '최소 신장 트리', name_en: 'Minimum Spanning Tree' },
   { topicId: 'algorithm', name_ko: '문자열 매칭', name_en: 'String Matching' },
   { topicId: 'algorithm', name_ko: '위상 정렬', name_en: 'Topological Sort' },
+  { topicId: 'algorithm', name_ko: '네트워크 플로', name_en: 'Network Flow' },
 
   // === Computer Security ===
   { topicId: 'computerSecurity', name_ko: '대칭/비대칭 암호화', name_en: 'Symmetric/Asymmetric Encryption' },
@@ -112,6 +113,14 @@ export const conceptsSeedData: ConceptSeedData[] = [
   { topicId: 'computerArchitecture', name_ko: '순차 회로', name_en: 'Sequential Circuits' },
   { topicId: 'computerArchitecture', name_ko: '제어 장치', name_en: 'Control Unit' },
   { topicId: 'computerArchitecture', name_ko: 'CPU 성능', name_en: 'CPU Performance' },
+
+  // === Distributed System ===
+  { topicId: 'distributedSystem', name_ko: '합의 프로토콜', name_en: 'Consensus Protocols' },
+  { topicId: 'distributedSystem', name_ko: '결함 허용', name_en: 'Fault Tolerance' },
+  { topicId: 'distributedSystem', name_ko: '분산 스토리지', name_en: 'Distributed Storage' },
+  { topicId: 'distributedSystem', name_ko: '분산 트랜잭션', name_en: 'Distributed Transactions' },
+  { topicId: 'distributedSystem', name_ko: '파티셔닝', name_en: 'Partitioning' },
+  { topicId: 'distributedSystem', name_ko: '메시징 시스템', name_en: 'Messaging Systems' },
 
   // === Software Engineering ===
   { topicId: 'softwareEngineering', name_ko: '디자인 패턴', name_en: 'Design Patterns' },
