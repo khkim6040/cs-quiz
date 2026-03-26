@@ -38,7 +38,7 @@ export const conceptsSeedData: ConceptSeedData[] = [
   { topicId: 'algorithm', name_ko: '최소 신장 트리', name_en: 'Minimum Spanning Tree' },
   { topicId: 'algorithm', name_ko: '문자열 매칭', name_en: 'String Matching' },
   { topicId: 'algorithm', name_ko: '위상 정렬', name_en: 'Topological Sort' },
-  { topicId: 'algorithm', name_ko: '네트워크 플로', name_en: 'Network Flow' },
+  { topicId: 'algorithm', name_ko: '네트워크 플로우', name_en: 'Network Flow' },
 
   // === Computer Security ===
   { topicId: 'computerSecurity', name_ko: '대칭/비대칭 암호화', name_en: 'Symmetric/Asymmetric Encryption' },
