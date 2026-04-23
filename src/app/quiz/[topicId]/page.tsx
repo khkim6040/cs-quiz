@@ -34,6 +34,11 @@ export default function QuizPage({ params }: QuizPageProps) {
   const seenIdsRef = useRef<Set<string>>(new Set());
   const noMoreQuestionsRef = useRef(false);
 
+  const [selectedDifficulties, setSelectedDifficulties] = useState<Set<string>>(
+    new Set(['EASY', 'MEDIUM', 'HARD'])
+  );
+  const difficultyParam = Array.from(selectedDifficulties).sort().join(',');
+
   // 에러 핸들러용 스냅샷 동기화
   queueSnapshotRef.current = { queueLen: questionQueue.length, idx: currentIndex };
 
@@ -45,8 +50,11 @@ export default function QuizPage({ params }: QuizPageProps) {
       const excludeParam = seenIdsRef.current.size > 0
         ? `&exclude=${Array.from(seenIdsRef.current).join(',')}`
         : '';
+      const diffParam = selectedDifficulties.size < 3
+        ? `&difficulty=${difficultyParam}`
+        : '';
       const res = await fetch(
-        `/api/questions/${params.topicId}?count=${BATCH_SIZE}${excludeParam}`
+        `/api/questions/${params.topicId}?count=${BATCH_SIZE}${excludeParam}${diffParam}`
       );
       if (!res.ok) {
         throw new Error('quiz.errorLoad');
@@ -70,11 +78,20 @@ export default function QuizPage({ params }: QuizPageProps) {
       isFetchingRef.current = false;
       setLoading(false);
     }
-  }, [params.topicId]);
+  }, [params.topicId, difficultyParam]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    setQuestionQueue([]);
+    setCurrentIndex(0);
+    seenIdsRef.current = new Set();
+    noMoreQuestionsRef.current = false;
+    setSolvedCount(0);
+    setCorrectCount(0);
+    setError(null);
+    setLoading(true);
+    isFetchingRef.current = false;
     fetchBatch();
-  }, [params.topicId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [params.topicId, difficultyParam]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const remaining = questionQueue.length - currentIndex;
@@ -98,6 +115,19 @@ export default function QuizPage({ params }: QuizPageProps) {
     }
   };
 
+  const handleDifficultyToggle = (difficulty: string) => {
+    setSelectedDifficulties((prev) => {
+      const next = new Set(prev);
+      if (next.has(difficulty)) {
+        if (next.size === 1) return prev; // 최소 1개 유지
+        next.delete(difficulty);
+      } else {
+        next.add(difficulty);
+      }
+      return next;
+    });
+  };
+
   const handleQuit = async () => {
     if (user && solvedCount > 0) {
       const timeSpent = Math.round((Date.now() - startTimeRef.current) / 1000);
@@ -119,6 +149,44 @@ export default function QuizPage({ params }: QuizPageProps) {
     }
     router.push('/');
   };
+
+  const filterConfig: Record<string, { tKey: string; selected: string; unselected: string }> = {
+    EASY: {
+      tKey: 'quiz.difficultyEasy',
+      selected: 'bg-green-100 text-green-700 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700',
+      unselected: 'bg-gray-100 text-gray-400 border-gray-200 dark:bg-gray-800 dark:text-gray-500 dark:border-gray-700',
+    },
+    MEDIUM: {
+      tKey: 'quiz.difficultyMedium',
+      selected: 'bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-700',
+      unselected: 'bg-gray-100 text-gray-400 border-gray-200 dark:bg-gray-800 dark:text-gray-500 dark:border-gray-700',
+    },
+    HARD: {
+      tKey: 'quiz.difficultyHard',
+      selected: 'bg-red-100 text-red-700 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700',
+      unselected: 'bg-gray-100 text-gray-400 border-gray-200 dark:bg-gray-800 dark:text-gray-500 dark:border-gray-700',
+    },
+  };
+
+  const difficultyFilter = (
+    <div className="flex gap-2 mb-6">
+      {(['EASY', 'MEDIUM', 'HARD'] as const).map((diff) => {
+        const cfg = filterConfig[diff];
+        const isSelected = selectedDifficulties.has(diff);
+        return (
+          <button
+            key={diff}
+            onClick={() => handleDifficultyToggle(diff)}
+            className={`px-3 py-1.5 text-sm font-medium rounded-full border transition-all ${
+              isSelected ? cfg.selected : cfg.unselected
+            }`}
+          >
+            {t(cfg.tKey)}
+          </button>
+        );
+      })}
+    </div>
+  );
 
   const currentQuestion = questionQueue[currentIndex] ?? null;
 
@@ -192,6 +260,7 @@ export default function QuizPage({ params }: QuizPageProps) {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
+        {difficultyFilter}
         {currentQuestion && (
           <QuestionComponent
             questionData={currentQuestion}
