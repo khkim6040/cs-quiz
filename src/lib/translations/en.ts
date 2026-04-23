@@ -53,6 +53,8 @@ const en = {
     difficultyEasy: 'Easy',
     difficultyMedium: 'Medium',
     difficultyHard: 'Hard',
+    difficultyAll: 'All',
+    difficultyFilter: 'Difficulty',
   },
   leaderboard: {
     title: 'Leaderboard',
