@@ -141,6 +141,27 @@ const en = {
     subtitle: '{topics} fields, {concepts} concepts',
     loading: 'Loading more...',
   },
+  stats: {
+    title: 'My Stats',
+    summary: 'Overview',
+    totalSolved: 'Total Solved',
+    totalCorrect: 'Accuracy',
+    totalTime: 'Total Study Time',
+    topicAccuracy: 'Accuracy by Topic',
+    weakAreas: 'Weak Areas',
+    weakAreasDesc: 'Topics with the lowest accuracy',
+    trend: 'Solving Trend',
+    last30Days: 'Last 30 days',
+    noData: 'No quiz history yet',
+    startQuiz: 'Start a Quiz',
+    loginRequired: 'Log in to see your stats',
+    solvedCount: '{count} solved',
+    hours: '{h}h {m}m',
+    minutes: '{m}m',
+    date: 'Date',
+    solved: 'Solved',
+    correct: 'Correct',
+  },
 } as const;
 
 export default en;
