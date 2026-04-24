@@ -84,6 +84,13 @@ export default function HomeContent({ topics, dailySetId }: HomeContentProps) {
                 {topic.questionCount != null && (
                   <p className="text-sm text-gray-500 dark:text-gray-400">{t('common.questions', { count: topic.questionCount })}</p>
                 )}
+                {topic.difficultyCounts && (
+                  <div className="flex gap-2 mt-1">
+                    <span className="text-xs font-medium text-green-600 dark:text-green-400">E {topic.difficultyCounts.EASY}</span>
+                    <span className="text-xs font-medium text-orange-500 dark:text-orange-400">M {topic.difficultyCounts.MEDIUM}</span>
+                    <span className="text-xs font-medium text-red-600 dark:text-red-400">H {topic.difficultyCounts.HARD}</span>
+                  </div>
+                )}
               </div>
             </div>
           </Link>

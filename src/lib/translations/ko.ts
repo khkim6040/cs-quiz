@@ -53,6 +53,8 @@ const ko = {
     difficultyEasy: '쉬움',
     difficultyMedium: '보통',
     difficultyHard: '어려움',
+    difficultyAll: '전체',
+    difficultyFilter: '난이도',
   },
   leaderboard: {
     title: '리더보드',

@@ -35,6 +35,7 @@ export interface Topic {
   name_ko: string;
   name_en: string;
   questionCount?: number;
+  difficultyCounts?: { EASY: number; MEDIUM: number; HARD: number };
 }
 
 export interface LeaderboardEntry {

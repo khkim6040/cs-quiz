@@ -49,6 +49,23 @@ export async function GET(
       (where as any).id = { notIn: excludeIds };
     }
 
+    // 난이도 필터
+    const difficultyParam = searchParams.get("difficulty");
+    if (difficultyParam) {
+      const validDifficulties = ["EASY", "MEDIUM", "HARD"];
+      const difficulties = Array.from(
+        new Set(
+          difficultyParam
+            .split(",")
+            .map((d) => d.trim())
+            .filter((d) => validDifficulties.includes(d))
+        )
+      );
+      if (difficulties.length > 0 && difficulties.length < 3) {
+        (where as any).difficulty = { in: difficulties };
+      }
+    }
+
     const totalCount = await prisma.question.count({ where });
     if (totalCount === 0) {
       return NextResponse.json([], { status: 200 });
