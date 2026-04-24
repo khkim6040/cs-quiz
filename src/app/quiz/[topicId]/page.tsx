@@ -1,11 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { QuestionData } from '@/types/quizTypes';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import QuestionComponent from '@/components/QuestionComponent';
+import { useDifficultyFilter } from '@/hooks/useDifficultyFilter';
 
 const BATCH_SIZE = 10;
 const PREFETCH_THRESHOLD = 3;
@@ -16,7 +17,7 @@ interface QuizPageProps {
   };
 }
 
-export default function QuizPage({ params }: QuizPageProps) {
+function QuizPageContent({ params }: QuizPageProps) {
   const router = useRouter();
   const { user } = useAuth();
   const { t } = useLanguage();
@@ -34,10 +35,7 @@ export default function QuizPage({ params }: QuizPageProps) {
   const seenIdsRef = useRef<Set<string>>(new Set());
   const noMoreQuestionsRef = useRef(false);
 
-  const [selectedDifficulties, setSelectedDifficulties] = useState<Set<string>>(
-    new Set(['EASY', 'MEDIUM', 'HARD'])
-  );
-  const difficultyParam = Array.from(selectedDifficulties).sort().join(',');
+  const { selectedDifficulties, difficultyParam, handleDifficultyToggle } = useDifficultyFilter();
 
   // 에러 핸들러용 스냅샷 동기화
   queueSnapshotRef.current = { queueLen: questionQueue.length, idx: currentIndex };
@@ -52,7 +50,7 @@ export default function QuizPage({ params }: QuizPageProps) {
       const excludeParam = seenIdsRef.current.size > 0
         ? `&exclude=${Array.from(seenIdsRef.current).join(',')}`
         : '';
-      const diffParam = selectedDifficulties.size < 3
+      const diffParam = difficultyParam
         ? `&difficulty=${difficultyParam}`
         : '';
 
@@ -123,19 +121,6 @@ export default function QuizPage({ params }: QuizPageProps) {
     if (isCorrect) {
       setCorrectCount((prev) => prev + 1);
     }
-  };
-
-  const handleDifficultyToggle = (difficulty: string) => {
-    setSelectedDifficulties((prev) => {
-      const next = new Set(prev);
-      if (next.has(difficulty)) {
-        if (next.size === 1) return prev; // 최소 1개 유지
-        next.delete(difficulty);
-      } else {
-        next.add(difficulty);
-      }
-      return next;
-    });
   };
 
   const handleQuit = async () => {
@@ -282,5 +267,18 @@ export default function QuizPage({ params }: QuizPageProps) {
         )}
       </div>
     </main>
+  );
+}
+
+export default function QuizPage({ params }: QuizPageProps) {
+  const { t } = useLanguage();
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-xl text-gray-600 animate-pulse">{t('quiz.loading')}</p>
+      </div>
+    }>
+      <QuizPageContent params={params} />
+    </Suspense>
   );
 }
