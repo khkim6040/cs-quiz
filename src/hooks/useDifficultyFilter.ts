@@ -66,7 +66,10 @@ export function useDifficultyFilter() {
     () => resolveInitial(searchParams)
   );
 
-  const difficultyParam = Array.from(selectedDifficulties).sort().join(',');
+  const difficultyParam =
+    selectedDifficulties.size === ALL_DIFFICULTIES.length
+      ? ''
+      : Array.from(selectedDifficulties).sort().join(',');
 
   const handleDifficultyToggle = useCallback((difficulty: string) => {
     setSelectedDifficulties((prev) => {
