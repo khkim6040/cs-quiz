@@ -42,6 +42,8 @@ export default function QuizPage({ params }: QuizPageProps) {
   // 에러 핸들러용 스냅샷 동기화
   queueSnapshotRef.current = { queueLen: questionQueue.length, idx: currentIndex };
 
+  const abortControllerRef = useRef<AbortController | null>(null);
+
   const fetchBatch = useCallback(async () => {
     if (isFetchingRef.current || noMoreQuestionsRef.current) return;
     isFetchingRef.current = true;
@@ -53,8 +55,14 @@ export default function QuizPage({ params }: QuizPageProps) {
       const diffParam = selectedDifficulties.size < 3
         ? `&difficulty=${difficultyParam}`
         : '';
+
+      abortControllerRef.current?.abort();
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
       const res = await fetch(
-        `/api/questions/${params.topicId}?count=${BATCH_SIZE}${excludeParam}${diffParam}`
+        `/api/questions/${params.topicId}?count=${BATCH_SIZE}${excludeParam}${diffParam}`,
+        { signal: controller.signal }
       );
       if (!res.ok) {
         throw new Error('quiz.errorLoad');
@@ -69,6 +77,7 @@ export default function QuizPage({ params }: QuizPageProps) {
       }
       setQuestionQueue((prev) => [...prev, ...data]);
     } catch (err: any) {
+      if (err.name === 'AbortError') return;
       setError((prevError) => {
         const { queueLen, idx } = queueSnapshotRef.current;
         if (queueLen > idx) return prevError;
@@ -81,6 +90,7 @@ export default function QuizPage({ params }: QuizPageProps) {
   }, [params.topicId, difficultyParam]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    abortControllerRef.current?.abort();
     setQuestionQueue([]);
     setCurrentIndex(0);
     seenIdsRef.current = new Set();
@@ -177,6 +187,7 @@ export default function QuizPage({ params }: QuizPageProps) {
           <button
             key={diff}
             onClick={() => handleDifficultyToggle(diff)}
+            aria-pressed={isSelected}
             className={`px-3 py-1.5 text-sm font-medium rounded-full border transition-all ${
               isSelected ? cfg.selected : cfg.unselected
             }`}

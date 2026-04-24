@@ -53,9 +53,14 @@ export async function GET(
     const difficultyParam = searchParams.get("difficulty");
     if (difficultyParam) {
       const validDifficulties = ["EASY", "MEDIUM", "HARD"];
-      const difficulties = difficultyParam
-        .split(",")
-        .filter((d) => validDifficulties.includes(d));
+      const difficulties = Array.from(
+        new Set(
+          difficultyParam
+            .split(",")
+            .map((d) => d.trim())
+            .filter((d) => validDifficulties.includes(d))
+        )
+      );
       if (difficulties.length > 0 && difficulties.length < 3) {
         (where as any).difficulty = { in: difficulties };
       }
