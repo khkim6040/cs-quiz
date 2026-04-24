@@ -271,10 +271,11 @@ function QuizPageContent({ params }: QuizPageProps) {
 }
 
 export default function QuizPage({ params }: QuizPageProps) {
+  const { t } = useLanguage();
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl text-gray-600 animate-pulse">Loading...</p>
+        <p className="text-xl text-gray-600 animate-pulse">{t('quiz.loading')}</p>
       </div>
     }>
       <QuizPageContent params={params} />
