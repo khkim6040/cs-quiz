@@ -73,11 +73,16 @@ export function useDifficultyFilter() {
 
   const handleDifficultyToggle = useCallback((difficulty: string) => {
     setSelectedDifficulties((prev) => {
-      const next = new Set(prev);
-      if (next.has(difficulty)) {
-        if (next.size === 1) return prev; // 최소 1개 유지
+      let next: Set<string>;
+      if (prev.size === ALL_DIFFICULTIES.length) {
+        // 전체 선택 상태에서 클릭 → 해당 필터만 켜기
+        next = new Set([difficulty]);
+      } else if (prev.has(difficulty)) {
+        if (prev.size === 1) return prev; // 최소 1개 유지
+        next = new Set(prev);
         next.delete(difficulty);
       } else {
+        next = new Set(prev);
         next.add(difficulty);
       }
       saveToStorage(next);
