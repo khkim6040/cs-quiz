@@ -149,7 +149,7 @@ const ko = {
     totalTime: '총 학습 시간',
     topicAccuracy: '토픽별 정답률',
     weakAreas: '취약 분야',
-    weakAreasDesc: '정답률이 가장 낮은 토픽이에요',
+    weakAreasDesc: '정답률이 낮은 토픽들이에요',
     trend: '풀이 추세',
     last30Days: '최근 30일',
     noData: '아직 풀이 기록이 없어요',

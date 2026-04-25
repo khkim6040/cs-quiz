@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
+import { toKST } from "@/lib/timezone";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,9 @@ export async function GET() {
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 401 });
+      const response = NextResponse.json({ error: "User not found" }, { status: 401 });
+      response.cookies.delete("userId");
+      return response;
     }
 
     // 1. Topic accuracy: group by topicId
@@ -49,10 +52,15 @@ export async function GET() {
       })
       .sort((a, b) => b.solved - a.solved);
 
-    // 2. Overall summary
-    const totalSolved = topicStats.reduce((sum, t) => sum + t.solved, 0);
-    const totalCorrect = topicStats.reduce((sum, t) => sum + t.correct, 0);
-    const totalTime = byTopic.reduce((sum, t) => sum + (t._sum.timeSpent || 0), 0);
+    // 2. Overall summary (all sessions, including topicId=null)
+    const overallTotals = await prisma.quizSession.aggregate({
+      where: { userId },
+      _sum: { solvedCount: true, correctCount: true, timeSpent: true },
+    });
+
+    const totalSolved = overallTotals._sum.solvedCount || 0;
+    const totalCorrect = overallTotals._sum.correctCount || 0;
+    const totalTime = overallTotals._sum.timeSpent || 0;
 
     // 3. Daily trend (last 30 days)
     const thirtyDaysAgo = new Date();
@@ -67,7 +75,7 @@ export async function GET() {
 
     const dailyMap = new Map<string, { solved: number; correct: number }>();
     for (const session of recentSessions) {
-      const dateKey = session.completedAt.toISOString().slice(0, 10);
+      const dateKey = toKST(session.completedAt).toISOString().slice(0, 10);
       const existing = dailyMap.get(dateKey) || { solved: 0, correct: 0 };
       existing.solved += session.solvedCount;
       existing.correct += session.correctCount;
