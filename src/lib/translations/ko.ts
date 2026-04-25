@@ -141,6 +141,27 @@ const ko = {
     subtitle: '{topics}개 분야, {concepts}개 개념',
     loading: '더 불러오는 중...',
   },
+  stats: {
+    title: '내 통계',
+    summary: '전체 요약',
+    totalSolved: '총 풀이',
+    totalCorrect: '정답률',
+    totalTime: '총 학습 시간',
+    topicAccuracy: '토픽별 정답률',
+    weakAreas: '취약 분야',
+    weakAreasDesc: '정답률이 낮은 토픽들이에요',
+    trend: '풀이 추세',
+    last30Days: '최근 30일',
+    noData: '아직 풀이 기록이 없어요',
+    startQuiz: '퀴즈 풀러 가기',
+    loginRequired: '로그인하면 통계를 볼 수 있어요',
+    solvedCount: '{count}문제',
+    hours: '{h}시간 {m}분',
+    minutes: '{m}분',
+    date: '날짜',
+    solved: '풀이',
+    correct: '정답',
+  },
 } as const;
 
 export default ko;
