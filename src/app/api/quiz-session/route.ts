@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { quizType, topicId, dailySetId, solvedCount, correctCount, timeSpent } =
+    const { quizType, topicId, dailySetId, solvedCount, correctCount, timeSpent, wrongQuestionIds } =
       await request.json();
 
     if (!quizType || solvedCount == null || correctCount == null || timeSpent == null) {
@@ -43,8 +43,35 @@ export async function POST(request: Request) {
         solvedCount,
         correctCount,
         timeSpent,
+        wrongQuestionIds: wrongQuestionIds || [],
       },
     });
+
+    // WrongNote upsert: 틀린 문제 기록
+    if (wrongQuestionIds && wrongQuestionIds.length > 0) {
+      await Promise.all(
+        wrongQuestionIds.map((questionId: string) =>
+          prisma.wrongNote.upsert({
+            where: {
+              userId_questionId: { userId, questionId },
+            },
+            create: {
+              userId,
+              questionId,
+              status: 'ACTIVE',
+              wrongCount: 1,
+              consecutiveCorrect: 0,
+            },
+            update: {
+              status: 'ACTIVE',
+              wrongCount: { increment: 1 },
+              consecutiveCorrect: 0,
+              resolvedAt: null,
+            },
+          })
+        )
+      );
+    }
 
     return NextResponse.json({ id: session.id });
   } catch (error) {
