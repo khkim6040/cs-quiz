@@ -1,13 +1,13 @@
 import { unstable_cache } from 'next/cache';
 import prisma from '@/lib/prisma';
 import { getTodayInKST } from '@/lib/timezone';
-import DailyQuizContent from '@/components/DailyQuizContent';
+import DailyQuizContent, { DailyQuestion } from '@/components/DailyQuizContent';
 
 function getDailyQuizData() {
-  const todayKey = getTodayInKST().toISOString().slice(0, 10);
+  const today = getTodayInKST();
+  const todayKey = today.toISOString().slice(0, 10);
   return unstable_cache(
     async () => {
-      const today = getTodayInKST();
 
       const dailySet = await prisma.dailyQuestionSet.findUnique({
         where: { date: today },
@@ -83,7 +83,7 @@ function getDailyQuizData() {
 
 export default async function DailyQuizPage() {
   let dailySetId: string | null = null;
-  let questions: any[] = [];
+  let questions: DailyQuestion[] = [];
 
   try {
     const data = await getDailyQuizData();
