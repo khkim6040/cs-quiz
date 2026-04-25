@@ -46,6 +46,7 @@ export default function DailyQuizPage() {
   const [scoreSubmitError, setScoreSubmitError] = useState<string | null>(null);
   const [pendingScoreSubmit, setPendingScoreSubmit] = useState(false);
   const [isSubmittingScore, setIsSubmittingScore] = useState(false);
+  const wrongQuestionIdsRef = useRef<string[]>([]);
   const isTransitioning = useRef(false);
 
   useEffect(() => {
@@ -70,9 +71,11 @@ export default function DailyQuizPage() {
     fetchDailyQuestions();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleAnswer = useCallback((isCorrect: boolean) => {
+  const handleAnswer = useCallback((isCorrect: boolean, questionId: string) => {
     if (isCorrect) {
       setCorrectAnswers(prev => prev + 1);
+    } else {
+      wrongQuestionIdsRef.current.push(questionId);
     }
   }, []);
 
@@ -91,6 +94,7 @@ export default function DailyQuizPage() {
           solvedCount: questions.length,
           correctCount: correctAnswers,
           timeSpent,
+          wrongQuestionIds: wrongQuestionIdsRef.current,
         }),
       }).catch((err) => { console.warn('Failed to save quiz session:', err); });
 
