@@ -77,7 +77,7 @@ function getDailyQuizData() {
       };
     },
     [`daily-questions-${todayKey}`],
-    { revalidate: 3600 }
+    { revalidate: 43200 }
   )();
 }
 
