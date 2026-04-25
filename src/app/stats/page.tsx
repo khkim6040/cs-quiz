@@ -50,6 +50,7 @@ export default function StatsPage() {
   const [data, setData] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [wrongSummary, setWrongSummary] = useState<{ activeCount: number; resolvedCount: number } | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -60,10 +61,16 @@ export default function StatsPage() {
 
     async function fetchStats() {
       try {
-        const res = await fetch('/api/stats');
-        if (!res.ok) throw new Error('Failed to fetch stats');
-        const json = await res.json();
+        const [statsRes, wrongRes] = await Promise.all([
+          fetch('/api/stats'),
+          fetch('/api/wrong-notes/summary'),
+        ]);
+        if (!statsRes.ok) throw new Error('Failed to fetch stats');
+        const json = await statsRes.json();
         setData(json);
+        if (wrongRes.ok) {
+          setWrongSummary(await wrongRes.json());
+        }
       } catch {
         setError(t('common.error'));
       } finally {
@@ -218,6 +225,26 @@ export default function StatsPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Wrong Notes Summary */}
+        {wrongSummary && wrongSummary.activeCount > 0 && (
+          <div
+            onClick={() => router.push('/wrong-notes')}
+            className="bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-xl p-4 md:p-6 shadow-md border border-red-100 dark:border-red-800/30 mb-8 cursor-pointer hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg md:text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">{t('wrongNotes.title')}</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {t('wrongNotes.summaryActive', { count: wrongSummary.activeCount })}
+                </p>
+              </div>
+              <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </div>
           </div>
         )}
