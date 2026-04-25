@@ -22,6 +22,11 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status") || "ACTIVE";
     const topicId = searchParams.get("topicId");
 
+    const validStatuses = ["ACTIVE", "RESOLVED", "ALL"];
+    if (!validStatuses.includes(status)) {
+      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    }
+
     const where: Record<string, unknown> = { userId };
 
     if (status !== "ALL") {

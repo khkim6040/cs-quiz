@@ -108,7 +108,7 @@ model QuizSession {
   correctCount Int
   timeSpent    Int      // seconds
   completedAt      DateTime @default(now())
-  wrongQuestionIds String[]
+  wrongQuestionIds String[] @default([])
 
   user             User     @relation(fields: [userId], references: [id])
 

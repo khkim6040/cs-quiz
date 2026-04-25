@@ -47,7 +47,11 @@ export default function WrongNotesPage() {
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
 
   useEffect(() => {
-    if (authLoading || !user) return;
+    if (authLoading) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
     async function fetchData() {
       try {
@@ -87,7 +91,7 @@ export default function WrongNotesPage() {
 
   const filteredNotes = notes.filter((note) => {
     if (note.status !== activeTab) return false;
-    if (selectedTopic && note.question.topic.id !== selectedTopic) return false;
+    if (activeTab === 'ACTIVE' && selectedTopic && note.question.topic.id !== selectedTopic) return false;
     return true;
   });
 
