@@ -162,6 +162,27 @@ const ko = {
     solved: '풀이',
     correct: '정답',
   },
+  wrongNotes: {
+    title: '오답 노트',
+    empty: '아직 틀린 문제가 없어요',
+    emptyDesc: '퀴즈를 풀고 오답을 확인해보세요',
+    reviewStart: '복습 시작',
+    reviewEmpty: '복습할 문제가 없어요',
+    tabActive: '복습 대상',
+    tabResolved: '졸업한 문제',
+    wrongCount: '{count}회 틀림',
+    progress: '{current}/{total}',
+    graduated: '졸업!',
+    loginRequired: '로그인하면 오답 노트를 볼 수 있어요',
+    summaryActive: '복습할 문제 {count}개',
+    summaryResolved: '졸업한 문제 {count}개',
+    topicFilter: '토픽 필터',
+    allTopics: '전체',
+    reviewMode: '복습 모드',
+    reviewComplete: '복습 완료!',
+    reviewResultCorrect: '{count}개 맞힘',
+    reviewResultWrong: '{count}개 틀림',
+  },
 } as const;
 
 export default ko;

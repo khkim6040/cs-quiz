@@ -33,6 +33,7 @@ function QuizPageContent({ params }: QuizPageProps) {
   const [correctCount, setCorrectCount] = useState(0);
   const [showStatTooltip, setShowStatTooltip] = useState(false);
   const seenIdsRef = useRef<Set<string>>(new Set());
+  const wrongQuestionIdsRef = useRef<string[]>([]);
   const noMoreQuestionsRef = useRef(false);
 
   const { selectedDifficulties, difficultyParam, handleDifficultyToggle } = useDifficultyFilter();
@@ -95,6 +96,7 @@ function QuizPageContent({ params }: QuizPageProps) {
     noMoreQuestionsRef.current = false;
     setSolvedCount(0);
     setCorrectCount(0);
+    wrongQuestionIdsRef.current = [];
     setError(null);
     setLoading(true);
     isFetchingRef.current = false;
@@ -116,10 +118,12 @@ function QuizPageContent({ params }: QuizPageProps) {
     requestAnimationFrame(() => { isTransitioning.current = false; });
   };
 
-  const handleAnswer = (isCorrect: boolean) => {
+  const handleAnswer = (isCorrect: boolean, questionId: string) => {
     setSolvedCount((prev) => prev + 1);
     if (isCorrect) {
       setCorrectCount((prev) => prev + 1);
+    } else {
+      wrongQuestionIdsRef.current.push(questionId);
     }
   };
 
@@ -136,6 +140,7 @@ function QuizPageContent({ params }: QuizPageProps) {
             solvedCount,
             correctCount,
             timeSpent,
+            wrongQuestionIds: wrongQuestionIdsRef.current,
           }),
         });
       } catch {

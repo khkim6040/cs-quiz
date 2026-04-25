@@ -16,7 +16,7 @@ const ReactMarkdown = dynamic(() => import('react-markdown'), {
 interface QuestionComponentProps {
   questionData: QuestionData;
   onNextQuestion: () => void;
-  onAnswer?: (isCorrect: boolean) => void;
+  onAnswer?: (isCorrect: boolean, questionId: string) => void;
   footerRight?: React.ReactNode;
 }
 
@@ -131,7 +131,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
         setExpandedOptions(new Set([correctOption.id]));
       }
       if (onAnswer) {
-        onAnswer(selectedOption.isCorrect);
+        onAnswer(selectedOption.isCorrect, questionData.id);
       }
     }
   };

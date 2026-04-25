@@ -46,6 +46,7 @@ export default function DailyQuizPage() {
   const [scoreSubmitError, setScoreSubmitError] = useState<string | null>(null);
   const [pendingScoreSubmit, setPendingScoreSubmit] = useState(false);
   const [isSubmittingScore, setIsSubmittingScore] = useState(false);
+  const wrongQuestionIdsRef = useRef<string[]>([]);
   const isTransitioning = useRef(false);
 
   useEffect(() => {
@@ -70,11 +71,36 @@ export default function DailyQuizPage() {
     fetchDailyQuestions();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleAnswer = useCallback((isCorrect: boolean) => {
+  const handleAnswer = useCallback((isCorrect: boolean, questionId: string) => {
     if (isCorrect) {
       setCorrectAnswers(prev => prev + 1);
+    } else {
+      wrongQuestionIdsRef.current.push(questionId);
     }
   }, []);
+
+  const handleQuit = useCallback(async () => {
+    if (user && currentIndex > 0) {
+      const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+      try {
+        await fetch('/api/quiz-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            quizType: 'daily',
+            dailySetId,
+            solvedCount: currentIndex,
+            correctCount: correctAnswers,
+            timeSpent,
+            wrongQuestionIds: wrongQuestionIdsRef.current,
+          }),
+        });
+      } catch {
+        // 저장 실패해도 홈으로 이동
+      }
+    }
+    router.push('/');
+  }, [user, currentIndex, correctAnswers, startTime, dailySetId, router]);
 
   const submitScore = useCallback(async () => {
     const timeSpent = Math.floor((Date.now() - startTime) / 1000);
@@ -91,6 +117,7 @@ export default function DailyQuizPage() {
           solvedCount: questions.length,
           correctCount: correctAnswers,
           timeSpent,
+          wrongQuestionIds: wrongQuestionIdsRef.current,
         }),
       }).catch((err) => { console.warn('Failed to save quiz session:', err); });
 
@@ -356,7 +383,7 @@ export default function DailyQuizPage() {
             </p>
           </div>
           <button
-            onClick={() => router.push('/')}
+            onClick={handleQuit}
             className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors font-medium"
           >
             {t('daily.quit')}

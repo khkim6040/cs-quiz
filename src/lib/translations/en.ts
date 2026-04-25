@@ -162,6 +162,27 @@ const en = {
     solved: 'Solved',
     correct: 'Correct',
   },
+  wrongNotes: {
+    title: 'Wrong Notes',
+    empty: 'No wrong answers yet',
+    emptyDesc: 'Take a quiz and review your mistakes',
+    reviewStart: 'Start Review',
+    reviewEmpty: 'No questions to review',
+    tabActive: 'To Review',
+    tabResolved: 'Graduated',
+    wrongCount: 'Wrong {count} times',
+    progress: '{current}/{total}',
+    graduated: 'Graduated!',
+    loginRequired: 'Log in to see your wrong notes',
+    summaryActive: '{count} to review',
+    summaryResolved: '{count} graduated',
+    topicFilter: 'Topic Filter',
+    allTopics: 'All',
+    reviewMode: 'Review Mode',
+    reviewComplete: 'Review Complete!',
+    reviewResultCorrect: '{count} correct',
+    reviewResultWrong: '{count} wrong',
+  },
 } as const;
 
 export default en;
