@@ -49,6 +49,8 @@ model Question {
   feedbacks     Feedback[]
   concepts      Concept[]
   wrongNotes    WrongNote[]
+
+  @@index([topicId])
 }
 
 model AnswerOption {
@@ -60,6 +62,8 @@ model AnswerOption {
   rationale_en  String
   isCorrect     Boolean
   question      Question @relation(fields: [questionId], references: [id])
+
+  @@index([questionId])
 }
 
 model User {
