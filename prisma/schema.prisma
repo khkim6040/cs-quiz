@@ -48,6 +48,7 @@ model Question {
   answerOptions AnswerOption[]
   feedbacks     Feedback[]
   concepts      Concept[]
+  wrongNotes    WrongNote[]
 }
 
 model AnswerOption {
@@ -67,6 +68,7 @@ model User {
   createdAt    DateTime      @default(now())
   scores       UserScore[]
   quizSessions QuizSession[]
+  wrongNotes   WrongNote[]
 }
 
 model DailyQuestionSet {
@@ -105,9 +107,10 @@ model QuizSession {
   solvedCount  Int
   correctCount Int
   timeSpent    Int      // seconds
-  completedAt  DateTime @default(now())
+  completedAt      DateTime @default(now())
+  wrongQuestionIds String[]
 
-  user         User     @relation(fields: [userId], references: [id])
+  user             User     @relation(fields: [userId], references: [id])
 
   @@index([userId, completedAt])
   @@index([completedAt])
@@ -124,4 +127,26 @@ model Feedback {
   question   Question? @relation(fields: [questionId], references: [id])
 
   @@index([questionId])
+}
+
+enum WrongNoteStatus {
+  ACTIVE
+  RESOLVED
+}
+
+model WrongNote {
+  id                 String          @id @default(cuid())
+  userId             String
+  questionId         String
+  status             WrongNoteStatus @default(ACTIVE)
+  wrongCount         Int             @default(1)
+  consecutiveCorrect Int             @default(0)
+  createdAt          DateTime        @default(now())
+  resolvedAt         DateTime?
+
+  user               User            @relation(fields: [userId], references: [id])
+  question           Question        @relation(fields: [questionId], references: [id])
+
+  @@unique([userId, questionId])
+  @@index([userId, status])
 }
