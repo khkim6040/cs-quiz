@@ -22,7 +22,7 @@ Validate that TOPIC_ID is one of: computerSecurity, database, algorithm, dataStr
 
 ## Step 1: Gap Analysis
 
-Read the agent prompt at `scripts/ai-regenerate/agent-prompts/skill-gap-analyzer.md`.
+Read the agent prompt at `scripts/agent-prompts/skill-gap-analyzer.md`.
 
 Dispatch an Agent with:
 - `subagent_type: "oh-my-claudecode:executor"`
@@ -31,7 +31,7 @@ Dispatch an Agent with:
 
 The agent must:
 1. Query DB via Prisma (`src/lib/prisma.ts`) for all questions where `topicId === TOPIC_ID`
-2. Read existing concept maps from `scripts/ai-regenerate/generated/concepts/`
+2. Read existing concept maps from `scripts/generated/concepts/`
 3. Extract `coveredConceptAngles` array and `totalExisting` count
 
 Save the output as `forbiddenZone` for Step 2.
@@ -40,8 +40,8 @@ Save the output as `forbiddenZone` for Step 2.
 
 ## Step 2: Concept Map Generation
 
-Read the agent prompt at `scripts/ai-regenerate/agent-prompts/skill-concept-generator.md`.
-Read the references file at `scripts/ai-regenerate/references.json` and extract the entry for `TOPIC_ID`.
+Read the agent prompt at `scripts/agent-prompts/skill-concept-generator.md`.
+Read the references file at `scripts/references.json` and extract the entry for `TOPIC_ID`.
 
 Dispatch an Agent with:
 - `subagent_type: "oh-my-claudecode:executor"`
@@ -54,11 +54,11 @@ Dispatch an Agent with:
 
 The agent must output a concept map JSON with 10 concepts × 3 keyAngles (easy/medium/hard).
 
-Save the JSON to `scripts/ai-regenerate/generated/concepts/${TOPIC_ID}-${DATE}.json`.
+Save the JSON to `scripts/generated/concepts/${TOPIC_ID}-${DATE}.json`.
 
 ## Step 3: Question Generation (Batched Parallel)
 
-Read the agent prompt at `scripts/ai-regenerate/agent-prompts/skill-question-generator.md`.
+Read the agent prompt at `scripts/agent-prompts/skill-question-generator.md`.
 
 Split the 10 concepts into batches of BATCH_SIZE (4+3+3).
 
@@ -71,7 +71,7 @@ Each agent generates 3 questions per concept (1 easy, 1 medium, 1 hard) in `Gene
 
 Collect all results into a single array (30 questions total).
 
-Save to `scripts/ai-regenerate/generated/questions/${TOPIC_ID}-${DATE}.json`.
+Save to `scripts/generated/questions/${TOPIC_ID}-${DATE}.json`.
 
 ## Step 3.5: Early Pruning
 
@@ -79,8 +79,8 @@ Run structural + semantic validation on all generated questions:
 
 ```bash
 npx ts-node -P scripts/tsconfig.scripts.json -e "
-const { validateQuestion } = require('./scripts/ai-regenerate/validate');
-const questions = require('./scripts/ai-regenerate/generated/questions/${TOPIC_ID}-${DATE}.json');
+const { validateQuestion } = require('./scripts/lib/validate');
+const questions = require('./scripts/generated/questions/${TOPIC_ID}-${DATE}.json');
 const results = questions.map((q, i) => ({ index: i, ...validateQuestion(q) }));
 const failures = results.filter(r => !r.valid);
 console.log(JSON.stringify({ total: questions.length, passed: results.length - failures.length, failures }, null, 2));
@@ -93,7 +93,7 @@ Also check for duplicates against existing DB questions:
 npx ts-node -P scripts/tsconfig.scripts.json -e "
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const questions = require('./scripts/ai-regenerate/generated/questions/${TOPIC_ID}-${DATE}.json');
+const questions = require('./scripts/generated/questions/${TOPIC_ID}-${DATE}.json');
 async function checkDupes() {
   const existing = await prisma.question.findMany({ where: { topicId: '${TOPIC_ID}' }, select: { text_en: true } });
   const existingSet = new Set(existing.map(q => q.text_en.trim().toLowerCase().replace(/\s+/g, ' ')));
@@ -115,7 +115,7 @@ Track how many questions remain. If fewer than TARGET_QUESTIONS, note the defici
 
 Initialize: `budgetUsed = 0`
 
-Read the agent prompt at `scripts/ai-regenerate/agent-prompts/skill-evaluator.md`.
+Read the agent prompt at `scripts/agent-prompts/skill-evaluator.md`.
 
 ### 4a. LLM Evaluation
 
@@ -180,7 +180,7 @@ For each deficit (while budgetUsed < TOTAL_RETRY_BUDGET):
 ### 5a. Dry-Run Import
 
 ```bash
-npx ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/import.ts --dry-run --dir scripts/ai-regenerate/generated/evaluated/pass/ --file ${TOPIC_ID}-${DATE}.json
+npx ts-node -P scripts/tsconfig.scripts.json scripts/import-questions.ts --dry-run --dir scripts/generated/evaluated/pass/ --file ${TOPIC_ID}-${DATE}.json
 ```
 
 If dry-run reports duplicates (while budgetUsed < TOTAL_RETRY_BUDGET):
@@ -191,8 +191,8 @@ If dry-run reports duplicates (while budgetUsed < TOTAL_RETRY_BUDGET):
 
 If dry-run passes:
 ```bash
-npx ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/import.ts --dir scripts/ai-regenerate/generated/evaluated/pass/ --file ${TOPIC_ID}-${DATE}.json
-npx ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/auto-tag.ts
+npx ts-node -P scripts/tsconfig.scripts.json scripts/import-questions.ts --dir scripts/generated/evaluated/pass/ --file ${TOPIC_ID}-${DATE}.json
+npx ts-node -P scripts/tsconfig.scripts.json scripts/auto-tag.ts
 ```
 
 ### Budget Exhaustion
@@ -204,8 +204,8 @@ If `budgetUsed >= TOTAL_RETRY_BUDGET` at any point:
 
 ## Step 6: Report
 
-Save PASS questions to `scripts/ai-regenerate/generated/evaluated/pass/${TOPIC_ID}-${DATE}.json`.
-Save REJECT questions to `scripts/ai-regenerate/generated/evaluated/reject/${TOPIC_ID}-${DATE}.json`.
+Save PASS questions to `scripts/generated/evaluated/pass/${TOPIC_ID}-${DATE}.json`.
+Save REJECT questions to `scripts/generated/evaluated/reject/${TOPIC_ID}-${DATE}.json`.
 
 Output the following report to the terminal:
 
