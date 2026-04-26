@@ -1,4 +1,4 @@
-// scripts/ai-regenerate/concept-matcher.ts
+// scripts/lib/concept-matcher.ts
 //
 // 생성된 문제의 세부 concept 문자열을 시드 concept에 매핑하는 유틸리티
 // import.ts와 auto-tag.ts에서 공유

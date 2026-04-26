@@ -79,14 +79,14 @@ All scripts under `scripts/` use a separate tsconfig at `scripts/tsconfig.script
 
 ### Question import pipeline
 
-1. Generate question JSON via AI chat (structure defined in `scripts/ai-regenerate/import.ts` — `GeneratedQuestion` interface)
-2. Place JSON files in `scripts/ai-regenerate/generated/evaluated/pass/`
+1. Generate question JSON via AI chat (structure defined in `scripts/import-questions.ts` — `GeneratedQuestion` interface)
+2. Place JSON files in `scripts/generated/evaluated/pass/`
 3. Validate with `npm run import-questions:dry`
 4. Import with `npm run import-questions`
 
 ### Adding a new topic
 
-1. Add topic ID to `VALID_TOPIC_IDS` in `scripts/ai-regenerate/validate.ts`
+1. Add topic ID to `VALID_TOPIC_IDS` in `scripts/lib/validate.ts`
 2. Add to DB: `npm run add-topic -- --id <slug> --name-ko "한글" --name-en "English"`
 3. Add to `TopicId` union type in `src/types/quizTypes.ts`
 4. Add translations in `src/lib/translations/ko.ts` and `en.ts`

@@ -1,7 +1,7 @@
-// scripts/ai-regenerate/import.ts
+// scripts/import-questions.ts
 //
 // 채팅 UI에서 생성한 문제 JSON 파일들을 DB에 투입하는 스크립트
-// Usage: npx ts-node --compiler-options '{"module":"CommonJS"}' scripts/ai-regenerate/import.ts [options]
+// Usage: npx ts-node -P scripts/tsconfig.scripts.json scripts/import-questions.ts [options]
 //
 // Options:
 //   --dry-run       실제 DB에 쓰지 않고 검증만 수행
@@ -41,7 +41,7 @@
 //
 // 새로운 토픽의 문제를 import하려면 다음 작업이 필요합니다:
 //
-// 1. scripts/ai-regenerate/validate.ts의 VALID_TOPIC_IDS 배열에 토픽 ID 추가
+// 1. scripts/lib/validate.ts의 VALID_TOPIC_IDS 배열에 토픽 ID 추가
 //    예: "softwareEngineering"
 //
 // 2. DB에 토픽 데이터 추가
@@ -62,8 +62,8 @@
 import { PrismaClient, Difficulty } from "@prisma/client";
 import * as fs from "fs";
 import * as path from "path";
-import { loadSeedConcepts, matchConcept } from "./concept-matcher";
-import { validateQuestion } from "./validate";
+import { loadSeedConcepts, matchConcept } from "./lib/concept-matcher";
+import { validateQuestion } from "./lib/validate";
 
 const prisma = new PrismaClient();
 

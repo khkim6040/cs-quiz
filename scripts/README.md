@@ -5,9 +5,10 @@
 ## 📁 디렉토리 구조
 
 ```
-scripts/ai-regenerate/
-├── import.ts              # 문제 import 스크립트
+scripts/
+├── import-questions.ts    # 문제 import 스크립트
 ├── add-topic.ts           # 토픽 추가 스크립트
+├── auto-tag.ts            # 자동 concept 태깅 스크립트
 ├── generated/
 │   └── evaluated/
 │       └── pass/          # 검증 완료된 문제 JSON 파일들
@@ -15,7 +16,11 @@ scripts/ai-regenerate/
 │           ├── data_structure-1.json
 │           ├── software_engineering-1.json
 │           └── ...
-└── README.md
+├── lib/
+│   ├── concept-matcher.ts # concept 매칭 유틸
+│   └── validate.ts        # 문제 검증 유틸
+├── agent-prompts/         # (gitignored) AI 에이전트 프롬프트
+└── references.json        # 토픽별 참고 자료
 ```
 
 ## 🚀 빠른 시작
@@ -85,7 +90,7 @@ npm run add-topic -- \
 - 이미 존재하는 ID는 건너뜀
 
 **실행 후 안내되는 다음 단계:**
-1. `scripts/ai-regenerate/validate.ts`의 `VALID_TOPIC_IDS`에 추가
+1. `scripts/lib/validate.ts`의 `VALID_TOPIC_IDS`에 추가
 2. `src/types/quizTypes.ts`의 `TopicId` 타입에 추가
 3. 번역 파일 확인 (필요시)
 

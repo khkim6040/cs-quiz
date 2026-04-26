@@ -1,4 +1,4 @@
-// scripts/ai-regenerate/auto-tag.ts
+// scripts/auto-tag.ts
 //
 // 기존 DB 문제에 concept 태그를 자동으로 부여하는 스크립트
 // JSON 파일에서 text_en → concept 매핑을 복원하여 시드 concept에 연결
@@ -10,7 +10,7 @@
 import { PrismaClient } from "@prisma/client";
 import * as fs from "fs";
 import * as path from "path";
-import { loadSeedConcepts, matchConcept } from "./concept-matcher";
+import { loadSeedConcepts, matchConcept } from "./lib/concept-matcher";
 
 const prisma = new PrismaClient();
 

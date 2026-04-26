@@ -1,7 +1,7 @@
-// scripts/ai-regenerate/add-topic.ts
+// scripts/add-topic.ts
 //
 // DB에 새로운 토픽을 추가하는 스크립트
-// Usage: npx ts-node -P scripts/tsconfig.scripts.json scripts/ai-regenerate/add-topic.ts [options]
+// Usage: npx ts-node -P scripts/tsconfig.scripts.json scripts/add-topic.ts [options]
 //
 // Options:
 //   --id <id>        토픽 ID (camelCase, 예: softwareEngineering)
@@ -218,7 +218,7 @@ async function main() {
 
     if (successCount > 0 && !dryRun) {
         console.log("\n  ✨ Next steps:");
-        console.log("     1. Add topic ID to VALID_TOPIC_IDS in scripts/ai-regenerate/validate.ts");
+        console.log("     1. Add topic ID to VALID_TOPIC_IDS in scripts/lib/validate.ts");
         console.log("     2. Add TopicId type in src/types/quizTypes.ts");
         console.log("     3. Add translations in src/lib/translations/ko.ts and en.ts");
     }
