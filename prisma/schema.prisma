@@ -145,6 +145,9 @@ model WrongNote {
   status             WrongNoteStatus @default(ACTIVE)
   wrongCount         Int             @default(1)
   consecutiveCorrect Int             @default(0)
+  leitnerBox         Int             @default(0)
+  nextReviewAt       DateTime?
+  lastReviewedAt     DateTime?
   createdAt          DateTime        @default(now())
   resolvedAt         DateTime?
 
@@ -153,4 +156,5 @@ model WrongNote {
 
   @@unique([userId, questionId])
   @@index([userId, status])
+  @@index([userId, nextReviewAt])
 }
