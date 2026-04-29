@@ -184,6 +184,18 @@ const en = {
     reviewResultWrong: '{count} wrong',
     dueToday: '{count} questions due for review today',
   },
+  streak: {
+    title: 'Daily Streak',
+    current: 'Current',
+    longest: 'Longest',
+    days: '{count} days',
+    milestone7: '1 Week',
+    milestone30: '1 Month',
+    milestone100: '100 Days',
+    toastContinue: '{count}-day streak! Keep it up!',
+    toastNewRecord: 'New record! {count}-day streak!',
+    toastRestart: 'Back at it! Day 1',
+  },
 } as const;
 
 export default en;

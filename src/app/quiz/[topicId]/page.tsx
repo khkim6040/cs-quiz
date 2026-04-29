@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import QuestionComponent from '@/components/QuestionComponent';
 import { useDifficultyFilter } from '@/hooks/useDifficultyFilter';
+import { useToast } from '@/contexts/ToastContext';
 
 const BATCH_SIZE = 10;
 const PREFETCH_THRESHOLD = 3;
@@ -21,6 +22,7 @@ function QuizPageContent({ params }: QuizPageProps) {
   const router = useRouter();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const toast = useToast();
   const [questionQueue, setQuestionQueue] = useState<QuestionData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -146,6 +148,22 @@ function QuizPageContent({ params }: QuizPageProps) {
       } catch {
         // 저장 실패해도 홈으로 이동
       }
+
+      // Streak toast
+      try {
+        const streakRes = await fetch('/api/stats');
+        if (streakRes.ok) {
+          const streakData = await streakRes.json();
+          const { currentStreak, longestStreak } = streakData.streak;
+          if (currentStreak === 1) {
+            toast.info(t('streak.toastRestart'));
+          } else if (currentStreak === longestStreak && currentStreak > 1) {
+            toast.success(t('streak.toastNewRecord', { count: currentStreak }));
+          } else if (currentStreak > 1) {
+            toast.success(t('streak.toastContinue', { count: currentStreak }));
+          }
+        }
+      } catch { /* 스트릭 조회 실패해도 무시 */ }
     }
     router.push('/');
   };

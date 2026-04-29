@@ -184,6 +184,18 @@ const ko = {
     reviewResultWrong: '{count}개 틀림',
     dueToday: '오늘 복습할 문제 {count}개',
   },
+  streak: {
+    title: '연속 출석',
+    current: '현재 연속',
+    longest: '최장 기록',
+    days: '{count}일',
+    milestone7: '1주 연속',
+    milestone30: '1달 연속',
+    milestone100: '100일 돌파',
+    toastContinue: '연속 {count}일째 퀴즈 풀이 중!',
+    toastNewRecord: '새 기록! 연속 {count}일 달성!',
+    toastRestart: '다시 시작! 연속 1일째',
+  },
 } as const;
 
 export default ko;
