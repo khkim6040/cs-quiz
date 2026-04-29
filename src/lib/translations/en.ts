@@ -202,6 +202,20 @@ const en = {
     toastNewRecord: 'New record! {count}-day streak!',
     toastRestart: 'Back at it! Day 1',
   },
+  weeklyChallenge: {
+    title: 'Weekly Challenge',
+    banner: "This Week's Challenge",
+    remaining: '{count} days left',
+    leaderboard: 'Challenge Leaderboard',
+    rank: 'Rank',
+    user: 'User',
+    accuracy: 'Accuracy',
+    solved: 'Solved',
+    noParticipants: 'No participants yet',
+    beFirst: 'Be the first to participate!',
+    goSolve: 'Start Solving',
+    toastSubmitted: 'Weekly challenge score recorded!',
+  },
 } as const;
 
 export default en;

@@ -202,6 +202,20 @@ const ko = {
     toastNewRecord: '새 기록! 연속 {count}일 달성!',
     toastRestart: '다시 시작! 연속 1일째',
   },
+  weeklyChallenge: {
+    title: '주간 챌린지',
+    banner: '이번 주 챌린지',
+    remaining: '{count}일 남음',
+    leaderboard: '챌린지 리더보드',
+    rank: '순위',
+    user: '유저',
+    accuracy: '정답률',
+    solved: '풀이 수',
+    noParticipants: '아직 참여자가 없습니다',
+    beFirst: '첫 번째 참여자가 되어보세요!',
+    goSolve: '풀러 가기',
+    toastSubmitted: '주간 챌린지 점수 반영!',
+  },
 } as const;
 
 export default ko;

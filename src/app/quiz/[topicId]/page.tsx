@@ -166,6 +166,17 @@ function QuizPageContent({ params }: QuizPageProps) {
           }
         }
       } catch { /* 스트릭 조회 실패해도 무시 */ }
+
+      // Weekly challenge toast
+      try {
+        const challengeRes = await fetch('/api/weekly-challenge');
+        if (challengeRes.ok) {
+          const challengeData = await challengeRes.json();
+          if (challengeData.topicId === params.topicId) {
+            toast.info(t('weeklyChallenge.toastSubmitted'));
+          }
+        }
+      } catch { /* 무시 */ }
     }
     if (solvedCount > 0) {
       setIsCompleted(true);
