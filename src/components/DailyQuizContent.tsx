@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { TopicId, QuestionData } from '@/types/quizTypes';
 import { useToast } from '@/contexts/ToastContext';
+import ShareButtons from '@/components/ShareButtons';
 
 export interface DailyQuestion {
   id: string;
@@ -295,6 +296,15 @@ export default function DailyQuizContent({ questions, dailySetId }: DailyQuizCon
                   <p className="text-sm text-red-700">{t(scoreSubmitError) !== scoreSubmitError ? t(scoreSubmitError) : scoreSubmitError}</p>
                 </div>
               )}
+            </div>
+
+            <div className="mb-4">
+              <ShareButtons
+                type="daily"
+                score={score ?? Math.round((correctAnswers / questions.length) * 100)}
+                correct={correctAnswers}
+                total={questions.length}
+              />
             </div>
 
             {/* 버튼 */}
