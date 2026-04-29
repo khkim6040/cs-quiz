@@ -23,6 +23,22 @@ export async function GET() {
       prisma.wrongNote.count({ where: { userId, status: "RESOLVED" } }),
     ]);
 
+    const [dueCount, boxCounts] = await Promise.all([
+      prisma.wrongNote.count({
+        where: { userId, status: "ACTIVE", nextReviewAt: { lte: new Date() } },
+      }),
+      prisma.wrongNote.groupBy({
+        by: ["leitnerBox"],
+        where: { userId, status: "ACTIVE" },
+        _count: true,
+      }),
+    ]);
+
+    const boxDistribution = Array.from({ length: 6 }, (_, i) => {
+      const found = boxCounts.find((b) => b.leitnerBox === i);
+      return found ? found._count : 0;
+    });
+
     const byTopicRaw = await prisma.wrongNote.findMany({
       where: { userId, status: "ACTIVE" },
       select: {
@@ -49,7 +65,7 @@ export async function GET() {
       .map(([topicId, data]) => ({ topicId, ...data }))
       .sort((a, b) => b.count - a.count);
 
-    return NextResponse.json({ activeCount, resolvedCount, byTopic });
+    return NextResponse.json({ activeCount, resolvedCount, dueCount, boxDistribution, byTopic });
   } catch (error) {
     console.error("Failed to get wrong notes summary:", error);
     return NextResponse.json({ error: "Failed to get wrong notes summary" }, { status: 500 });

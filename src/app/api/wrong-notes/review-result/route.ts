@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
-
-const GRADUATE_THRESHOLD = 3;
+import { onCorrect, onWrong, getNextReviewDate, MAX_BOX } from "@/lib/leitner";
 
 export async function POST(request: Request) {
   try {
@@ -26,6 +25,7 @@ export async function POST(request: Request) {
 
     let graduated = 0;
     let reset = 0;
+    const now = new Date();
 
     await Promise.all(
       results.map(async ({ questionId, correct }: { questionId: string; correct: boolean }) => {
@@ -36,29 +36,42 @@ export async function POST(request: Request) {
         if (!note) return;
 
         if (correct) {
-          const newConsecutive = note.consecutiveCorrect + 1;
-          if (newConsecutive >= GRADUATE_THRESHOLD) {
+          const { newBox, graduated: isGraduated } = onCorrect(note.leitnerBox);
+
+          if (isGraduated) {
             await prisma.wrongNote.update({
               where: { id: note.id },
               data: {
-                consecutiveCorrect: newConsecutive,
+                leitnerBox: MAX_BOX,
+                consecutiveCorrect: note.consecutiveCorrect + 1,
                 status: "RESOLVED",
-                resolvedAt: new Date(),
+                resolvedAt: now,
+                lastReviewedAt: now,
+                nextReviewAt: null,
               },
             });
             graduated++;
           } else {
             await prisma.wrongNote.update({
               where: { id: note.id },
-              data: { consecutiveCorrect: newConsecutive },
+              data: {
+                leitnerBox: newBox,
+                consecutiveCorrect: note.consecutiveCorrect + 1,
+                lastReviewedAt: now,
+                nextReviewAt: getNextReviewDate(newBox, now),
+              },
             });
           }
         } else {
+          const { newBox } = onWrong();
           await prisma.wrongNote.update({
             where: { id: note.id },
             data: {
+              leitnerBox: newBox,
               consecutiveCorrect: 0,
               wrongCount: { increment: 1 },
+              lastReviewedAt: now,
+              nextReviewAt: getNextReviewDate(newBox, now),
             },
           });
           reset++;

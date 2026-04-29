@@ -66,6 +66,8 @@ export async function POST(request: Request) {
               status: 'ACTIVE',
               wrongCount: { increment: 1 },
               consecutiveCorrect: 0,
+              leitnerBox: 0,
+              nextReviewAt: new Date(),
               resolvedAt: null,
             },
           })

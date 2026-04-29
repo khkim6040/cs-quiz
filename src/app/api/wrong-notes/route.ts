@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl;
     const status = searchParams.get("status") || "ACTIVE";
     const topicId = searchParams.get("topicId");
+    const due = searchParams.get("due");
 
     const validStatuses = ["ACTIVE", "RESOLVED", "ALL"];
     if (!validStatuses.includes(status)) {
@@ -35,6 +36,11 @@ export async function GET(request: NextRequest) {
 
     if (topicId) {
       where.question = { topicId };
+    }
+
+    if (due === "true") {
+      where.nextReviewAt = { lte: new Date() };
+      where.status = "ACTIVE";
     }
 
     const wrongNotes = await prisma.wrongNote.findMany({
@@ -58,6 +64,8 @@ export async function GET(request: NextRequest) {
       consecutiveCorrect: note.consecutiveCorrect,
       createdAt: note.createdAt,
       resolvedAt: note.resolvedAt,
+      leitnerBox: note.leitnerBox,
+      nextReviewAt: note.nextReviewAt,
       question: {
         id: note.question.id,
         topicId: note.question.topicId,
