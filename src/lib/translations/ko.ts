@@ -182,6 +182,7 @@ const ko = {
     reviewComplete: '복습 완료!',
     reviewResultCorrect: '{count}개 맞힘',
     reviewResultWrong: '{count}개 틀림',
+    dueToday: '오늘 복습할 문제 {count}개',
   },
 } as const;
 

@@ -182,6 +182,7 @@ const en = {
     reviewComplete: 'Review Complete!',
     reviewResultCorrect: '{count} correct',
     reviewResultWrong: '{count} wrong',
+    dueToday: '{count} questions due for review today',
   },
 } as const;
 
