@@ -14,8 +14,9 @@ model Topic {
   id        String     @id @default(cuid())
   name_ko   String
   name_en   String
-  questions Question[]
-  concepts  Concept[]
+  questions        Question[]
+  concepts         Concept[]
+  weeklyChallenges WeeklyChallenge[]
 }
 
 model Concept {
@@ -157,4 +158,12 @@ model WrongNote {
   @@unique([userId, questionId])
   @@index([userId, status])
   @@index([userId, nextReviewAt])
+}
+
+model WeeklyChallenge {
+  id        String   @id @default(cuid())
+  weekStart DateTime @unique
+  topicId   String
+  topic     Topic    @relation(fields: [topicId], references: [id])
+  createdAt DateTime @default(now())
 }
