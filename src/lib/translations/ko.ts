@@ -184,6 +184,12 @@ const ko = {
     reviewResultWrong: '{count}개 틀림',
     dueToday: '오늘 복습할 문제 {count}개',
   },
+  share: {
+    linkCopied: '링크가 복사되었습니다',
+    copyFailed: '복사에 실패했습니다',
+    copyLink: '링크 복사',
+    kakaoNotLoaded: '카카오 SDK를 불러오지 못했습니다',
+  },
   streak: {
     title: '연속 출석',
     current: '현재 연속',

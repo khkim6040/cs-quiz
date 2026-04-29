@@ -34,6 +34,12 @@ export default function RootLayout({
             __html: `(function(){try{var s=localStorage.getItem('darkMode');var dark=s==='true'||(s===null&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(dark)document.documentElement.classList.add('dark');}catch(e){}})();`,
           }}
         />
+        <script
+          src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"
+          integrity="sha384-DKYJZ8NLiK8MN4/C5P2ezmFnkrysYjmMbgGHpJiPlXBl/PKmwOMSWN+x54oEXmG"
+          crossOrigin="anonymous"
+          async
+        />
       </head>
       <body className={`${inter.className} antialiased`}>
         <LanguageProvider>

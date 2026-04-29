@@ -184,6 +184,12 @@ const en = {
     reviewResultWrong: '{count} wrong',
     dueToday: '{count} questions due for review today',
   },
+  share: {
+    linkCopied: 'Link copied!',
+    copyFailed: 'Failed to copy',
+    copyLink: 'Copy Link',
+    kakaoNotLoaded: 'Failed to load Kakao SDK',
+  },
   streak: {
     title: 'Daily Streak',
     current: 'Current',
