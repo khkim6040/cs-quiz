@@ -8,6 +8,8 @@ import UserMenu from "@/components/UserMenu";
 import LanguageToggle from "@/components/LanguageToggle";
 import FeedbackButton from "@/components/FeedbackButton";
 import DarkModeToggle from "@/components/DarkModeToggle";
+import { ToastProvider } from "@/contexts/ToastContext";
+import ToastContainer from "@/components/Toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,6 +38,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <LanguageProvider>
           <AuthProvider>
+            <ToastProvider>
             {/* 헤더 */}
             <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40 shadow-sm">
               <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -80,6 +83,8 @@ export default function RootLayout({
               </div>
             </footer>
             <FeedbackButton />
+            <ToastContainer />
+            </ToastProvider>
           </AuthProvider>
         </LanguageProvider>
       </body>
