@@ -90,7 +90,7 @@ export default function DailyQuizContent({ questions, dailySetId }: DailyQuizCon
     setIsSubmittingScore(true);
 
     try {
-      fetch('/api/quiz-session', {
+      await fetch('/api/quiz-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
