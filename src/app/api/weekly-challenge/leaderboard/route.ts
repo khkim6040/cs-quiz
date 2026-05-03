@@ -23,18 +23,24 @@ export async function GET() {
       },
     });
 
-    const userBest = new Map<string, { username: string; bestAccuracy: number; totalSolved: number }>();
+    const userBest = new Map<string, { username: string; bestAccuracy: number; bestSolvedCount: number; totalSolved: number }>();
     for (const s of sessions) {
       const accuracy = Math.round((s.correctCount / s.solvedCount) * 100);
       const existing = userBest.get(s.userId);
-      if (!existing || accuracy > existing.bestAccuracy || (accuracy === existing.bestAccuracy && s.solvedCount > existing.totalSolved)) {
+      if (!existing) {
         userBest.set(s.userId, {
           username: s.user.username,
           bestAccuracy: accuracy,
-          totalSolved: (existing?.totalSolved || 0) + s.solvedCount,
+          bestSolvedCount: s.solvedCount,
+          totalSolved: s.solvedCount,
         });
       } else {
         existing.totalSolved += s.solvedCount;
+        if (accuracy > existing.bestAccuracy || (accuracy === existing.bestAccuracy && s.solvedCount > existing.bestSolvedCount)) {
+          existing.bestAccuracy = accuracy;
+          existing.bestSolvedCount = s.solvedCount;
+          existing.username = s.user.username;
+        }
       }
     }
 
