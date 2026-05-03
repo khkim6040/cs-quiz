@@ -23,9 +23,10 @@ export async function GET() {
       prisma.wrongNote.count({ where: { userId, status: "RESOLVED" } }),
     ]);
 
+    const now = new Date();
     const [dueCount, boxCounts] = await Promise.all([
       prisma.wrongNote.count({
-        where: { userId, status: "ACTIVE", nextReviewAt: { lte: new Date() } },
+        where: { userId, status: "ACTIVE", OR: [{ nextReviewAt: null }, { nextReviewAt: { lte: now } }] },
       }),
       prisma.wrongNote.groupBy({
         by: ["leitnerBox"],

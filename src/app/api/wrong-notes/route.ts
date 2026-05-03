@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (due === "true") {
-      where.nextReviewAt = { lte: new Date() };
+      where.OR = [{ nextReviewAt: null }, { nextReviewAt: { lte: new Date() } }];
       where.status = "ACTIVE";
     }
 
