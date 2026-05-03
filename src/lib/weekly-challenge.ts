@@ -17,8 +17,9 @@ function getWeekStart(date: Date = new Date()): Date {
   const kst = new Date(date.getTime() + kstOffset);
   const day = kst.getUTCDay();
   const diff = day === 0 ? -6 : 1 - day;
-  const monday = new Date(Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate() + diff));
-  return monday;
+  // KST Monday 00:00:00 = UTC Sunday 15:00:00 (subtract KST offset)
+  const mondayKST = new Date(Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate() + diff));
+  return new Date(mondayKST.getTime() - kstOffset);
 }
 
 function getWeekNumber(date: Date): number {
@@ -40,10 +41,22 @@ export async function getCurrentChallenge() {
     const weekNum = getWeekNumber(new Date());
     const topicId = TOPIC_ORDER[((weekNum % TOPIC_ORDER.length) + TOPIC_ORDER.length) % TOPIC_ORDER.length];
 
-    challenge = await prisma.weeklyChallenge.create({
-      data: { weekStart, topicId },
-      include: { topic: { select: { id: true, name_ko: true, name_en: true } } },
-    });
+    try {
+      challenge = await prisma.weeklyChallenge.create({
+        data: { weekStart, topicId },
+        include: { topic: { select: { id: true, name_ko: true, name_en: true } } },
+      });
+    } catch (e: unknown) {
+      if (e && typeof e === 'object' && 'code' in e && e.code === 'P2002') {
+        challenge = await prisma.weeklyChallenge.findUnique({
+          where: { weekStart },
+          include: { topic: { select: { id: true, name_ko: true, name_en: true } } },
+        });
+        if (!challenge) throw e;
+      } else {
+        throw e;
+      }
+    }
   }
 
   const weekEnd = new Date(weekStart);
