@@ -12,6 +12,8 @@ interface WrongNoteItem {
   status: 'ACTIVE' | 'RESOLVED';
   wrongCount: number;
   consecutiveCorrect: number;
+  leitnerBox: number;
+  nextReviewAt: string | null;
   createdAt: string;
   resolvedAt: string | null;
   question: QuestionData & {
@@ -29,10 +31,12 @@ interface TopicCount {
 interface Summary {
   activeCount: number;
   resolvedCount: number;
+  dueCount: number;
+  boxDistribution: number[];
   byTopic: TopicCount[];
 }
 
-const GRADUATE_THRESHOLD = 3;
+const LEITNER_MAX_BOX = 5;
 
 export default function WrongNotesPage() {
   const router = useRouter();
@@ -139,6 +143,16 @@ export default function WrongNotesPage() {
             </div>
           </div>
         )}
+        {summary && summary.dueCount > 0 && (
+          <div className="mb-6 px-4 py-3 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/30 rounded-xl flex items-center justify-between">
+            <span className="text-orange-800 dark:text-orange-300 font-medium text-sm">
+              {t('wrongNotes.dueToday', { count: summary.dueCount })}
+            </span>
+            <span className="px-2 py-0.5 bg-orange-500 text-white text-xs font-bold rounded-full">
+              {summary.dueCount}
+            </span>
+          </div>
+        )}
 
         {/* Empty State */}
         {notes.length === 0 && (
@@ -243,11 +257,11 @@ export default function WrongNotesPage() {
                         </p>
                         {note.status === 'ACTIVE' && (
                           <div className="flex items-center gap-1 mt-1 justify-end">
-                            {Array.from({ length: GRADUATE_THRESHOLD }).map((_, i) => (
+                            {Array.from({ length: LEITNER_MAX_BOX }).map((_, i) => (
                               <div
                                 key={i}
                                 className={`w-2.5 h-2.5 rounded-full ${
-                                  i < note.consecutiveCorrect
+                                  i < note.leitnerBox
                                     ? 'bg-green-500'
                                     : 'bg-gray-200 dark:bg-gray-600'
                                 }`}
