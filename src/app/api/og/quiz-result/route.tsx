@@ -3,19 +3,29 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
+const VALID_TYPES = ['daily', 'topic', 'review'] as const;
+const TYPE_LABELS: Record<string, string> = {
+  daily: '오늘의 퀴즈',
+  topic: '주제별 퀴즈',
+  review: '복습 퀴즈',
+};
+
+function clampInt(value: string | null, fallback: number, min: number, max: number): number {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.max(min, Math.min(max, Math.round(n)));
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
-  const type = searchParams.get('type') || 'daily';
-  const score = searchParams.get('score') || '0';
-  const correct = searchParams.get('correct') || '0';
-  const total = searchParams.get('total') || '0';
-  const streak = searchParams.get('streak');
 
-  const typeLabel: Record<string, string> = {
-    daily: '오늘의 퀴즈',
-    topic: '주제별 퀴즈',
-    review: '복습 퀴즈',
-  };
+  const rawType = searchParams.get('type') || 'daily';
+  const type = (VALID_TYPES as readonly string[]).includes(rawType) ? rawType : 'daily';
+  const score = clampInt(searchParams.get('score'), 0, 0, 100);
+  const correct = clampInt(searchParams.get('correct'), 0, 0, 200);
+  const total = clampInt(searchParams.get('total'), 0, 1, 200);
+  const streakRaw = searchParams.get('streak');
+  const streak = streakRaw ? clampInt(streakRaw, 0, 0, 9999) : null;
 
   return new ImageResponse(
     (
@@ -45,7 +55,7 @@ export async function GET(request: NextRequest) {
           <span style={{ fontSize: '36px', fontWeight: 'bold', color: 'white' }}>CS Quiz</span>
         </div>
         <div style={{ fontSize: '20px', color: '#a78bfa', marginBottom: '12px', fontWeight: 600 }}>
-          {typeLabel[type] || typeLabel.daily}
+          {TYPE_LABELS[type]}
         </div>
         <div style={{ fontSize: '96px', fontWeight: 'bold', color: '#fb923c', lineHeight: 1 }}>
           {score}점
@@ -53,7 +63,7 @@ export async function GET(request: NextRequest) {
         <div style={{ fontSize: '28px', color: '#94a3b8', marginTop: '12px' }}>
           {correct} / {total} 정답
         </div>
-        {streak && Number(streak) > 0 && (
+        {streak !== null && streak > 0 && (
           <div
             style={{
               marginTop: '24px',
