@@ -46,7 +46,12 @@ export default function ShareButtons({ type, score, correct, total, streak }: Sh
       return;
     }
     if (!window.Kakao.isInitialized()) {
-      window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_JS_KEY || '');
+      const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
+      if (!kakaoKey) {
+        toast.error(t('share.kakaoNotLoaded'));
+        return;
+      }
+      window.Kakao.init(kakaoKey);
     }
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
