@@ -11,6 +11,7 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 function clampInt(value: string | null, fallback: number, min: number, max: number): number {
+  if (value == null || value.trim() === '') return fallback;
   const n = Number(value);
   if (!Number.isFinite(n)) return fallback;
   return Math.max(min, Math.min(max, Math.round(n)));
@@ -22,8 +23,8 @@ export async function GET(request: NextRequest) {
   const rawType = searchParams.get('type') || 'daily';
   const type = (VALID_TYPES as readonly string[]).includes(rawType) ? rawType : 'daily';
   const score = clampInt(searchParams.get('score'), 0, 0, 100);
-  const correct = clampInt(searchParams.get('correct'), 0, 0, 200);
   const total = clampInt(searchParams.get('total'), 0, 1, 200);
+  const correct = clampInt(searchParams.get('correct'), 0, 0, total);
   const streakRaw = searchParams.get('streak');
   const streak = streakRaw ? clampInt(streakRaw, 0, 0, 9999) : null;
 
