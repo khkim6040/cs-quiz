@@ -170,7 +170,7 @@ npx eslint src/components/
 - `.next/`
 - `out/`, `build/`, `dist/`
 - `prisma/migrations/`
-- `scripts/ai-regenerate/generated/`
+- `scripts/generated/`
 - 환경 변수 파일들
 
 ## 📚 권장 VS Code 확장

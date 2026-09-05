@@ -1,6 +1,6 @@
-// scripts/ai-regenerate/__tests__/validate.test.ts
+// scripts/__tests__/validate.test.ts
 import { describe, it, expect } from "vitest";
-import { validateQuestion } from "../validate";
+import { validateQuestion } from "../lib/validate";
 
 describe("validateQuestion", () => {
   const validQuestion = {

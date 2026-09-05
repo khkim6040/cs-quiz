@@ -34,8 +34,8 @@ Context_Notes.md
 .omc/
 .claude/*
 !.claude/commands
-**/ai-regenerate/generated/
-**/ai-regenerate/agent-prompts/
+scripts/generated/
+scripts/agent-prompts/
 docs/superpowers/
 
 # database

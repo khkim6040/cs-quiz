@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { matchConcept, getConceptCache } from '../concept-matcher';
+import { matchConcept, getConceptCache } from '../lib/concept-matcher';
 
 // 테스트를 위해 concept 캐시를 직접 채움
 function populateCache(

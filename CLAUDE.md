@@ -40,7 +40,7 @@ npm run test             # Run all tests once
 npm run test:watch       # Watch mode
 ```
 
-Tests live in `__tests__/` folders next to the code they cover (e.g. `src/lib/__tests__/`, `scripts/ai-regenerate/__tests__/`). Run a single file with `npx vitest run path/to/file.test.ts`.
+Tests live in `__tests__/` folders next to the code they cover (e.g. `src/lib/__tests__/`, `scripts/__tests__/`). Run a single file with `npx vitest run path/to/file.test.ts`.
 
 ## Commit Convention
 
@@ -88,8 +88,8 @@ All scripts under `scripts/` use a separate tsconfig at `scripts/tsconfig.script
 
 ### Question import pipeline
 
-1. Generate question JSON (structure defined in `scripts/ai-regenerate/import.ts` — `GeneratedQuestion` interface). The `/generate-quiz` slash command runs the full multi-agent pipeline (gap analysis → concept map → parallel question generation → evaluation/fix/regen loop → dry-run import) instead of a single AI chat — see `.claude/commands/generate-quiz.md` and `scripts/ai-regenerate/README.md`
-2. Place JSON files in `scripts/ai-regenerate/generated/evaluated/pass/`
+1. Generate question JSON (structure defined in `scripts/import-questions.ts` — `GeneratedQuestion` interface). The `/generate-quiz` slash command runs the full multi-agent pipeline (gap analysis → concept map → parallel question generation → evaluation/fix/regen loop → dry-run import) instead of a single AI chat — see `.claude/commands/generate-quiz.md` and `scripts/README.md`
+2. Place JSON files in `scripts/generated/evaluated/pass/`
 3. Validate with `npm run import-questions:dry`
 4. Import with `npm run import-questions`
 
@@ -99,7 +99,7 @@ All scripts under `scripts/` use a separate tsconfig at `scripts/tsconfig.script
 
 ### Adding a new topic
 
-1. Add topic ID to `VALID_TOPIC_IDS` in `scripts/ai-regenerate/validate.ts`
+1. Add topic ID to `VALID_TOPIC_IDS` in `scripts/lib/validate.ts`
 2. Add to DB: `npm run add-topic -- --id <slug> --name-ko "한글" --name-en "English"`
 3. Add to `TopicId` union type in `src/types/quizTypes.ts`
 4. Add translations in `src/lib/translations/ko.ts` and `en.ts`

@@ -1,4 +1,4 @@
-// scripts/ai-regenerate/validate.ts
+// scripts/lib/validate.ts
 
 export const VALID_TOPIC_IDS = [
   "computerSecurity",
