@@ -4,6 +4,8 @@ import { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { getTodayInKST } from "@/lib/timezone";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const today = getTodayInKST();

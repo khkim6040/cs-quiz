@@ -3,6 +3,8 @@ import prisma from '@/lib/prisma';
 import { getTodayInKST } from '@/lib/timezone';
 import DailyQuizContent, { DailyQuestion } from '@/components/DailyQuizContent';
 
+export const dynamic = 'force-dynamic';
+
 function getDailyQuizData() {
   const today = getTodayInKST();
   const todayKey = today.toISOString().slice(0, 10);
