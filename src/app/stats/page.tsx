@@ -34,6 +34,10 @@ interface StatsData {
   topicStats: TopicStat[];
   dailyTrend: DailyTrend[];
   weakAreas: TopicStat[];
+  streak: {
+    currentStreak: number;
+    longestStreak: number;
+  };
 }
 
 function formatTime(seconds: number, t: (key: string, params?: Record<string, string | number>) => string): string {
@@ -186,6 +190,35 @@ export default function StatsPage() {
             <p className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">{formatTime(data.summary.totalTimeSeconds, t)}</p>
           </div>
         </div>
+
+        {/* Streak Card */}
+        {data.streak.currentStreak > 0 && (
+          <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl p-4 md:p-6 shadow-md border border-orange-100 dark:border-orange-800/30 mb-8">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-2xl">🔥</span>
+              <h2 className="text-lg md:text-xl font-bold text-gray-900 dark:text-gray-100">{t('streak.title')}</h2>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{t('streak.current')}</p>
+                <p className="text-3xl font-bold text-orange-600">{t('streak.days', { count: data.streak.currentStreak })}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{t('streak.longest')}</p>
+                <p className="text-3xl font-bold text-gray-700 dark:text-gray-300">{t('streak.days', { count: data.streak.longestStreak })}</p>
+              </div>
+            </div>
+            {data.streak.currentStreak >= 100 && (
+              <span className="mt-3 inline-block px-3 py-1 bg-orange-500 text-white text-sm font-bold rounded-full">{t('streak.milestone100')}</span>
+            )}
+            {data.streak.currentStreak >= 30 && data.streak.currentStreak < 100 && (
+              <span className="mt-3 inline-block px-3 py-1 bg-orange-500 text-white text-sm font-bold rounded-full">{t('streak.milestone30')}</span>
+            )}
+            {data.streak.currentStreak >= 7 && data.streak.currentStreak < 30 && (
+              <span className="mt-3 inline-block px-3 py-1 bg-orange-400 text-white text-sm font-bold rounded-full">{t('streak.milestone7')}</span>
+            )}
+          </div>
+        )}
 
         {/* Topic Accuracy Bar Chart */}
         <div className="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-md border border-gray-100 dark:border-gray-700 mb-8">

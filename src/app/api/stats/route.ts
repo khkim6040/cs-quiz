@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
 import { toKST } from "@/lib/timezone";
+import { calculateStreak } from "@/lib/streak";
 
 export const dynamic = "force-dynamic";
 
@@ -92,6 +93,16 @@ export async function GET() {
       .sort((a, b) => a.accuracy - b.accuracy)
       .slice(0, 3);
 
+    // 5. Streak
+    const allSessions = await prisma.quizSession.findMany({
+      where: { userId },
+      select: { completedAt: true },
+      orderBy: { completedAt: 'desc' },
+    });
+    const { currentStreak, longestStreak } = calculateStreak(
+      allSessions.map((s) => s.completedAt)
+    );
+
     return NextResponse.json({
       summary: {
         totalSolved,
@@ -102,6 +113,7 @@ export async function GET() {
       topicStats,
       dailyTrend,
       weakAreas,
+      streak: { currentStreak, longestStreak },
     });
   } catch (error) {
     console.error("Failed to get stats:", error);

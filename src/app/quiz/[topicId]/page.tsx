@@ -7,6 +7,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import QuestionComponent from '@/components/QuestionComponent';
 import { useDifficultyFilter } from '@/hooks/useDifficultyFilter';
+import { useToast } from '@/contexts/ToastContext';
+import ShareButtons from '@/components/ShareButtons';
 
 const BATCH_SIZE = 10;
 const PREFETCH_THRESHOLD = 3;
@@ -21,6 +23,7 @@ function QuizPageContent({ params }: QuizPageProps) {
   const router = useRouter();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const toast = useToast();
   const [questionQueue, setQuestionQueue] = useState<QuestionData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -29,6 +32,7 @@ function QuizPageContent({ params }: QuizPageProps) {
   const startTimeRef = useRef(Date.now());
   const queueSnapshotRef = useRef({ queueLen: 0, idx: 0 });
 
+  const [isCompleted, setIsCompleted] = useState(false);
   const [solvedCount, setSolvedCount] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [showStatTooltip, setShowStatTooltip] = useState(false);
@@ -146,8 +150,39 @@ function QuizPageContent({ params }: QuizPageProps) {
       } catch {
         // 저장 실패해도 홈으로 이동
       }
+
+      // Streak toast
+      try {
+        const streakRes = await fetch('/api/stats');
+        if (streakRes.ok) {
+          const streakData = await streakRes.json();
+          const { currentStreak, longestStreak } = streakData.streak;
+          if (currentStreak === 1) {
+            toast.info(t('streak.toastRestart'));
+          } else if (currentStreak === longestStreak && currentStreak > 1) {
+            toast.success(t('streak.toastNewRecord', { count: currentStreak }));
+          } else if (currentStreak > 1) {
+            toast.success(t('streak.toastContinue', { count: currentStreak }));
+          }
+        }
+      } catch { /* 스트릭 조회 실패해도 무시 */ }
+
+      // Weekly challenge toast
+      try {
+        const challengeRes = await fetch('/api/weekly-challenge');
+        if (challengeRes.ok) {
+          const challengeData = await challengeRes.json();
+          if (challengeData.topicId === params.topicId) {
+            toast.info(t('weeklyChallenge.toastSubmitted'));
+          }
+        }
+      } catch { /* 무시 */ }
     }
-    router.push('/');
+    if (solvedCount > 0) {
+      setIsCompleted(true);
+    } else {
+      router.push('/');
+    }
   };
 
   const filterConfig: Record<string, { tKey: string; selected: string; unselected: string }> = {
@@ -190,6 +225,26 @@ function QuizPageContent({ params }: QuizPageProps) {
   );
 
   const currentQuestion = questionQueue[currentIndex] ?? null;
+
+  if (isCompleted) {
+    const accuracy = solvedCount > 0 ? Math.round((correctCount / solvedCount) * 100) : 0;
+    return (
+      <main className="min-h-screen flex items-center justify-center py-8">
+        <div className="text-center bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl max-w-md w-full mx-4 border-2 border-orange-100 dark:border-gray-700">
+          <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-gray-100">{t('daily.complete')}</h2>
+          <div className="p-5 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border border-orange-200 dark:border-orange-800/30 rounded-xl mb-4">
+            <p className="text-4xl font-bold text-orange-600">{correctCount} / {solvedCount}</p>
+          </div>
+          <div className="mb-4">
+            <ShareButtons type="topic" score={accuracy} correct={correctCount} total={solvedCount} />
+          </div>
+          <button onClick={() => router.push('/')} className="w-full px-4 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
+            {t('common.homeShort')}
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   if (loading && !currentQuestion) {
     return (

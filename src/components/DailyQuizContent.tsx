@@ -7,6 +7,8 @@ import LoginModal from '@/components/LoginModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { TopicId, QuestionData } from '@/types/quizTypes';
+import { useToast } from '@/contexts/ToastContext';
+import ShareButtons from '@/components/ShareButtons';
 
 export interface DailyQuestion {
   id: string;
@@ -37,6 +39,7 @@ export default function DailyQuizContent({ questions, dailySetId }: DailyQuizCon
   const router = useRouter();
   const { user } = useAuth();
   const { t, language } = useLanguage();
+  const toast = useToast();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [startTime] = useState(Date.now());
@@ -87,7 +90,7 @@ export default function DailyQuizContent({ questions, dailySetId }: DailyQuizCon
     setIsSubmittingScore(true);
 
     try {
-      fetch('/api/quiz-session', {
+      await fetch('/api/quiz-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -117,6 +120,22 @@ export default function DailyQuizContent({ questions, dailySetId }: DailyQuizCon
         setScore(result.score);
         setRank(result.rank);
         setPendingScoreSubmit(false);
+
+        // Streak toast
+        try {
+          const streakRes = await fetch('/api/stats');
+          if (streakRes.ok) {
+            const streakData = await streakRes.json();
+            const { currentStreak, longestStreak } = streakData.streak;
+            if (currentStreak === 1) {
+              toast.info(t('streak.toastRestart'));
+            } else if (currentStreak === longestStreak && currentStreak > 1) {
+              toast.success(t('streak.toastNewRecord', { count: currentStreak }));
+            } else if (currentStreak > 1) {
+              toast.success(t('streak.toastContinue', { count: currentStreak }));
+            }
+          }
+        } catch { /* ignore */ }
       } else if (res.status === 401) {
         const errorData = await res.json();
         const errorMsg = errorData.error || 'daily.loginRequired';
@@ -136,7 +155,7 @@ export default function DailyQuizContent({ questions, dailySetId }: DailyQuizCon
     } finally {
       setIsSubmittingScore(false);
     }
-  }, [startTime, dailySetId, correctAnswers, questions.length]);
+  }, [startTime, dailySetId, correctAnswers, questions.length, t, toast]);
 
   useEffect(() => {
     if (user && pendingScoreSubmit && isCompleted) {
@@ -277,6 +296,15 @@ export default function DailyQuizContent({ questions, dailySetId }: DailyQuizCon
                   <p className="text-sm text-red-700">{t(scoreSubmitError) !== scoreSubmitError ? t(scoreSubmitError) : scoreSubmitError}</p>
                 </div>
               )}
+            </div>
+
+            <div className="mb-4">
+              <ShareButtons
+                type="daily"
+                score={score ?? Math.round((correctAnswers / questions.length) * 100)}
+                correct={correctAnswers}
+                total={questions.length}
+              />
             </div>
 
             {/* 버튼 */}

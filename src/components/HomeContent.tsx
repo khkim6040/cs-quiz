@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Topic } from '@/types/quizTypes';
 import { useAuth } from '@/contexts/AuthContext';
@@ -15,6 +16,19 @@ interface HomeContentProps {
 export default function HomeContent({ topics, dailySetId }: HomeContentProps) {
   const { user, isLoading: authLoading } = useAuth();
   const { t, language } = useLanguage();
+
+  const [challenge, setChallenge] = useState<{
+    topicId: string;
+    topic: { name_ko: string; name_en: string };
+    remainingDays: number;
+  } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/weekly-challenge')
+      .then((r) => r.ok ? r.json() : null)
+      .then(setChallenge)
+      .catch(() => {});
+  }, []);
 
   return (
     <main className="container mx-auto px-4 py-8 min-h-screen flex flex-col items-center justify-center">
@@ -44,6 +58,29 @@ export default function HomeContent({ topics, dailySetId }: HomeContentProps) {
       </header>
 
       <div className="w-full max-w-4xl space-y-3">
+        {/* 주간 챌린지 배너 */}
+        {challenge && (
+          <Link
+            href={`/quiz/${challenge.topicId}`}
+            className="block p-4 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all group"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                  <span className="text-xl">🏆</span>
+                </div>
+                <div>
+                  <p className="text-xs text-purple-200 font-medium">{t('weeklyChallenge.banner')}</p>
+                  <p className="text-lg font-bold">{language === 'en' ? challenge.topic.name_en : challenge.topic.name_ko}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-sm text-purple-200">{t('weeklyChallenge.remaining', { count: challenge.remainingDays })}</span>
+              </div>
+            </div>
+          </Link>
+        )}
+
         {/* 오늘의 퀴즈 - 큰 버튼 */}
         <Link
           href={`/daily`}

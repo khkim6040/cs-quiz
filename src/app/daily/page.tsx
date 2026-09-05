@@ -3,22 +3,12 @@ import prisma from '@/lib/prisma';
 import { getTodayInKST } from '@/lib/timezone';
 import DailyQuizContent, { DailyQuestion } from '@/components/DailyQuizContent';
 
-function getDailyQuizData() {
-  const today = getTodayInKST();
-  const todayKey = today.toISOString().slice(0, 10);
-  return unstable_cache(
+export const dynamic = 'force-dynamic';
+
+// dailySetId가 가리키는 문제 내용은 절대 바뀌지 않으므로 무제한 캐싱해도 안전하다.
+const getCachedQuestions = (dailySetId: string, questionIds: string[]) =>
+  unstable_cache(
     async () => {
-
-      const dailySet = await prisma.dailyQuestionSet.findUnique({
-        where: { date: today },
-      });
-
-      if (!dailySet) {
-        return { dailySetId: null, questions: [] };
-      }
-
-      const questionIds = dailySet.questionIds;
-
       const questions = await prisma.question.findMany({
         where: { id: { in: questionIds } },
         include: {
@@ -31,7 +21,7 @@ function getDailyQuizData() {
         .map((id: string) => questions.find((q) => q.id === id))
         .filter((q): q is NonNullable<typeof q> => q !== undefined);
 
-      const formattedQuestions = orderedQuestions.map((question) => {
+      return orderedQuestions.map((question) => {
         const options = question.answerOptions.map((option) => ({
           id: option.id,
           text_ko: option.text_ko,
@@ -70,15 +60,28 @@ function getDailyQuizData() {
           answerOptions: options,
         };
       });
-
-      return {
-        dailySetId: dailySet.id,
-        questions: formattedQuestions,
-      };
     },
-    [`daily-questions-${todayKey}`],
-    { revalidate: 43200 }
+    ['daily-quiz-questions', dailySetId],
+    { revalidate: false }
   )();
+
+async function getDailyQuizData() {
+  const today = getTodayInKST();
+
+  const dailySet = await prisma.dailyQuestionSet.findUnique({
+    where: { date: today },
+  });
+
+  if (!dailySet) {
+    return { dailySetId: null, questions: [] };
+  }
+
+  const questions = await getCachedQuestions(dailySet.id, dailySet.questionIds);
+
+  return {
+    dailySetId: dailySet.id,
+    questions,
+  };
 }
 
 export default async function DailyQuizPage() {

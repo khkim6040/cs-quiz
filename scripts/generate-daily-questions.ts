@@ -10,7 +10,7 @@ import { seededShuffle, dateToSeed } from '../src/lib/shuffle';
 
 const prisma = new PrismaClient();
 
-async function generateDailySet(date: Date, questionCount: number = 15) {
+async function generateDailySet(date: Date, questionCount: number = 10) {
   // 날짜를 시드로 사용 (YYYYMMDD 형식)
   const seed = dateToSeed(date);
   
@@ -50,7 +50,7 @@ async function generateDailySet(date: Date, questionCount: number = 15) {
 async function main() {
   const args = process.argv.slice(2);
   const daysAhead = args.length > 0 ? parseInt(args[0], 10) : 1;
-  const questionCount = args.length > 1 ? parseInt(args[1], 10) : 15;
+  const questionCount = args.length > 1 ? parseInt(args[1], 10) : 10;
   const startOffset = args.length > 2 ? parseInt(args[2], 10) : 0;
 
   if (isNaN(daysAhead) || daysAhead < 0) {

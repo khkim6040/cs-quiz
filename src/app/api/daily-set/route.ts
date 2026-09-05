@@ -4,6 +4,8 @@ import { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { getTodayInKST } from "@/lib/timezone";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const today = getTodayInKST();
@@ -56,7 +58,7 @@ function seededShuffle<T>(array: T[], seed: number): T[] {
   return arr;
 }
 
-async function generateDailySet(date: Date, questionCount: number = 15) {
+async function generateDailySet(date: Date, questionCount: number = 10) {
   // 날짜를 시드로 사용 (YYYYMMDD 형식)
   const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
 
