@@ -34,7 +34,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Generate daily question set for tomorrow
-        run: npm run generate-daily -- 1 15 1
+        run: npm run generate-daily -- 1 10 1
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
