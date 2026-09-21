@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
+import { SITE_URL } from '@/lib/constants';
 
 interface ShareResultPageProps {
   searchParams: {
@@ -19,7 +20,7 @@ export function generateMetadata({ searchParams }: ShareResultPageProps): Metada
   const ogParams = new URLSearchParams({ type, score, correct, total });
   if (streak) ogParams.set('streak', streak);
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://cs-quiz-ten.vercel.app';
+  const baseUrl = SITE_URL;
 
   return {
     title: `CS Quiz ${typeLabel[type] || '퀴즈'} ${score}점!`,

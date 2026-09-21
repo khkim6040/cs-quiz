@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Link from "next/link";
+import Script from "next/script";
+import { Analytics } from "@vercel/analytics/react";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -14,8 +18,48 @@ import ToastContainer from "@/components/Toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CS Quiz",
-  description: "Learn Computer Science through fun quizzes!",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "CS 퀴즈",
+    "컴퓨터 과학",
+    "코딩 테스트",
+    "기술 면접",
+    "자료구조",
+    "알고리즘",
+    "운영체제",
+    "네트워크",
+    "데이터베이스",
+    "컴퓨터 구조",
+    "소프트웨어 공학",
+    "Spring Boot",
+    "CS quiz",
+    "computer science",
+  ],
+  authors: [{ name: "khkim6040", url: "https://github.com/khkim6040" }],
+  openGraph: {
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    type: "website",
+    locale: "ko_KR",
+  },
+  twitter: {
+    card: "summary",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
+  verification: {
+    google: "1ZHYSh9ZlYRY4SQ_IZEiwlw5BrtTQ767GLUyW5SOB6o",
+  },
   icons: {
     icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:rgb(251,146,60);stop-opacity:1'/><stop offset='100%' style='stop-color:rgb(245,158,11);stop-opacity:1'/></linearGradient></defs><rect width='100' height='100' rx='20' fill='url(%23grad)'/><path fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round' d='M40.3 71h19.5M50 12.5v4.2m26.5 6.8l-3 3M87.5 50h-4.2M16.7 50h-4.2M27.6 23.6l-3-3m11.8 41.2a20.8 20.8 0 1129.5 0l-2.3 2.3a14 14 0 00-4.1 9.9v2.2a8.3 8.3 0 11-16.7 0V77a14 14 0 00-4.1-9.9l-2.3-2.3z'/></svg>",
   },
@@ -93,6 +137,19 @@ export default function RootLayout({
             </ToastProvider>
           </AuthProvider>
         </LanguageProvider>
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="gtag-init" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}');`}
+            </Script>
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+          </>
+        )}
+        <Analytics />
       </body>
     </html>
   );
