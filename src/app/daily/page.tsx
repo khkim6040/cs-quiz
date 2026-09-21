@@ -1,7 +1,13 @@
+import type { Metadata } from 'next';
 import { unstable_cache } from 'next/cache';
 import prisma from '@/lib/prisma';
 import { getTodayInKST } from '@/lib/timezone';
 import DailyQuizContent, { DailyQuestion } from '@/components/DailyQuizContent';
+
+export const metadata: Metadata = {
+  title: '오늘의 퀴즈',
+  description: '매일 새로 출제되는 CS 10문제. 자료구조, 알고리즘, 네트워크, 운영체제 등 핵심 개념을 하루 10분으로 익히세요.',
+};
 
 export const dynamic = 'force-dynamic';
 
