@@ -216,6 +216,19 @@ const en = {
     goSolve: 'Start Solving',
     toastSubmitted: 'Weekly challenge score recorded!',
   },
+  search: {
+    title: 'Search Questions',
+    placeholder: 'Search by keyword (e.g. deadlock, TCP)',
+    submit: 'Search',
+    allTopics: 'All topics',
+    allDifficulties: 'All difficulties',
+    resultCount: '{count} results',
+    noResults: 'No results found',
+    noResultsDesc: 'Try a different keyword or filter',
+    prompt: 'Enter a keyword or pick a topic',
+    prev: 'Prev',
+    next: 'Next',
+  },
 } as const;
 
 export default en;

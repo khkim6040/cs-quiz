@@ -15,7 +15,7 @@ const ReactMarkdown = dynamic(() => import('react-markdown'), {
 
 interface QuestionComponentProps {
   questionData: QuestionData;
-  onNextQuestion: () => void;
+  onNextQuestion?: () => void;
   onAnswer?: (isCorrect: boolean, questionId: string) => void;
   footerRight?: React.ReactNode;
 }
@@ -102,7 +102,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
 
     // Swipe left: dx < -60px, horizontal movement dominates vertical
     if (dx < -60 && Math.abs(dy) < Math.abs(dx)) {
-      onNextQuestion();
+      onNextQuestion?.();
     }
   }, [isAnswered, onNextQuestion]);
 
@@ -292,13 +292,15 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionData, onN
       {/* 다음 문제 버튼 + 오류 신고 */}
       {isAnswered && (
         <div className="mt-6 flex flex-col items-center gap-3">
-          <button
-            onClick={onNextQuestion}
-            className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
-          >
-            {t('quiz.next')}
-          </button>
-          {swipeHint && (
+          {onNextQuestion && (
+            <button
+              onClick={onNextQuestion}
+              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all font-semibold shadow-md hover:shadow-lg focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+            >
+              {t('quiz.next')}
+            </button>
+          )}
+          {onNextQuestion && swipeHint && (
             <p className="text-xs text-gray-400 animate-pulse md:hidden">
               {t('quiz.swipeHint')}
             </p>

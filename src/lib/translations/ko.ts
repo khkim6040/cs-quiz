@@ -216,6 +216,19 @@ const ko = {
     goSolve: '풀러 가기',
     toastSubmitted: '주간 챌린지 점수 반영!',
   },
+  search: {
+    title: '문제 검색',
+    placeholder: '키워드로 검색 (예: 교착상태, TCP)',
+    submit: '검색',
+    allTopics: '전체 주제',
+    allDifficulties: '전체 난이도',
+    resultCount: '검색 결과 {count}개',
+    noResults: '검색 결과가 없어요',
+    noResultsDesc: '다른 키워드나 필터로 다시 찾아보세요',
+    prompt: '키워드를 입력하거나 주제를 선택해보세요',
+    prev: '이전',
+    next: '다음',
+  },
 } as const;
 
 export default ko;

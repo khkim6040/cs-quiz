@@ -20,6 +20,23 @@ export function isTrueFalseQuestion(options: AnswerOption[]): boolean {
 }
 
 /**
+ * 화면에 보여줄 보기 순서를 정합니다.
+ * T/F 문제는 True를 항상 먼저, 나머지는 정답 위치가 드러나지 않도록 셔플합니다.
+ */
+export function orderAnswerOptions<T extends AnswerOption>(options: T[]): T[] {
+  const arr = [...options];
+  if (isTrueFalseQuestion(arr)) {
+    const isTrue = (o: T) => /^true$/i.test(o.text_en.trim());
+    return arr.sort((a, b) => Number(isTrue(b)) - Number(isTrue(a)));
+  }
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/**
  * 배치 사이즈를 1~maxBatchSize 범위로 클램핑합니다.
  */
 export function clampBatchSize(
