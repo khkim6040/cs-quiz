@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isTrueFalseQuestion, clampBatchSize } from '../question';
+import { isTrueFalseQuestion, clampBatchSize, orderAnswerOptions } from '../question';
 
 const makeOption = (text_en: string, isCorrect = false) => ({
   id: '1',
@@ -52,6 +52,20 @@ describe('isTrueFalseQuestion', () => {
   it('True만 2개면 false를 반환한다', () => {
     const options = [makeOption('True'), makeOption('True')];
     expect(isTrueFalseQuestion(options)).toBe(false);
+  });
+});
+
+describe('orderAnswerOptions', () => {
+  it('T/F 문제는 True를 항상 먼저 둔다', () => {
+    const ordered = orderAnswerOptions([makeOption('False', true), makeOption('True')]);
+    expect(ordered.map((o) => o.text_en)).toEqual(['True', 'False']);
+  });
+
+  it('일반 문제는 원본을 바꾸지 않고 같은 보기들을 반환한다', () => {
+    const options = ['A', 'B', 'C', 'D'].map((t) => makeOption(t));
+    const ordered = orderAnswerOptions(options);
+    expect(options.map((o) => o.text_en)).toEqual(['A', 'B', 'C', 'D']);
+    expect(ordered.map((o) => o.text_en).sort()).toEqual(['A', 'B', 'C', 'D']);
   });
 });
 
