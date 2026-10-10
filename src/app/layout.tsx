@@ -98,11 +98,16 @@ export default function RootLayout({
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
                   </div>
-                  <span className="text-2xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-orange-600 transition-colors">
+                  <span className="hidden sm:inline text-2xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-orange-600 transition-colors">
                     CS Quiz
                   </span>
                 </Link>
                 <div className="flex items-center gap-3">
+                  <Link href="/search" aria-label="문제 검색" className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </Link>
                   <DarkModeToggle />
                   <LanguageToggle />
                   <UserMenu />
